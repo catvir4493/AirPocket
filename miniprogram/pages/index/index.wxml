@@ -1,9 +1,13 @@
 <view class="page landing-page">
   <view class="home-top fade-up" bindlongpress="requestAdminAccess">
-    <image class="home-logo" src="/images/300分辨率/logo.png" mode="aspectFit" />
+    <image class="home-logo logo-light" src="/images/300分辨率/logo.png" mode="aspectFit" />
+    <image class="home-logo logo-dark" src="/images/300分辨率/黄色logo.png" mode="aspectFit" />
   </view>
 
-  <view class="home-greet fade-up delay-1"><view>把空着的行李额</view><view>变成别人的顺路</view></view>
+  <view class="home-hero fade-up delay-1">
+    <view class="home-greet"><view>把空着的行李额</view><view>变成别人的顺路</view></view>
+    <view class="home-art"><ap-art name="route" width="{{250}}" height="{{150}}" /></view>
+  </view>
   <view class="home-sub fade-up delay-1">行李空间共享平台 · Luggage Sharing Space</view>
 
   <view class="entry entry-dark entry-enter" hover-class="entry-press" hover-start-time="20" hover-stay-time="90" bindtap="goFindBags">
@@ -16,7 +20,7 @@
       </block>
       <text wx:else>正在查看可用行李额…</text>
     </view>
-    <view class="entry-go"><ap-icon name="arrow" size="{{30}}" stroke="{{2.4}}" /></view>
+    <view class="entry-go"><ap-icon name="arrow" size="{{30}}" stroke="{{2.4}}" color="#1c1c1a" /></view>
   </view>
 
   <view class="entry entry-light entry-enter delay" hover-class="entry-press" hover-start-time="20" hover-stay-time="90" bindtap="goOfferSpace">
@@ -29,36 +33,36 @@
 
   <view class="icon-list home-links fade-up delay-3">
     <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goProhibitedItems">
-      <view class="icon-box"><ap-icon name="shield" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-box"><ap-icon name="shield" size="{{32}}" color="ink-2" /></view>
       <view class="icon-row-copy">
         <view class="icon-row-title">物品合规</view>
         <view class="icon-row-desc">可寄与禁运物品、责任声明</view>
       </view>
-      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
     </view>
     <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="showCustomerService">
-      <view class="icon-box"><ap-icon name="chat" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-box"><ap-icon name="chat" size="{{32}}" color="ink-2" /></view>
       <view class="icon-row-copy">
         <view class="icon-row-title">联系客服</view>
         <view class="icon-row-desc">有疑问随时找我们</view>
       </view>
-      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
     </view>
     <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="showBusinessCooperation">
-      <view class="icon-box"><ap-icon name="briefcase" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-box"><ap-icon name="briefcase" size="{{32}}" color="ink-2" /></view>
       <view class="icon-row-copy">
         <view class="icon-row-title">商务合作</view>
         <view class="icon-row-desc">渠道、代购与企业合作</view>
       </view>
-      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
     </view>
     <view wx:if="{{isAdmin}}" class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goAdmin">
-      <view class="icon-box"><ap-icon name="grid" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-box"><ap-icon name="grid" size="{{32}}" color="ink-2" /></view>
       <view class="icon-row-copy">
         <view class="icon-row-title">后台运营</view>
         <view class="icon-row-desc">Admin Desk</view>
       </view>
-      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
     </view>
   </view>
 

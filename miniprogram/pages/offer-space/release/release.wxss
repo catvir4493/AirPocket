@@ -20,8 +20,8 @@
 }
 
 .type-option.active {
-  border-color: var(--ink);
-  background: var(--ink);
+  border-color: var(--inverse);
+  background: var(--inverse);
   animation: ap-pop 320ms var(--ease-spring);
 }
 
@@ -39,11 +39,12 @@
 }
 
 .type-option.active .type-title {
-  color: #ffffff;
+  color: var(--on-inverse);
 }
 
 .type-option.active .type-copy {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--on-inverse);
+  opacity: 0.6;
 }
 
 .primary-button {

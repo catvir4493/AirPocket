@@ -21,6 +21,16 @@ page {
   --green: #3f6a1d;
   --green-bg: #e8f3df;
   --red: #b3261e;
+  --placeholder: #c4c2b9;
+  --paper-clear: rgba(255, 254, 250, 0);
+  --shine: rgba(255, 255, 255, 0.7);
+  /* Dark hero surfaces (entry card, route overview, tab bar) */
+  --solid: #1c1c1a;
+  --solid-line: rgba(255, 255, 255, 0);
+  /* Primary button / selected chip */
+  --inverse: #1c1c1a;
+  --on-inverse: #ffffff;
+  --inverse-accent: #fff51f;
 
   /* Shape */
   --r-s: 12rpx;
@@ -35,6 +45,34 @@ page {
   background: var(--paper);
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+}
+
+
+/* Dark mode: same tokens, darker paper. The Available Bags cards keep their own colours. */
+@media (prefers-color-scheme: dark) {
+  page {
+    --paper: #141412;
+    --card: #1e1e1b;
+    --fill: #2a2a26;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --ink: #f2f1ea;
+    --ink-2: #c3c1b6;
+    --ink-3: #8a887e;
+    --yellow-soft: rgba(255, 245, 31, 0.14);
+    --green: #a9d48a;
+    --green-bg: rgba(126, 180, 90, 0.18);
+    --red: #ff8a80;
+    --placeholder: #5f5d55;
+    --paper-clear: rgba(20, 20, 18, 0);
+    --shine: rgba(255, 255, 255, 0.06);
+    --shadow: 0 24rpx 48rpx -32rpx rgba(0, 0, 0, 0.8);
+    --solid: #23231f;
+    --solid-line: rgba(255, 255, 255, 0.08);
+    --inverse: #fff51f;
+    --on-inverse: #1c1c1a;
+    --inverse-accent: #1c1c1a;
+  }
 }
 
 button {
@@ -206,7 +244,7 @@ button {
 
 .pill {
   background: var(--yellow);
-  color: var(--ink);
+  color: #1c1c1a;
 }
 
 .pill.gray {
@@ -216,7 +254,7 @@ button {
 
 .tag-wait {
   background: var(--yellow);
-  color: var(--ink);
+  color: #1c1c1a;
 }
 
 .tag-ok,
@@ -312,7 +350,7 @@ button {
 }
 
 .placeholder {
-  color: #c4c2b9;
+  color: var(--placeholder);
 }
 
 /* ---------- Buttons ---------- */
@@ -333,17 +371,17 @@ button {
 }
 
 .primary-button {
-  background: var(--ink);
-  color: #ffffff;
+  background: var(--inverse);
+  color: var(--on-inverse);
 }
 
 .primary-button[disabled] {
-  background: #b9b7ae;
-  color: #ffffff;
+  background: var(--line-strong);
+  color: var(--ink-3);
 }
 
 .primary-button .button-num {
-  color: var(--yellow);
+  color: var(--inverse-accent);
   font-family: var(--font-num);
   font-size: 32rpx;
   font-weight: 700;
@@ -352,7 +390,7 @@ button {
 .primary-button.success,
 .primary-button.success[disabled] {
   background: var(--yellow);
-  color: var(--ink);
+  color: #1c1c1a;
   animation: ap-pop 360ms var(--ease-spring);
 }
 
@@ -413,9 +451,9 @@ button {
 }
 
 .choice-pill.active {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: #ffffff;
+  border-color: var(--inverse);
+  background: var(--inverse);
+  color: var(--on-inverse);
   animation: ap-pop 320ms var(--ease-spring);
 }
 
@@ -531,11 +569,9 @@ button {
 /* ---------- Shared blocks ---------- */
 
 .empty-art {
-  display: block;
-  width: 120rpx;
-  height: 133rpx;
-  margin: 4rpx auto 18rpx;
-  opacity: 0.85;
+  display: flex;
+  justify-content: center;
+  margin: -8rpx auto 12rpx;
   animation: ap-float 3.6s ease-in-out infinite;
 }
 
@@ -551,7 +587,7 @@ button {
   left: 0;
   z-index: 20;
   padding: 40rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
-  background: linear-gradient(rgba(255, 254, 250, 0), var(--paper) 40%);
+  background: linear-gradient(var(--paper-clear), var(--paper) 40%);
 }
 
 .sticky-action .primary-button {
@@ -601,7 +637,7 @@ button {
 }
 
 .row-press {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--line);
 }
 
 .skeleton-shine {
@@ -616,7 +652,7 @@ button {
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 70%);
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, var(--shine) 50%, rgba(255, 255, 255, 0) 70%);
   transform: translateX(-100%);
   animation: ap-shine 1.2s ease-in-out infinite;
 }

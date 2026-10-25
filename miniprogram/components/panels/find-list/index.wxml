@@ -30,7 +30,7 @@
 
   <view class="bag-list-header fade-up delay-2">
     <view class="bag-list-title">可用行李额 · <block wx:for="{{[bags.length]}}" wx:key="*this"><text class="count-swap">{{item}}</text></block></view>
-    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters"><ap-icon name="filter" size="{{26}}" stroke="{{2.2}}" color="{{hasActiveFilters ? '#1c1c1a' : '#55534c'}}" /><text>筛选</text><view wx:if="{{hasActiveFilters}}" class="filter-dot"></view></button>
+    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters"><ap-icon name="filter" size="{{26}}" stroke="{{2.2}}" color="{{hasActiveFilters ? '#1c1c1a' : 'ink-2'}}" /><text>筛选</text><view wx:if="{{hasActiveFilters}}" class="filter-dot"></view></button>
   </view>
 
   <view wx:if="{{loading}}" class="bag-skeleton-list">
@@ -58,7 +58,7 @@
   </block>
 
   <view wx:else class="empty-state">
-    <image class="empty-art" src="/images/empty-bag-large.png" mode="aspectFit" />
+    <view class="empty-art"><ap-art name="suitcase" width="{{240}}" height="{{180}}" /></view>
     <view>{{emptyMessage}}</view>
   </view>
 

@@ -9,8 +9,9 @@
   box-sizing: border-box;
   height: 104rpx;
   padding: 8rpx;
+  border: 1rpx solid var(--solid-line, transparent);
   border-radius: 44rpx;
-  background: #1c1c1a;
+  background: var(--solid, #1c1c1a);
   box-shadow: 0 24rpx 48rpx -24rpx rgba(0, 0, 0, 0.5);
 }
 

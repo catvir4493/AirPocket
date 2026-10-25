@@ -42,14 +42,16 @@ const toBase64 = (text) => {
 
 const cache = {};
 
+const svgDataUri = (svg) => `data:image/svg+xml;base64,${toBase64(svg)}`;
+
 const iconSrc = (name, color = "#1c1c1a", stroke = 1.8) => {
   const key = `${name}|${color}|${stroke}`;
   if (!cache[key]) {
     const shape = SHAPES[name] || "";
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${shape}</svg>`;
-    cache[key] = `data:image/svg+xml;base64,${toBase64(svg)}`;
+    cache[key] = svgDataUri(svg);
   }
   return cache[key];
 };
 
-module.exports = { iconSrc };
+module.exports = { iconSrc, svgDataUri };

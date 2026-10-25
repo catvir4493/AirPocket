@@ -51,8 +51,8 @@
 }
 
 .my-segment.active {
-  background: var(--ink);
-  color: #ffffff;
+  background: var(--inverse);
+  color: var(--on-inverse);
 }
 
 .my-segment-search {
@@ -61,7 +61,7 @@
 
 .my-segment-search.filtered {
   background: var(--yellow);
-  color: var(--ink);
+  color: #1c1c1a;
 }
 
 .my-skeleton-ticket {
@@ -94,7 +94,7 @@
   justify-content: center;
   flex-direction: column;
   flex: 0 0 104rpx;
-  border-right: 3rpx dashed #e6e4da;
+  border-right: 3rpx dashed var(--line-strong);
 }
 
 .ticket-day {
@@ -186,7 +186,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(28, 28, 26, 0.32);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .my-search-sheet {
@@ -258,7 +258,7 @@
 }
 
 .my-search-picker.placeholder {
-  color: #c4c2b9;
+  color: var(--placeholder);
 }
 
 .my-clear-search {

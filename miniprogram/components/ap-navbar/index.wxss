@@ -5,13 +5,13 @@
   left: 0;
   z-index: 25;
   box-sizing: border-box;
-  background: #fffefa;
+  background: var(--paper);
   box-shadow: 0 1rpx 0 rgba(0, 0, 0, 0);
   transition: box-shadow 240ms ease;
 }
 
 .ap-navbar.collapsed {
-  box-shadow: 0 1rpx 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1rpx 0 var(--line);
 }
 
 .ap-navbar-bar {
@@ -37,8 +37,8 @@
   width: 20rpx;
   height: 20rpx;
   margin-left: 10rpx;
-  border-bottom: 4rpx solid #1c1c1a;
-  border-left: 4rpx solid #1c1c1a;
+  border-bottom: 4rpx solid var(--ink);
+  border-left: 4rpx solid var(--ink);
   transform: rotate(45deg);
 }
 
@@ -49,9 +49,9 @@
   width: 60rpx;
   height: 60rpx;
   margin-left: 20rpx;
-  border: 1rpx solid rgba(28, 28, 26, 0.08);
+  border: 1rpx solid var(--line);
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--card);
 }
 
 .ap-navbar-title {
@@ -66,7 +66,7 @@
 
 .ap-navbar-title-text {
   overflow: hidden;
-  color: #1c1c1a;
+  color: var(--ink);
   font-size: 32rpx;
   font-weight: 700;
   white-space: nowrap;
@@ -86,8 +86,8 @@
   width: 26rpx;
   height: 26rpx;
   margin-right: 12rpx;
-  border: 4rpx solid #e9e7df;
-  border-top-color: #1c1c1a;
+  border: 4rpx solid var(--line-strong);
+  border-top-color: var(--ink);
   border-radius: 50%;
   animation: ap-navbar-spin 0.7s linear infinite;
 }

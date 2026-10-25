@@ -1,4 +1,5 @@
 const { iconSrc } = require("../../utils/icons");
+const { resolveColor, onThemeChange } = require("../../utils/theme");
 
 Component({
   properties: {
@@ -6,9 +7,10 @@ Component({
       type: String,
       value: "",
     },
+    // A theme token ("ink", "ink-2", "ink-3", "faint") or a fixed hex colour.
     color: {
       type: String,
-      value: "#1c1c1a",
+      value: "ink",
     },
     // Edge length in rpx.
     size: {
@@ -34,13 +36,19 @@ Component({
   lifetimes: {
     attached() {
       this.refresh();
+      this.offTheme = onThemeChange(() => this.refresh());
+    },
+    detached() {
+      if (this.offTheme) {
+        this.offTheme();
+      }
     },
   },
 
   methods: {
     refresh() {
       const { name, color, stroke } = this.data;
-      const src = name ? iconSrc(name, color, stroke) : "";
+      const src = name ? iconSrc(name, resolveColor(color), stroke) : "";
       if (src !== this.data.src) {
         this.setData({ src });
       }

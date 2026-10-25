@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "ap-icon": "/components/ap-icon/index"
+    "ap-icon": "/components/ap-icon/index",
+    "ap-art": "/components/ap-art/index"
   }
 }

@@ -14,7 +14,35 @@
   height: 58rpx;
 }
 
+.logo-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-light {
+    display: none;
+  }
+
+  .logo-dark {
+    display: block;
+  }
+}
+
+.home-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.home-art {
+  flex: 0 0 auto;
+  margin: 0 -12rpx -6rpx 0;
+}
+
 .home-greet {
+  flex: 1;
+  min-width: 0;
   color: var(--ink);
   font-size: 48rpx;
   font-weight: 700;
@@ -50,13 +78,15 @@
 }
 
 .entry-dark {
-  background: var(--ink);
+  border: 1rpx solid var(--solid-line);
+  background: var(--solid);
   color: #ffffff;
 }
 
 .entry-light {
   border: 1rpx solid var(--line);
   background: var(--card);
+  color: var(--ink);
   box-shadow: var(--shadow);
 }
 

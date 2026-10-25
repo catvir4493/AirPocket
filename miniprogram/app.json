@@ -16,20 +16,25 @@
     "pages/example/index"
   ],
   "window": {
-    "backgroundColor": "#fffefa",
-    "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#fffefa",
+    "backgroundColor": "@bgColor",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "@navBgColor",
     "navigationBarTitleText": "AirPocket",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "@navTxtStyle",
+    "backgroundColorTop": "@bgColor",
+    "backgroundColorBottom": "@bgColor"
   },
   "usingComponents": {
     "ap-tabbar": "/components/ap-tabbar/index",
     "ap-navbar": "/components/ap-navbar/index",
     "ap-icon": "/components/ap-icon/index",
     "ap-toast": "/components/ap-toast/index",
-    "ap-pass": "/components/ap-pass/index"
+    "ap-pass": "/components/ap-pass/index",
+    "ap-art": "/components/ap-art/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "themeLocation": "theme.json"
 }
