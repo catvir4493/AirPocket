@@ -1,6 +1,7 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
+const { dayParts } = require("../../../utils/date");
 
 const sortOptions = [
   { value: "departureAsc", label: "出发日期最近" },
@@ -120,9 +121,17 @@ Component({
             specialItemOptionsText === "无"
               ? spaceTypeText
               : `${spaceTypeText} ${specialItemOptionsText.replace(/,\s*/g, " ")}`;
+          const day = dayParts(bag.departureDate);
+          const listWeight = Number(isFullCase ? remainingCases * 23 : bag.remainingWeight);
           return {
             ...bag,
             isFullCase,
+            stubDay: day.day,
+            stubMonth: day.month,
+            listWeightValue: Number.isFinite(listWeight) ? listWeight : "-",
+            listChips: [spaceTypeText].concat(
+              specialItemOptionsText === "无" ? [] : specialItemOptionsText.split(/,\s*/).filter(Boolean)
+            ),
             cardReverse: index % 2 === 1,
             listMark,
             markOnRight: listMark === "B",

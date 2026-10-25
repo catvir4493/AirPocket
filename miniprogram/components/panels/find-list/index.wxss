@@ -158,7 +158,9 @@
   align-items: center;
   gap: 6rpx;
   flex: 0 0 auto;
+  width: auto;
   min-height: 52rpx;
+  margin: 0;
   padding: 0 20rpx;
   border-radius: 999rpx;
   background: var(--fill);
@@ -319,13 +321,14 @@
   margin-bottom: 20rpx;
   padding: 36rpx 32rpx;
   border-radius: 28rpx;
-  background: #eef4fa;
+  background: var(--card);
+  border: 1rpx solid var(--line);
 }
 
 .bag-skeleton-line {
   height: 22rpx;
   border-radius: 12rpx;
-  background: #dde8f2;
+  background: var(--fill);
 }
 
 .bag-skeleton-line.wide {
@@ -337,126 +340,153 @@
   margin-top: 40rpx;
 }
 
+/* Available Bags card: a boarding-pass stub (yellow date) plus a ticket body. */
 .bag-card {
   position: relative;
+  display: flex;
   box-sizing: border-box;
-  min-height: 156rpx;
   margin-bottom: 20rpx;
-  padding: 30rpx 32rpx;
-  overflow: hidden;
-  border-radius: 28rpx;
-  background-color: #f7fbff;
-  background-image:
-    radial-gradient(ellipse 48% 150% at 6% 50%, rgba(105, 175, 232, 1) 0%, rgba(105, 175, 232, 0.85) 28%, rgba(150, 200, 240, 0.45) 55%, rgba(150, 200, 240, 0.12) 78%, rgba(150, 200, 240, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 34% 115%, rgba(90, 160, 230, 0.35) 0%, rgba(90, 160, 230, 0) 100%);
-  box-shadow:
-    inset 0 0 0 2rpx rgba(105, 175, 232, 0.45),
-    0 12rpx 28rpx -20rpx rgba(60, 130, 200, 0.5);
+  border: 1rpx solid var(--line);
+  border-radius: 32rpx;
+  background: var(--card);
+  box-shadow: 0 24rpx 44rpx -36rpx rgba(28, 28, 26, 0.5);
   transition: transform 0.15s ease;
-}
-
-.bag-card.reverse {
-  background-image:
-    radial-gradient(ellipse 48% 150% at 94% 50%, rgba(105, 175, 232, 1) 0%, rgba(105, 175, 232, 0.85) 28%, rgba(150, 200, 240, 0.45) 55%, rgba(150, 200, 240, 0.12) 78%, rgba(150, 200, 240, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 66% 115%, rgba(90, 160, 230, 0.35) 0%, rgba(90, 160, 230, 0) 100%);
 }
 
 .bag-card-hover {
   transform: scale(0.98);
 }
 
-.bag-card-inner {
+.bag-stub {
+  position: relative;
   display: flex;
+  flex: 0 0 116rpx;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 96rpx;
-}
-
-.bag-card-top,
-.bag-card-bottom {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20rpx;
+  justify-content: center;
+  border-radius: 31rpx 0 0 31rpx;
+  background: var(--yellow);
+  color: #1c1c1a;
 }
 
-.bag-date {
-  flex: 0 0 auto;
-  color: #2b2b2b;
+/* Perforation between stub and body. */
+.bag-stub::after {
+  content: "";
+  position: absolute;
+  top: 16rpx;
+  right: -2rpx;
+  bottom: 16rpx;
+  border-right: 4rpx dashed var(--card);
+}
+
+.bag-stub-day {
   font-family: var(--font-num);
-  font-variant-numeric: tabular-nums;
-  font-size: 40rpx;
-  font-weight: 800;
+  font-size: 52rpx;
+  font-weight: 700;
   line-height: 1;
 }
 
-.bag-route {
-  min-width: 0;
-  overflow: hidden;
-  color: #111111;
-  font-size: 22rpx;
+.bag-stub-month {
+  margin-top: 6rpx;
+  font-size: 18rpx;
   font-weight: 600;
-  line-height: 1.3;
+  letter-spacing: 0.16em;
+}
+
+.bag-main {
+  flex: 1;
+  min-width: 0;
+  padding: 26rpx 28rpx 24rpx;
+}
+
+.bag-route {
+  display: flex;
+  align-items: center;
+}
+
+.bag-city {
+  flex: 0 1 auto;
+  max-width: 40%;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 32rpx;
+  font-weight: 700;
+  line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.bag-line {
+  position: relative;
+  flex: 1;
+  min-width: 48rpx;
+  height: 30rpx;
+  margin: 0 14rpx;
+}
+
+.bag-line-dash {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top: 2rpx dashed var(--line-strong);
+}
+
+.bag-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  padding: 0 6rpx;
+  background: var(--card);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.bag-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.bag-chips {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 8rpx;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.bag-chip {
+  flex: 0 0 auto;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 19rpx;
+  line-height: 1.4;
 }
 
 .bag-weight {
   flex: 0 0 auto;
-  color: #2d2d2d;
-  font-size: 22rpx;
-  font-weight: 700;
-  line-height: 1.3;
+  color: var(--ink-3);
+  font-size: 20rpx;
   white-space: nowrap;
 }
 
-.bag-tags {
-  min-width: 0;
-  overflow: hidden;
-  color: #7f98ad;
-  font-size: 18rpx;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.bag-weight-num {
+  margin-right: 2rpx;
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 42rpx;
+  font-weight: 700;
+  line-height: 1;
 }
 
 @media (prefers-color-scheme: dark) {
-  .bag-skeleton {
-    background: var(--fill);
-  }
-
-  .bag-skeleton-line {
-    background: var(--line-strong);
-  }
-
-  /* Dark version of the Available Bags card: the same sky-blue glow, lit on a dark card.
-     The glow side keeps dark text (date, weight); the plain side switches to light text. */
   .bag-card {
-    background-color: #1e1e1b;
-    background-image:
-      radial-gradient(ellipse 60% 160% at 4% 50%, rgba(105, 175, 232, 0.96) 0%, rgba(105, 175, 232, 0.86) 34%, rgba(150, 200, 240, 0.36) 60%, rgba(150, 200, 240, 0.08) 82%, rgba(150, 200, 240, 0) 100%),
-      radial-gradient(ellipse 30% 90% at 34% 115%, rgba(90, 160, 230, 0.22) 0%, rgba(90, 160, 230, 0) 100%);
-    box-shadow:
-      inset 0 0 0 2rpx rgba(105, 175, 232, 0.16),
-      0 16rpx 32rpx -22rpx rgba(0, 0, 0, 0.8);
-  }
-
-  .bag-card.reverse {
-    background-image:
-      radial-gradient(ellipse 60% 160% at 96% 50%, rgba(105, 175, 232, 0.96) 0%, rgba(105, 175, 232, 0.86) 34%, rgba(150, 200, 240, 0.36) 60%, rgba(150, 200, 240, 0.08) 82%, rgba(150, 200, 240, 0) 100%),
-      radial-gradient(ellipse 30% 90% at 66% 115%, rgba(90, 160, 230, 0.22) 0%, rgba(90, 160, 230, 0) 100%);
-  }
-
-  .bag-date,
-  .bag-weight {
-    color: #1c1c1a;
-  }
-
-  .bag-route {
-    color: #f2f1ea;
-  }
-
-  .bag-tags {
-    color: #8aa0b3;
+    box-shadow: 0 24rpx 44rpx -32rpx rgba(0, 0, 0, 0.8);
   }
 }
