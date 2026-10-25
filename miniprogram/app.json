@@ -1,13 +1,25 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/prohibited/index",
+    "pages/find-bags/home/home",
+    "pages/find-bags/detail/detail",
+    "pages/find-bags/edit/edit",
+    "pages/find-bags/my/my",
+    "pages/find-bags/binding-detail/detail",
+    "pages/offer-space/home/home",
+    "pages/offer-space/release/release",
+    "pages/offer-space/edit/edit",
+    "pages/offer-space/my/my",
+    "pages/offer-space/bag-detail/detail",
+    "pages/admin/index",
     "pages/example/index"
   ],
   "window": {
-    "backgroundColor": "#F6F6F6",
+    "backgroundColor": "#F4F6F8",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
-    "navigationBarTitleText": "云开发 QuickStart",
+    "navigationBarBackgroundColor": "#F4F6F8",
+    "navigationBarTitleText": "AirPocket",
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",

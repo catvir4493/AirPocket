@@ -1,0 +1,72 @@
+.rule-card {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 18rpx;
+  padding: 24rpx 26rpx;
+  border-radius: 8rpx;
+  background: #f1f1f1;
+}
+
+.statement-card {
+  background: #f6f6f6;
+}
+
+.warning-card {
+  border-left: 8rpx solid #fff51f;
+}
+
+.rule-title {
+  color: #242424;
+  font-size: 27rpx;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.rule-copy {
+  margin-top: 10rpx;
+  color: #666666;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.statement-copy {
+  margin-top: 0;
+  color: #4a4a4a;
+  text-align: justify;
+}
+
+.source-card {
+  background: #eeeeee;
+}
+
+.source-item + .source-item {
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid #d8d8d8;
+}
+
+.source-title {
+  color: #333333;
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.source-url {
+  margin-top: 8rpx;
+  color: #777777;
+  font-size: 20rpx;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.source-action {
+  margin-top: 8rpx;
+  color: #2f2f2f;
+  font-size: 21rpx;
+  font-weight: 800;
+}
+
+.primary-button {
+  margin-top: 28rpx;
+}

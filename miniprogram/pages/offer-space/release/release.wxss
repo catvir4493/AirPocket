@@ -1,0 +1,41 @@
+.type-selector {
+  display: flex;
+  gap: 16rpx;
+}
+
+.type-option {
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 116rpx;
+  padding: 22rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background: #f5f5f5;
+  text-align: left;
+}
+
+.type-option.active {
+  border-color: #fff51f;
+  background: #fff51f;
+}
+
+.type-title {
+  color: #242424;
+  font-size: 27rpx;
+  font-weight: 900;
+}
+
+.type-copy {
+  margin-top: 8rpx;
+  color: #777777;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.type-option.active .type-copy {
+  color: #666600;
+}
+
+.primary-button {
+  margin-top: 26rpx;
+}

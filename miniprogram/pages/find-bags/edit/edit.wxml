@@ -1,0 +1,90 @@
+<view class="page no-bottom-nav edit-binding-page">
+  <view class="page-title">Edit Binding</view>
+  <view class="page-subtitle">锁单前可以修改重量、物品和平台联系信息。锁单后需要联系客服处理。</view>
+
+  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+
+  <block wx:elif="{{binding}}">
+    <view class="edit-summary">
+      <view class="row-between">
+        <view class="card-title">{{binding.bagNo}}</view>
+        <view class="pill">{{binding.spaceTypeText}}</view>
+      </view>
+      <view class="route-line">{{binding.fromCity}} - {{binding.toCity}}</view>
+      <view class="meta-grid">
+        <view class="meta-item">
+          <view class="meta-label">Departure</view>
+          <view class="meta-value">{{binding.departureDate}}</view>
+        </view>
+        <view class="meta-item">
+          <view class="meta-label">Editable until</view>
+          <view class="meta-value">{{binding.lockDeadlineText}}</view>
+        </view>
+        <view class="meta-item">
+          <view class="meta-label">Special items</view>
+          <view class="meta-value">{{binding.specialItemOptionsText}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form">
+      <view wx:if="{{!binding.isFullCase}}" class="field">
+        <view class="field-label">Requested weight / 想占用重量 kg</view>
+        <input class="input" type="digit" value="{{form.requestedWeight}}" data-field="requestedWeight" bindinput="onFieldInput" placeholder="例如 3" />
+      </view>
+
+      <view wx:else class="field">
+        <view class="field-label">Requested case / 想占用整箱</view>
+        <view class="fixed-value">固定 1 个整箱 · 23 kg</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label">Item description / 物品描述</view>
+        <textarea class="textarea" value="{{form.itemDescription}}" data-field="itemDescription" bindinput="onFieldInput" placeholder="例如 文件、衣服、伴手礼" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Special items / 实际特殊物品</view>
+        <view wx:if="{{specialItemOptions.length}}" class="choice-grid">
+          <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
+        </view>
+        <view wx:else class="fixed-value">该 bag 未开放特殊物品</view>
+        <view class="field-hint">如需修改特殊物品，只能从带货者可接受范围中选择。</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label">WeChat ID / 微信号</view>
+        <input class="input" value="{{form.senderWechat}}" data-field="senderWechat" bindinput="onFieldInput" placeholder="平台客服将通过微信联系你" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Pickup address / 取货地址</view>
+        <textarea class="textarea" value="{{form.pickupAddress}}" data-field="pickupAddress" bindinput="onFieldInput" placeholder="平台上门或约点取货的地址，仅平台后台可见" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Receiver name / 收件人姓名</view>
+        <input class="input" value="{{form.receiverName}}" data-field="receiverName" bindinput="onFieldInput" placeholder="到达目的地后的快递收件人姓名" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Receiver phone / 收件人电话</view>
+        <input class="input" value="{{form.receiverPhone}}" data-field="receiverPhone" bindinput="onFieldInput" placeholder="到达目的地后的快递联系电话" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Delivery address / 目的地快递地址</view>
+        <textarea class="textarea" value="{{form.deliveryAddress}}" data-field="deliveryAddress" bindinput="onFieldInput" placeholder="平台到达目的地后发快递使用，仅平台后台可见" />
+      </view>
+
+      <view class="field">
+        <view class="field-label">Sender note / 备注</view>
+        <textarea class="textarea" value="{{form.senderNote}}" data-field="senderNote" bindinput="onFieldInput" placeholder="给平台客服的补充说明，可不填" />
+      </view>
+
+      <button class="primary-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitBinding">Save Changes</button>
+    </view>
+  </block>
+
+  <view wx:else class="empty-state">没有找到这条绑定。</view>
+</view>

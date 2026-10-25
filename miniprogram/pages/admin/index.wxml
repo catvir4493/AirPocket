@@ -1,0 +1,161 @@
+<view class="page admin-page">
+  <view class="page-title">Admin Desk</view>
+  <view class="page-subtitle">客服工作台：处理绑定、查看地址与联系方式、推进订单状态。</view>
+
+  <view class="summary-grid">
+    <view class="summary-item">
+      <view class="summary-number">{{summary.pendingCount}}</view>
+      <view class="summary-label">待处理</view>
+    </view>
+    <view class="summary-item">
+      <view class="summary-number">{{summary.todayNewCount}}</view>
+      <view class="summary-label">今日新增</view>
+    </view>
+    <view class="summary-item">
+      <view class="summary-number">{{summary.bagCount}}</view>
+      <view class="summary-label">Bags</view>
+    </view>
+    <view class="summary-item">
+      <view class="summary-number">{{summary.bindingCount}}</view>
+      <view class="summary-label">Bindings</view>
+    </view>
+  </view>
+
+  <view class="filter-panel">
+    <input class="admin-search" value="{{searchKeyword}}" bindinput="onSearchInput" placeholder="搜索 bag 编号、微信号、城市、地址" />
+    <view class="filter-row">
+      <picker class="filter-picker" mode="selector" range="{{bindingFilterOptions}}" range-key="label" value="{{bindingFilterIndex}}" bindchange="onBindingFilterChange">
+        <view class="filter-value">Binding: {{bindingFilterLabel}}</view>
+      </picker>
+      <picker class="filter-picker" mode="selector" range="{{bagFilterOptions}}" range-key="label" value="{{bagFilterIndex}}" bindchange="onBagFilterChange">
+        <view class="filter-value">Bag: {{bagFilterLabel}}</view>
+      </picker>
+    </view>
+    <button class="reset-button" bindtap="resetFilters">重置筛选</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view wx:elif="{{errorMessage}}" class="empty-state">{{errorMessage}}</view>
+
+  <block wx:else>
+    <view class="desk-section">
+      <view class="section-header">
+        <view class="section-title">Binding Work Queue</view>
+        <view class="section-count">{{visibleBindings.length}}</view>
+      </view>
+
+      <view wx:if="{{visibleBindings.length}}">
+        <view wx:for="{{visibleBindings}}" wx:key="_id" class="work-card">
+          <view class="work-top">
+            <view>
+              <view class="work-code">{{item.bagNo}} · {{item.amountText}}</view>
+              <view class="work-route">{{item.departureDate}} · {{item.fromCity}} → {{item.toCity}}</view>
+            </view>
+            <view class="pill warning">{{item.statusText}}</view>
+          </view>
+
+          <view class="info-grid">
+            <view class="info-item">
+              <view class="info-label">Sender WeChat</view>
+              <view class="info-value">{{item.senderWechat || "-"}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">Carrier WeChat</view>
+              <view class="info-value">{{item.carrierWechat || "-"}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">Item</view>
+              <view class="info-value">{{item.itemDescription || "-"}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">Special items</view>
+              <view class="info-value">{{item.requestedSpecialItemsText}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">Submitted</view>
+              <view class="info-value">{{item.createdAtText || "-"}}</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">Lock deadline</view>
+              <view class="info-value">{{item.lockDeadlineText || "-"}}</view>
+            </view>
+          </view>
+
+          <view class="sensitive-block">
+            <view class="sensitive-label">Pickup address</view>
+            <view class="sensitive-value">{{item.pickupAddress || "-"}}</view>
+          </view>
+          <view class="sensitive-block">
+            <view class="sensitive-label">Destination delivery</view>
+            <view class="sensitive-value">{{item.receiverName || "-"}} · {{item.receiverPhone || "-"}}</view>
+            <view class="sensitive-value">{{item.deliveryAddress || "-"}}</view>
+          </view>
+          <view class="sensitive-block">
+            <view class="sensitive-label">Carrier receive address</view>
+            <view class="sensitive-value">{{item.carrierReceiveAddress || "-"}}</view>
+          </view>
+
+          <view class="admin-actions">
+            <button wx:for="{{bindingStatuses}}" wx:for-item="statusOption" wx:key="value" class="status-button {{item.status === statusOption.value ? 'active' : ''}}" data-id="{{item._id}}" data-status="{{statusOption.value}}" bindtap="updateBindingStatus">{{statusOption.label}}</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-state compact">当前筛选下没有 binding。</view>
+    </view>
+
+    <view class="desk-section">
+      <view class="section-header">
+        <view class="section-title">Bags</view>
+        <view class="section-count">{{bags.length}}</view>
+      </view>
+
+      <view wx:if="{{bags.length}}">
+        <view wx:for="{{bags}}" wx:key="_id" class="bag-card">
+          <view class="work-top">
+            <view>
+              <view class="work-code">{{item.bagNo}} · {{item.spaceTypeText}}</view>
+              <view class="work-route">{{item.departureDate}} · {{item.fromCity}} → {{item.toCity}}</view>
+            </view>
+            <view class="pill {{item.status === 'active' ? '' : 'gray'}}">{{item.statusText}}</view>
+          </view>
+
+          <view class="bag-meta">
+            <view>{{item.flightNo || "-"}}</view>
+            <view>{{item.spaceSummaryText}}</view>
+            <view>绑定 {{item.bindingCount || 0}}</view>
+            <view>{{item.carrierWechat || "-"}}</view>
+          </view>
+
+          <view class="sensitive-block">
+            <view class="sensitive-label">Carrier receive address</view>
+            <view class="sensitive-value">{{item.carrierReceiveAddress || "-"}}</view>
+          </view>
+
+          <view class="admin-actions">
+            <button wx:for="{{bagStatuses}}" wx:for-item="statusOption" wx:key="value" class="status-button {{item.status === statusOption.value ? 'active' : ''}}" data-id="{{item._id}}" data-status="{{statusOption.value}}" bindtap="updateBagStatus">{{statusOption.label}}</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-state compact">当前筛选下没有 bag。</view>
+    </view>
+
+    <view class="desk-section">
+      <view class="section-header">
+        <view class="section-title">Recent Audit Logs</view>
+        <view class="section-count">{{auditLogs.length}}</view>
+      </view>
+
+      <view wx:if="{{auditLogs.length}}">
+        <view wx:for="{{auditLogs}}" wx:key="_id" class="audit-row">
+          <view class="audit-top">
+            <view class="audit-target">{{item.targetLabel}} · {{item.targetBagNo || item.targetId}}</view>
+            <view class="audit-time">{{item.timeText}}</view>
+          </view>
+          <view class="audit-status">{{item.statusText}}</view>
+          <view class="audit-actor">{{item.actorOpenid}}</view>
+        </view>
+      </view>
+      <view wx:else class="empty-state compact">暂无后台操作日志。</view>
+    </view>
+  </block>
+</view>

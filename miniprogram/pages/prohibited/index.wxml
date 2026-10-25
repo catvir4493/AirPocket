@@ -1,0 +1,25 @@
+<view class="page no-bottom-nav prohibited-page">
+  <view class="page-title">物品合规与责任声明</view>
+
+  <view class="section-title">责任声明</view>
+  <view class="rule-card statement-card">
+    <view class="rule-copy statement-copy">{{statementText}}</view>
+  </view>
+
+  <view class="section-title">高风险物品</view>
+  <view wx:for="{{riskItems}}" wx:key="title" class="rule-card warning-card">
+    <view class="rule-title">{{item.title}}</view>
+    <view class="rule-copy">{{item.detail}}</view>
+  </view>
+
+  <view class="section-title">官方链接</view>
+  <view class="rule-card source-card">
+    <view wx:for="{{sourceItems}}" wx:key="title" class="source-item" data-url="{{item.url}}" bindtap="copySourceLink">
+      <view class="source-title">{{item.title}}</view>
+      <view class="source-url">{{item.url}}</view>
+      <view class="source-action">点击复制链接</view>
+    </view>
+  </view>
+
+  <button class="primary-button" bindtap="goHome">Back</button>
+</view>

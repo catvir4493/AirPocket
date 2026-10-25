@@ -1,0 +1,46 @@
+@import "../../find-bags/detail/detail.wxss";
+
+.detail-actions {
+  margin: 24rpx 0 34rpx;
+}
+
+.binding-section {
+  margin-top: 22rpx;
+}
+
+.binding-item {
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #dddddd;
+}
+
+.binding-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 10rpx;
+}
+
+.binding-title {
+  color: #242424;
+  font-size: 27rpx;
+  font-weight: 900;
+}
+
+.binding-status {
+  flex: 0 0 auto;
+  color: #777700;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.binding-copy {
+  color: #777777;
+  font-size: 23rpx;
+  line-height: 1.5;
+}
+
+.tight-empty {
+  margin-top: 0;
+  padding: 24rpx 0;
+}

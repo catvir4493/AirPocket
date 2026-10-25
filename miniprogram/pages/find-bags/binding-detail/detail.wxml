@@ -1,0 +1,88 @@
+<view class="page no-bottom-nav detail-page">
+  <view class="detail-page-title">My Bag Detail</view>
+
+  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+
+  <block wx:elif="{{binding}}">
+    <view class="detail-code">#{{binding.bagNo}}</view>
+
+    <view class="detail-sheet">
+      <view class="detail-row">
+        <view class="detail-label">袋子编号</view>
+        <view class="detail-value">{{binding.bagNo}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">日期</view>
+        <view class="detail-value">{{binding.departureDate}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">出发地</view>
+        <view class="detail-value">{{binding.fromCity}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">目的地</view>
+        <view class="detail-value">{{binding.toCity}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">类型</view>
+        <view class="detail-value">{{binding.spaceTypeText}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">{{binding.isFullCase ? '绑定箱数' : '绑定重量'}}</view>
+        <view class="detail-value">{{binding.isFullCase ? binding.requestedCasesText : binding.requestedWeightText}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">状态</view>
+        <view class="detail-value">{{binding.statusText}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">锁单</view>
+        <view class="detail-value">{{binding.lockText}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">提交时间</view>
+        <view class="detail-value">{{binding.createdAtText || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">可编辑至</view>
+        <view class="detail-value">{{binding.lockDeadlineText || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">物品</view>
+        <view class="detail-value">{{binding.itemDescription || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">特殊物品</view>
+        <view class="detail-value">{{binding.requestedSpecialItemsText}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">微信号</view>
+        <view class="detail-value">{{binding.senderWechat || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">取货地址</view>
+        <view class="detail-value">{{binding.pickupAddress || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">收件人</view>
+        <view class="detail-value">{{binding.receiverName || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">电话</view>
+        <view class="detail-value">{{binding.receiverPhone || '-'}}</view>
+      </view>
+      <view class="detail-row">
+        <view class="detail-label">快递地址</view>
+        <view class="detail-value">{{binding.deliveryAddress || '-'}}</view>
+      </view>
+      <view wx:if="{{binding.senderNote}}" class="detail-note">{{binding.senderNote}}</view>
+    </view>
+
+    <view wx:if="{{binding.canEdit}}" class="detail-actions">
+      <button class="primary-button" bindtap="goEditBinding">Edit / 编辑</button>
+      <button class="secondary-button cancel-button" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="cancelBinding">Cancel / 取消</button>
+    </view>
+  </block>
+
+  <view wx:else class="empty-state">没有找到这条绑定。</view>
+</view>

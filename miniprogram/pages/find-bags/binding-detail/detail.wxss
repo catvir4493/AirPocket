@@ -1,0 +1,11 @@
+@import "../detail/detail.wxss";
+
+.detail-actions {
+  margin-top: 28rpx;
+}
+
+.cancel-button {
+  margin-top: 18rpx;
+  border-color: #a83232;
+  color: #a83232;
+}

@@ -1,0 +1,50 @@
+<view class="page offer-page">
+  <view class="page-title">Offer Space</view>
+
+  <view class="welcome-card">
+    <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
+    <view class="welcome-stage">
+      <view class="welcome-watermark">WELCOME AIRPOCKET</view>
+      <view class="traveler-scene">
+        <view class="traveler traveler-a">
+          <view class="head"></view>
+          <view class="body"></view>
+          <view class="leg-row"><view></view><view></view></view>
+        </view>
+        <view class="scene-case case-a"></view>
+        <view class="traveler traveler-b">
+          <view class="head"></view>
+          <view class="body"></view>
+          <view class="leg-row"><view></view><view></view></view>
+        </view>
+        <view class="scene-case case-b"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="offer-menu">
+    <view class="offer-menu-title">Welcome to Airpocket</view>
+
+    <view class="offer-menu-item" bindtap="goReleaseBag">
+      <view class="offer-menu-dot"></view>
+      <view>
+        <view class="offer-menu-name">Release bags</view>
+        <view class="offer-menu-desc">发布新袋子</view>
+      </view>
+    </view>
+
+    <view class="offer-menu-item" bindtap="goMyBags">
+      <view class="offer-menu-dot"></view>
+      <view>
+        <view class="offer-menu-name">My Bags</view>
+        <view class="offer-menu-desc">查看我的袋子</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-nav">
+    <button class="bottom-nav-item" bindtap="goAppHome">Airpocket</button>
+    <button class="bottom-nav-item active">Offer Space</button>
+    <button class="bottom-nav-item" bindtap="goMyBags">My Bags</button>
+  </view>
+</view>

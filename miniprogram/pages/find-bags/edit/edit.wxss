@@ -1,0 +1,11 @@
+.edit-summary {
+  box-sizing: border-box;
+  margin-bottom: 28rpx;
+  padding: 26rpx;
+  border-radius: 8rpx;
+  background: #f1f1f1;
+}
+
+.primary-button {
+  margin-top: 26rpx;
+}

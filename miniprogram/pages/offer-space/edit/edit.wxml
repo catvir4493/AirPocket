@@ -1,0 +1,95 @@
+<view class="page no-bottom-nav edit-page">
+  <view class="page-title">Edit Bag</view>
+  <view class="page-subtitle">只允许编辑未被绑定过的 bag。</view>
+
+  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+
+  <view wx:else class="form">
+    <view class="field">
+      <view class="field-label">Space type / 行李额类型</view>
+      <view class="type-selector">
+        <button class="type-option {{form.spaceType === 'loose' ? 'active' : ''}}" data-type="loose" bindtap="selectSpaceType">
+          <view class="type-title">散件</view>
+          <view class="type-copy">按可用重量发布</view>
+        </button>
+        <button class="type-option {{form.spaceType === 'fullCase' ? 'active' : ''}}" data-type="fullCase" bindtap="selectSpaceType">
+          <view class="type-title">整箱</view>
+          <view class="type-copy">每箱默认 23kg</view>
+        </button>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">From city / 出发城市</view>
+      <input class="input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="Budapest" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">To city / 到达城市</view>
+      <input class="input" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="Shanghai" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">Departure date / 出发日期</view>
+      <picker mode="date" value="{{form.departureDate}}" start="{{minDate}}" bindchange="onDateChange">
+        <view class="picker-value {{form.departureDate ? '' : 'placeholder'}}">{{form.departureDate || '选择日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field-label">Flight No. / 航班号</view>
+      <input class="input" value="{{form.flightNo}}" data-field="flightNo" bindinput="onFieldInput" placeholder="例如 MF97" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">WeChat ID / 微信号</view>
+      <input class="input" value="{{form.carrierWechat}}" data-field="carrierWechat" bindinput="onFieldInput" placeholder="平台客服将通过微信联系你" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">Receive address / 收货地址</view>
+      <textarea class="textarea" value="{{form.carrierReceiveAddress}}" data-field="carrierReceiveAddress" bindinput="onFieldInput" placeholder="平台统一打包后送达给你的地址，仅平台后台可见" />
+    </view>
+
+    <view wx:if="{{form.spaceType === 'loose'}}" class="field">
+      <view class="field-label">Available weight / 可用重量 kg</view>
+      <input class="input" type="digit" value="{{form.totalWeight}}" data-field="totalWeight" bindinput="onFieldInput" placeholder="例如 10" />
+    </view>
+
+    <view wx:else class="field">
+      <view class="field-label">Case count / 整箱数量</view>
+      <input class="input" type="number" value="{{form.caseCount}}" data-field="caseCount" bindinput="onFieldInput" placeholder="例如 1" />
+      <view class="field-hint">每个整箱默认 23 kg</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">Available volume / 可用体积</view>
+      <input class="input" value="{{form.availableVolume}}" data-field="availableVolume" bindinput="onFieldInput" placeholder="例如 小箱一角、约 20L" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">Special items / 可接受特殊物品</view>
+      <view class="choice-grid">
+        <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
+      </view>
+      <view class="field-hint">勾选你愿意帮寄货者携带的特殊物品，不选表示不接受特殊物品。</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">Allowed items / 可接受物品</view>
+      <input class="input" value="{{form.allowedItemsText}}" data-field="allowedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 文件, 衣服" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">Restricted items / 不接受物品</view>
+      <input class="input" value="{{form.restrictedItemsText}}" data-field="restrictedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 液体, 食品" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">Note / 备注</view>
+      <textarea class="textarea" value="{{form.note}}" data-field="note" bindinput="onFieldInput" placeholder="补充时间、交接地点或其他要求" />
+    </view>
+
+    <button class="primary-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitBag">Save Changes</button>
+  </view>
+</view>

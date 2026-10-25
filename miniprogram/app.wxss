@@ -1,27 +1,367 @@
-/**app.wxss**/
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-} 
+page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #1f1f1f;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+}
 
 button {
-  background: initial;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  line-height: inherit;
+  text-align: center;
 }
 
-button:focus{
-  outline: 0;
-}
-
-button::after{
+button::after {
   border: none;
 }
 
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 28rpx 28rpx 152rpx;
+}
 
-page {
-  background: #f6f6f6;
+.page.no-bottom-nav {
+  padding-bottom: 56rpx;
+}
+
+.page-title,
+.detail-page-title {
+  margin: 8rpx 0 28rpx;
+  color: #2c2c2c;
+  font-size: 38rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.page-subtitle {
+  margin: -14rpx auto 28rpx;
+  max-width: 620rpx;
+  color: #8d8d8d;
+  font-size: 24rpx;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.section-title {
+  margin: 28rpx 0 18rpx;
+  color: #333333;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.bottom-nav {
+  position: fixed;
+  right: 44rpx;
+  bottom: 28rpx;
+  left: 44rpx;
+  z-index: 20;
   display: flex;
+  align-items: stretch;
+  height: 72rpx;
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: #2f2f2f;
+  box-shadow: 0 14rpx 24rpx rgba(0, 0, 0, 0.2);
+}
+
+.bottom-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  border-radius: 999rpx;
+  color: #cfcfcf;
+  font-size: 22rpx;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bottom-nav-item.active {
+  background: #fff51f;
+  color: #242424;
+  font-weight: 600;
+}
+
+.visual-divider {
+  height: 1rpx;
+  margin: 28rpx -28rpx;
+  background: #eeeeee;
+}
+
+.card {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20rpx;
+  padding: 28rpx;
+  border-radius: 8rpx;
+  background: #f1f1f1;
+}
+
+.card-title {
+  color: #242424;
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.muted {
+  color: #8b8b8b;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 12rpx -8rpx 0;
+}
+
+.meta-item {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 50%;
+  padding: 12rpx 8rpx 0;
+}
+
+.meta-label {
+  color: #858585;
+  font-size: 21rpx;
+}
+
+.meta-value {
+  margin-top: 6rpx;
+  color: #333333;
+  font-size: 25rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #fff51f;
+  color: #242424;
+  font-size: 21rpx;
+  font-weight: 800;
+}
+
+.pill.gray {
+  background: #ececec;
+  color: #777777;
+}
+
+.form {
+  margin-top: 22rpx;
+}
+
+.field {
+  position: relative;
+  margin-bottom: 22rpx;
+  padding-left: 34rpx;
+}
+
+.field::before {
+  content: "";
+  position: absolute;
+  top: 18rpx;
+  left: 0;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #222222;
+}
+
+.field-label {
+  margin-bottom: 10rpx;
+  color: #6f6f6f;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.field-hint {
+  margin-top: 10rpx;
+  color: #8a8a8a;
+  font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.input,
+.textarea,
+.picker-value,
+.fixed-value {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 78rpx;
+  padding: 18rpx 22rpx;
+  border: 0;
+  border-radius: 0;
+  background: #efefef;
+  color: #333333;
+  font-size: 26rpx;
+  line-height: 1.4;
+}
+
+.textarea {
+  min-height: 142rpx;
+}
+
+.placeholder {
+  color: #a8a8a8;
+}
+
+.primary-button,
+.secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 78rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.primary-button {
+  background: #2f2f2f;
+  color: #ffffff;
+}
+
+.primary-button[disabled] {
+  background: #8e8e8e;
+  color: #ffffff;
+}
+
+.secondary-button {
+  border: 1rpx solid #2f2f2f;
+  background: #ffffff;
+  color: #2f2f2f;
+}
+
+.secondary-button[disabled] {
+  border-color: #dddddd;
+  background: #f2f2f2;
+  color: #9a9a9a;
+}
+
+.empty-state {
+  box-sizing: border-box;
+  margin-top: 24rpx;
+  padding: 38rpx 28rpx;
+  border-radius: 8rpx;
+  background: #f1f1f1;
+  color: #777777;
+  font-size: 25rpx;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.choice-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.choice-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54rpx;
+  padding: 0 20rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 999rpx;
+  background: #ffffff;
+  color: #555555;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+.choice-pill.active {
+  border-color: #fff51f;
+  background: #fff51f;
+  color: #242424;
+}
+
+.route-line {
+  margin-top: 14rpx;
+  color: #333333;
+  font-size: 27rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ap-logo {
+  display: flex;
+  align-items: center;
   flex-direction: column;
-  justify-content: flex-start;
+}
+
+.ap-logo-mark {
+  position: relative;
+  width: 138rpx;
+  height: 78rpx;
+}
+
+.ap-logo-circle {
+  position: absolute;
+  top: 4rpx;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+}
+
+.ap-logo-circle.orange {
+  left: 16rpx;
+  background: #ffae16;
+}
+
+.ap-logo-circle.blue {
+  right: 16rpx;
+  background: #69afe8;
+}
+
+.ap-logo-name {
+  margin-top: 16rpx;
+  color: #3a3a3a;
+  font-size: 34rpx;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.ap-logo-subtitle {
+  margin-top: 8rpx;
+  color: #555555;
+  font-size: 23rpx;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.ap-logo-cn {
+  margin-top: 4rpx;
+  color: #9b9b9b;
+  font-size: 21rpx;
+  line-height: 1.25;
+  text-align: center;
 }

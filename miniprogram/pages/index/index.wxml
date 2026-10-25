@@ -1,29 +1,71 @@
-<!--index.wxml-->
-<view class="container">
-  <view class="title">快速了解云开发</view>
-  <view class="top_tip">免鉴权接口调用 免部署后台 高并发</view>
-  <view class="power" wx:key="title" wx:for="{{powerList}}" wx:for-item="power">
-    <view class="power_info" data-index="{{index}}" data-type="{{ power.type }}" bindtap="onClickPowerInfo">
-      <view class="power_info_text">
-        <view class="power_info_text_title">
-          {{power.title}}
-          <view class="power_info_text_tag" wx:if="{{power.tag}}">{{power.tag}}</view>
-        </view>
-        <view class="power_info_text_tip">{{power.tip}}</view>
-      </view>
-      <image wx:if="{{!power.showItem && power.item.length}}" class="power_info_more" src="../../images/arrow.svg"></image>
-      <image wx:if="{{power.showItem && power.item.length}}" class="power_info_less" src="../../images/arrow.svg"></image>
-      <image wx:if="{{!power.item.length}}" class="power_item_icon" src="../../images/arrow.svg"></image>
+<view class="page landing-page">
+  <view class="home-pattern">
+    <image class="home-pattern-art" src="/images/300分辨率/home首页.png" mode="aspectFit" />
+  </view>
+
+  <view class="home-logo-wrap" bindlongpress="requestAdminAccess">
+    <view class="home-logo-block">
+      <image class="home-logo-image" src="/images/300分辨率/logo.png" mode="aspectFit" />
+      <view class="home-logo-subtitle">Luggage Sharing Space</view>
+      <view class="home-logo-cn">行李空间共享平台</view>
     </view>
-    <view wx:if="{{power.showItem}}">
-      <view wx:key="title" wx:for="{{power.item}}">
-        <view class="line"></view>
-        <view class="power_item" bindtap="jumpPage" data-type="{{ item.type }}" data-page="{{item.page}}">
-          <view class="power_item_title">{{item.title}}</view>
-          <image class="power_item_icon" src="../../images/arrow.svg"></image>
-        </view>
+  </view>
+
+  <view class="home-menu">
+    <view class="home-menu-title">Welcome to Airpocket</view>
+
+    <view class="home-menu-item" bindtap="goFindBags">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Find Bags</view>
+        <view class="home-menu-desc">很多个新袋子</view>
+      </view>
+    </view>
+
+    <view class="home-menu-item" bindtap="goOfferSpace">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Offer Space</view>
+        <view class="home-menu-desc">发布空余行李额</view>
+      </view>
+    </view>
+
+    <view class="home-menu-item" bindtap="showBusinessCooperation">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Business cooperation</view>
+        <view class="home-menu-desc">商务合作</view>
+      </view>
+    </view>
+
+    <view class="home-menu-item" bindtap="showCustomerService">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Contact Customer Service</view>
+        <view class="home-menu-desc">如有疑问联系客服</view>
+      </view>
+    </view>
+
+    <view class="home-menu-item" bindtap="goProhibitedItems">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Item Compliance</view>
+        <view class="home-menu-desc">物品合规与责任声明</view>
+      </view>
+    </view>
+
+    <view wx:if="{{isAdmin}}" class="home-menu-item" bindtap="goAdmin">
+      <view class="home-menu-dot"></view>
+      <view class="home-menu-copy">
+        <view class="home-menu-name">Admin Panel</view>
+        <view class="home-menu-desc">后台运营管理</view>
       </view>
     </view>
   </view>
-  <cloud-tip-modal showTipProps="{{showTip}}" title="{{title}}" content="{{content}}"></cloud-tip-modal>
+
+  <view class="bottom-nav">
+    <button class="bottom-nav-item active">Airpocket</button>
+    <button class="bottom-nav-item" bindtap="goFindBags">Find Bags</button>
+    <button class="bottom-nav-item" bindtap="goOfferSpace">Offer Space</button>
+  </view>
 </view>
