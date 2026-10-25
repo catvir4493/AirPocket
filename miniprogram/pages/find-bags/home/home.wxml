@@ -30,7 +30,7 @@
   <view wx:if="{{loading}}" class="empty-state">加载中...</view>
 
   <block wx:elif="{{bags.length}}">
-    <view wx:for="{{bags}}" wx:key="_id" class="bag-card {{item.cardReverse ? 'reverse' : ''}}" data-id="{{item._id}}" bindtap="openDetail">
+    <view wx:for="{{bags}}" wx:key="_id" class="bag-card {{item.cardReverse ? 'reverse' : ''}}" hover-class="bag-card-hover" hover-stay-time="80" data-id="{{item._id}}" bindtap="openDetail">
       <view class="bag-card-inner">
         <view class="bag-card-top">
           <text wx:if="{{!item.cardReverse}}" class="bag-date">{{item.listDateText}}</text>
