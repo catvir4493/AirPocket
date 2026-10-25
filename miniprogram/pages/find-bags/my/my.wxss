@@ -71,6 +71,20 @@
   background: #eeeeee;
 }
 
+.my-skeleton-head {
+  height: 24rpx;
+  margin: 0 0 26rpx;
+  border-radius: 12rpx;
+  background: #e2e2e2;
+}
+
+.my-skeleton-row {
+  height: 30rpx;
+  margin-bottom: 30rpx;
+  border-radius: 12rpx;
+  background: #e4e4e4;
+}
+
 .my-table-head,
 .my-table-row {
   display: flex;
@@ -104,6 +118,7 @@
 
 .my-table-row {
   min-height: 62rpx;
+  transition: background var(--dur-fast) ease;
   color: #777777;
   font-size: 23rpx;
   line-height: 1.35;

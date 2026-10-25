@@ -1,4 +1,10 @@
 page {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 380ms;
   min-height: 100vh;
   background: #ffffff;
   color: #1f1f1f;
@@ -18,14 +24,23 @@ button::after {
   border: none;
 }
 
+button {
+  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+.button-hover {
+  opacity: 0.82;
+  transform: scale(0.97);
+}
+
 .page {
   box-sizing: border-box;
   min-height: 100vh;
-  padding: 28rpx 28rpx 152rpx;
+  padding: 28rpx 28rpx calc(152rpx + env(safe-area-inset-bottom));
 }
 
 .page.no-bottom-nav {
-  padding-bottom: 56rpx;
+  padding-bottom: calc(56rpx + env(safe-area-inset-bottom));
 }
 
 .page-title,
@@ -52,43 +67,6 @@ button::after {
   color: #333333;
   font-size: 28rpx;
   font-weight: 800;
-}
-
-.bottom-nav {
-  position: fixed;
-  right: 44rpx;
-  bottom: 28rpx;
-  left: 44rpx;
-  z-index: 20;
-  display: flex;
-  align-items: stretch;
-  height: 72rpx;
-  padding: 8rpx;
-  border-radius: 999rpx;
-  background: #2f2f2f;
-  box-shadow: 0 14rpx 24rpx rgba(0, 0, 0, 0.2);
-}
-
-.bottom-nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  min-width: 0;
-  height: auto;
-  min-height: 0;
-  border-radius: 999rpx;
-  color: #cfcfcf;
-  font-size: 22rpx;
-  font-weight: 500;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.bottom-nav-item.active {
-  background: #fff51f;
-  color: #242424;
-  font-weight: 600;
 }
 
 .visual-divider {
@@ -364,4 +342,136 @@ button::after {
   font-size: 21rpx;
   line-height: 1.25;
   text-align: center;
+}
+
+/* ---------- Motion ---------- */
+
+.fade-up {
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) backwards;
+}
+
+.fade-up.delay-1 {
+  animation-delay: 60ms;
+}
+
+.fade-up.delay-2 {
+  animation-delay: 120ms;
+}
+
+.fade-up.delay-3 {
+  animation-delay: 180ms;
+}
+
+/* Plays once when a list item is created; kept nodes (same wx:key) do not replay. */
+.list-enter {
+  animation: ap-list-enter var(--dur-slow) var(--ease-out) backwards;
+}
+
+.row-press {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.skeleton-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 70%);
+  transform: translateX(-100%);
+  animation: ap-shine 1.2s ease-in-out infinite;
+}
+
+.sheet-grab {
+  width: 68rpx;
+  height: 8rpx;
+  margin: -10rpx auto 20rpx;
+  border-radius: 8rpx;
+  background: #dddddd;
+}
+
+.sheet-mask-anim {
+  animation: ap-mask-in var(--dur-base) linear both;
+}
+
+.sheet-panel-anim {
+  animation: ap-sheet-in var(--dur-slow) var(--ease-out) both;
+}
+
+.closing .sheet-mask-anim {
+  animation: ap-mask-out 220ms linear both;
+}
+
+.closing .sheet-panel-anim {
+  animation: ap-sheet-out 240ms var(--ease-in) both;
+}
+
+@keyframes ap-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ap-list-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ap-shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ap-mask-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ap-mask-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ap-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes ap-sheet-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
 }

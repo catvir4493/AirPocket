@@ -45,7 +45,7 @@
       </view>
 
       <view wx:if="{{visibleBindings.length}}">
-        <view wx:for="{{visibleBindings}}" wx:key="_id" class="work-card">
+        <view wx:for="{{visibleBindings}}" wx:key="_id" class="work-card list-enter" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms">
           <view class="work-top">
             <view>
               <view class="work-code">{{item.bagNo}} · {{item.amountText}}</view>
@@ -110,7 +110,7 @@
       </view>
 
       <view wx:if="{{bags.length}}">
-        <view wx:for="{{bags}}" wx:key="_id" class="bag-card">
+        <view wx:for="{{bags}}" wx:key="_id" class="bag-card list-enter" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms">
           <view class="work-top">
             <view>
               <view class="work-code">{{item.bagNo}} · {{item.spaceTypeText}}</view>

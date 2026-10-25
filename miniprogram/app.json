@@ -16,11 +16,14 @@
     "pages/example/index"
   ],
   "window": {
-    "backgroundColor": "#F4F6F8",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F4F6F8",
+    "backgroundColor": "#ffffff",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "AirPocket",
     "navigationBarTextStyle": "black"
+  },
+  "usingComponents": {
+    "ap-tabbar": "/components/ap-tabbar/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

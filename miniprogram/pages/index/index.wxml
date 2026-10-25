@@ -1,9 +1,9 @@
 <view class="page landing-page">
-  <view class="home-pattern">
+  <view class="home-pattern fade-up">
     <image class="home-pattern-art" src="/images/300分辨率/home首页.png" mode="aspectFit" />
   </view>
 
-  <view class="home-logo-wrap" bindlongpress="requestAdminAccess">
+  <view class="home-logo-wrap fade-up delay-1" bindlongpress="requestAdminAccess">
     <view class="home-logo-block">
       <image class="home-logo-image" src="/images/300分辨率/logo.png" mode="aspectFit" />
       <view class="home-logo-subtitle">Luggage Sharing Space</view>
@@ -11,10 +11,10 @@
     </view>
   </view>
 
-  <view class="home-menu">
+  <view class="home-menu fade-up delay-2">
     <view class="home-menu-title">Welcome to Airpocket</view>
 
-    <view class="home-menu-item" bindtap="goFindBags">
+    <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goFindBags">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Find Bags</view>
@@ -22,7 +22,7 @@
       </view>
     </view>
 
-    <view class="home-menu-item" bindtap="goOfferSpace">
+    <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goOfferSpace">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Offer Space</view>
@@ -30,7 +30,7 @@
       </view>
     </view>
 
-    <view class="home-menu-item" bindtap="showBusinessCooperation">
+    <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="showBusinessCooperation">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Business cooperation</view>
@@ -38,7 +38,7 @@
       </view>
     </view>
 
-    <view class="home-menu-item" bindtap="showCustomerService">
+    <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="showCustomerService">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Contact Customer Service</view>
@@ -46,7 +46,7 @@
       </view>
     </view>
 
-    <view class="home-menu-item" bindtap="goProhibitedItems">
+    <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goProhibitedItems">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Item Compliance</view>
@@ -54,7 +54,7 @@
       </view>
     </view>
 
-    <view wx:if="{{isAdmin}}" class="home-menu-item" bindtap="goAdmin">
+    <view wx:if="{{isAdmin}}" class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goAdmin">
       <view class="home-menu-dot"></view>
       <view class="home-menu-copy">
         <view class="home-menu-name">Admin Panel</view>
@@ -63,9 +63,5 @@
     </view>
   </view>
 
-  <view class="bottom-nav">
-    <button class="bottom-nav-item active">Airpocket</button>
-    <button class="bottom-nav-item" bindtap="goFindBags">Find Bags</button>
-    <button class="bottom-nav-item" bindtap="goOfferSpace">Offer Space</button>
-  </view>
+  <ap-tabbar preset="landing" current="{{0}}" />
 </view>

@@ -1,7 +1,7 @@
 <view class="page my-page">
-  <view class="page-title">My Bags</view>
+  <view class="page-title fade-up">My Bags</view>
 
-  <view class="my-hero">
+  <view class="my-hero fade-up delay-1">
     <image class="my-hero-logo" src="/images/300分辨率/黄色logo.png" mode="aspectFit" />
     <view class="my-search {{hasSearchFilters ? 'active' : ''}}" bindtap="openSearchPanel">Search</view>
     <view class="my-stat-row">
@@ -16,15 +16,18 @@
     </view>
   </view>
 
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view wx:if="{{loading}}" class="my-list my-list-skeleton">
+    <view class="my-skeleton-head"></view>
+    <view wx:for="{{[0, 1, 2, 3]}}" wx:key="*this" class="my-skeleton-row skeleton-shine"></view>
+  </view>
 
-  <view wx:elif="{{bindings.length}}" class="my-list">
+  <view wx:elif="{{bindings.length}}" class="my-list fade-up delay-2">
     <view class="my-table-head">
       <view>日期</view>
       <view>地点</view>
       <view>重量</view>
     </view>
-    <view wx:for="{{bindings}}" wx:key="_id" class="my-table-row" data-id="{{item._id}}" bindtap="openBindingDetail">
+    <view wx:for="{{bindings}}" wx:key="_id" class="my-table-row list-enter" style="animation-delay: {{index < 8 ? 120 + index * 40 : 0}}ms" hover-class="row-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBindingDetail">
       <view>{{item.listDateText}}</view>
       <view class="my-table-route">{{item.listRouteText}}</view>
       <view>{{item.isFullCase ? item.requestedCasesText : item.requestedWeightText}}</view>
@@ -33,15 +36,12 @@
 
   <view wx:else class="empty-state">{{emptyMessage}}</view>
 
-  <view class="bottom-nav">
-    <button class="bottom-nav-item" bindtap="goAppHome">Home</button>
-    <button class="bottom-nav-item" bindtap="goFindBags">Find Bags</button>
-    <button class="bottom-nav-item active">My Bags</button>
-  </view>
+  <ap-tabbar preset="find" current="{{2}}" />
 
-  <view wx:if="{{searchPanelOpen}}" class="my-search-drawer">
-    <view class="my-search-mask" bindtap="closeSearchPanel"></view>
-    <view class="my-search-sheet">
+  <view wx:if="{{searchPanelOpen}}" class="my-search-drawer {{searchPanelClosing ? 'closing' : ''}}">
+    <view class="my-search-mask sheet-mask-anim" bindtap="closeSearchPanel"></view>
+    <view class="my-search-sheet sheet-panel-anim">
+      <view class="sheet-grab"></view>
       <view class="my-search-sheet-header">
         <view class="my-search-sheet-title">搜索我的袋子</view>
         <button class="my-search-close" bindtap="closeSearchPanel">关闭</button>

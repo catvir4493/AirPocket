@@ -47,10 +47,11 @@ const formatListWeight = (value) => {
 
 Page({
   data: {
-    loading: false,
+    loading: true,
     allBags: [],
     bags: [],
     filterPanelOpen: false,
+    filterPanelClosing: false,
     hasActiveFilters: false,
     filters: {
       fromCity: "",
@@ -74,8 +75,15 @@ Page({
     this.fetchBags().finally(() => wx.stopPullDownRefresh());
   },
 
+  onUnload() {
+    clearTimeout(this.closeFiltersTimer);
+  },
+
   async fetchBags() {
-    this.setData({ loading: true });
+    // After the first load, refresh silently so the list does not flash on return.
+    if (!this.hasLoaded) {
+      this.setData({ loading: true });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "getBags",
@@ -126,6 +134,7 @@ Page({
         allBags: bags,
       });
       this.applyFiltersAndSort(bags);
+      this.hasLoaded = true;
     } catch (error) {
       wx.showToast({
         title: error.message || "加载失败",
@@ -188,11 +197,18 @@ Page({
   },
 
   openFilters() {
-    this.setData({ filterPanelOpen: true });
+    clearTimeout(this.closeFiltersTimer);
+    this.setData({ filterPanelOpen: true, filterPanelClosing: false });
   },
 
   closeFilters() {
-    this.setData({ filterPanelOpen: false });
+    if (!this.data.filterPanelOpen || this.data.filterPanelClosing) {
+      return;
+    }
+    this.setData({ filterPanelClosing: true });
+    this.closeFiltersTimer = setTimeout(() => {
+      this.setData({ filterPanelOpen: false, filterPanelClosing: false });
+    }, 240);
   },
 
   onFilterInput(event) {
@@ -258,18 +274,6 @@ Page({
     const { id } = event.currentTarget.dataset;
     wx.navigateTo({
       url: `/pages/find-bags/detail/detail?id=${id}`,
-    });
-  },
-
-  goAppHome() {
-    wx.reLaunch({
-      url: "/pages/index/index",
-    });
-  },
-
-  goMyBags() {
-    wx.navigateTo({
-      url: "/pages/find-bags/my/my",
     });
   },
 });

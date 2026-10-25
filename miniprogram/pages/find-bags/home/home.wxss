@@ -255,6 +255,30 @@
   font-weight: 700;
 }
 
+.bag-skeleton {
+  box-sizing: border-box;
+  height: 156rpx;
+  margin-bottom: 20rpx;
+  padding: 36rpx 32rpx;
+  border-radius: 28rpx;
+  background: #f4f3ec;
+}
+
+.bag-skeleton-line {
+  height: 22rpx;
+  border-radius: 12rpx;
+  background: #e8e6da;
+}
+
+.bag-skeleton-line.wide {
+  width: 52%;
+}
+
+.bag-skeleton-line.short {
+  width: 30%;
+  margin-top: 40rpx;
+}
+
 .bag-card {
   position: relative;
   box-sizing: border-box;

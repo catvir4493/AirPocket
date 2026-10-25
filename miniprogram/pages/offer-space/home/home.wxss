@@ -42,6 +42,19 @@
   margin: 16rpx 28rpx 0 0;
   border-radius: 50%;
   background: #222222;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.offer-menu-copy {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.menu-item-press .offer-menu-dot {
+  transform: scale(1.6);
+}
+
+.menu-item-press .offer-menu-copy {
+  transform: translateX(6rpx);
 }
 
 .offer-menu-name {

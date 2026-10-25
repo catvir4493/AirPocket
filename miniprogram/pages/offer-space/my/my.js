@@ -20,10 +20,11 @@ const buildBagOptions = (items) => {
 
 Page({
   data: {
-    loading: false,
+    loading: true,
     allBags: [],
     bags: [],
     searchPanelOpen: false,
+    searchPanelClosing: false,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -44,8 +45,15 @@ Page({
     this.fetchBags().finally(() => wx.stopPullDownRefresh());
   },
 
+  onUnload() {
+    clearTimeout(this.closeSearchTimer);
+  },
+
   async fetchBags() {
-    this.setData({ loading: true });
+    // After the first load, refresh silently so the list does not flash on return.
+    if (!this.hasLoaded) {
+      this.setData({ loading: true });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "getMyCarrierBags",
@@ -73,6 +81,7 @@ Page({
         "searchFilters.bagNo": bagOptions[nextBagIndex].value,
       });
       this.applySearchFilters(bags);
+      this.hasLoaded = true;
     } catch (error) {
       wx.showToast({
         title: error.message || "加载失败",
@@ -120,11 +129,18 @@ Page({
   },
 
   openSearchPanel() {
-    this.setData({ searchPanelOpen: true });
+    clearTimeout(this.closeSearchTimer);
+    this.setData({ searchPanelOpen: true, searchPanelClosing: false });
   },
 
   closeSearchPanel() {
-    this.setData({ searchPanelOpen: false });
+    if (!this.data.searchPanelOpen || this.data.searchPanelClosing) {
+      return;
+    }
+    this.setData({ searchPanelClosing: true });
+    this.closeSearchTimer = setTimeout(() => {
+      this.setData({ searchPanelOpen: false, searchPanelClosing: false });
+    }, 240);
   },
 
   onSearchInput(event) {
@@ -181,18 +197,6 @@ Page({
 
     wx.navigateTo({
       url: `/pages/offer-space/bag-detail/detail?id=${id}`,
-    });
-  },
-
-  goAppHome() {
-    wx.reLaunch({
-      url: "/pages/index/index",
-    });
-  },
-
-  goOfferSpace() {
-    wx.navigateTo({
-      url: "/pages/offer-space/home/home",
     });
   },
 });
