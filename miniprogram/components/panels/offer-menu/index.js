@@ -3,20 +3,8 @@ Component({
     styleIsolation: "apply-shared",
   },
 
-  data: {
-    scenePaused: false,
-  },
-
   methods: {
-    onPanelShow() {
-      if (this.data.scenePaused) {
-        this.setData({ scenePaused: false });
-      }
-    },
-
-    onPanelHide() {
-      this.setData({ scenePaused: true });
-    },
+    onPanelShow() {},
 
     goReleaseBag() {
       wx.navigateTo({
@@ -26,6 +14,12 @@ Component({
 
     goMyBags() {
       this.triggerEvent("switchtab", { index: 2 });
+    },
+
+    goCompliance() {
+      wx.navigateTo({
+        url: "/pages/prohibited/index",
+      });
     },
   },
 });

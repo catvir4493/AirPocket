@@ -1,16 +1,7 @@
 const { formatDateTime, formatWeight, toDate } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
-
-const statusLabels = {
-  pending: "等待确认",
-  locked: "已锁单",
-  contacted: "已联系",
-  picked_up: "已取货",
-  packed: "已打包",
-  delivered_to_carrier: "已送至带货者",
-  completed: "已完成",
-  cancelled: "已取消",
-};
+const { showToast } = require("../../../utils/toast");
+const { bindingStatus } = require("../../../utils/status");
 
 const getEditState = (binding) => {
   const lockDeadlineAt = toDate(binding.lockDeadlineAt);
@@ -52,7 +43,7 @@ Page({
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 binding 信息",
         icon: "none",
       });
@@ -89,6 +80,8 @@ Page({
       }
 
       const isFullCase = source.spaceType === "fullCase";
+      const status = bindingStatus(source.status);
+      const requestedSpecialItemsText = formatSpecialItems(source.requestedSpecialItems);
       const binding = {
         ...source,
         ...getEditState(source),
@@ -96,16 +89,21 @@ Page({
         spaceTypeText: isFullCase ? "整箱" : "散件",
         requestedCasesText: `${Number(source.requestedCases || (isFullCase ? 1 : 0))} 件`,
         requestedWeightText: formatWeight(source.requestedWeight),
-        requestedSpecialItemsText: formatSpecialItems(source.requestedSpecialItems),
+        requestedCases: Number(source.requestedCases || (isFullCase ? 1 : 0)),
+        requestedSpecialItemsText,
+        passChips: [isFullCase ? "整箱" : "散件"].concat(
+          requestedSpecialItemsText === "无" ? [] : requestedSpecialItemsText.split(", ")
+        ),
         createdAtText: formatDateTime(source.createdAt),
         lockDeadlineText: formatDateTime(source.lockDeadlineAt),
         lockedAtText: formatDateTime(source.lockedAt),
-        statusText: statusLabels[source.status] || source.status,
+        statusText: status.text,
+        statusTone: status.tone,
       };
 
       this.setData({ binding });
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
@@ -156,13 +154,13 @@ Page({
           if (!result.success) {
             throw new Error(result.errMsg || "取消失败");
           }
-          wx.showToast({
+          showToast({
             title: "已取消",
             icon: "success",
           });
           this.fetchBinding(binding._id);
         } catch (error) {
-          wx.showToast({
+          showToast({
             title: error.message || "取消失败",
             icon: "none",
           });

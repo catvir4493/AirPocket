@@ -3,6 +3,7 @@ const {
   normalizeSpecialItems,
   toggleSpecialItem,
 } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
 
 const today = () => {
   const date = new Date();
@@ -171,7 +172,7 @@ Page({
 
     const errorMessage = this.validateForm();
     if (errorMessage) {
-      wx.showToast({
+      showToast({
         title: errorMessage,
         icon: "none",
       });
@@ -214,7 +215,7 @@ Page({
         });
       }, 800);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "发布失败",
         icon: "none",
       });

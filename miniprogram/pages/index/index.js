@@ -1,10 +1,45 @@
+const { showToast } = require("../../utils/toast");
+const { dayParts } = require("../../utils/date");
+
 Page({
   data: {
     isAdmin: false,
+    summaryReady: false,
+    availableCount: 0,
+    nearestDate: "",
   },
 
   onShow() {
     this.checkAdminAccess();
+    this.loadSummary();
+  },
+
+  // Live numbers for the Find Bags entry card, from the same list Find Bags shows.
+  loadSummary() {
+    if (!wx.cloud) {
+      return;
+    }
+    wx.cloud.callFunction({
+      name: "getBags",
+      success: (res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          return;
+        }
+        const today = new Date();
+        const todayKey = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}-${`${today.getDate()}`.padStart(2, "0")}`;
+        const bags = result.data || [];
+        const nearest = bags
+          .map((bag) => `${bag.departureDate || ""}`)
+          .filter((date) => date && date >= todayKey)
+          .sort()[0];
+        this.setData({
+          summaryReady: true,
+          availableCount: bags.length,
+          nearestDate: nearest ? dayParts(nearest).short : "",
+        });
+      },
+    });
   },
 
   goFindBags() {
@@ -51,7 +86,7 @@ Page({
 
   requestAdminAccess() {
     if (!wx.cloud) {
-      wx.showToast({
+      showToast({
         title: "云能力不可用",
         icon: "none",
       });
@@ -78,20 +113,20 @@ Page({
             const result = res.result || {};
             wx.hideLoading();
             if (!result.success) {
-              wx.showToast({
+              showToast({
                 title: result.errMsg || "提交失败",
                 icon: "none",
               });
               return;
             }
-            wx.showToast({
+            showToast({
               title: "已提交申请",
               icon: "success",
             });
           },
           fail: (error) => {
             wx.hideLoading();
-            wx.showToast({
+            showToast({
               title: error.errMsg || "提交失败",
               icon: "none",
             });

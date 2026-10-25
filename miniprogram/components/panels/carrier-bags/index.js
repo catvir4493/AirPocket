@@ -1,7 +1,31 @@
 const { countUp } = require("../../../utils/countUp");
+const { bagStatus } = require("../../../utils/status");
+const { dayParts } = require("../../../utils/date");
+const { showToast } = require("../../../utils/toast");
 
-const defaultEmptyMessage = "暂无发布记录。回到 Offer Space 后点击 Release Bag 发布一个新的空余行李额。";
-const noSearchResultMessage = "没有符合搜索条件的发布记录。";
+const defaultEmptyMessage = "还没有发布记录。回到「发布」页，把你空着的行李额发出来。";
+const noSearchResultMessage = "没有符合条件的发布记录。";
+
+const SEGMENTS = [
+  { value: "all", label: "全部" },
+  { value: "active", label: "可绑定" },
+  { value: "ended", label: "已结束" },
+];
+
+const matchesSegment = (bag, segment) => {
+  if (segment === "active") {
+    return bag.status === "active";
+  }
+  if (segment === "ended") {
+    return bag.status !== "active";
+  }
+  return true;
+};
+
+const toNumber = (value) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+};
 const defaultBagOption = { label: "全部编号", value: "" };
 
 const includesText = (source, keyword) =>
@@ -31,7 +55,11 @@ Component({
     bags: [],
     searchPanelOpen: false,
     searchPanelClosing: false,
-    statCount: 0,
+    statActive: 0,
+    statBindings: 0,
+    statWeight: 0,
+    segments: SEGMENTS,
+    segment: "all",
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -78,11 +106,24 @@ Component({
           throw new Error(result.errMsg || "加载失败");
         }
 
-        const bags = (result.data || []).map((bag) => ({
-          ...bag,
-          listDateText: bag.departureDate || "-",
-          listRouteText: `${bag.fromCity || "-"} - ${bag.toCity || "-"}`,
-        }));
+        const bags = (result.data || []).map((bag) => {
+          const isFullCase = bag.spaceType === "fullCase";
+          const status = bagStatus(bag.status);
+          const remainingCases = Number.isFinite(Number(bag.remainingCases))
+            ? Number(bag.remainingCases)
+            : Math.floor(toNumber(bag.remainingWeight) / 23);
+          return {
+            ...bag,
+            isFullCase,
+            statusText: status.text,
+            statusTone: status.tone,
+            day: dayParts(bag.departureDate),
+            routeText: `${bag.fromCity || "-"} → ${bag.toCity || "-"}`,
+            metricValue: isFullCase ? remainingCases : toNumber(bag.remainingWeight),
+            metricUnit: isFullCase ? "件" : "kg",
+            bindingCount: toNumber(bag.bindingCount),
+          };
+        });
 
         const bagOptions = buildBagOptions(bags);
         const nextBagIndex = Math.max(
@@ -96,12 +137,19 @@ Component({
           "searchFilters.bagNo": bagOptions[nextBagIndex].value,
         });
         this.applySearchFilters(bags);
-        if (!this.hasLoaded) {
-          countUp(this, { statCount: this.data.bags.length });
+        const stats = {
+          statActive: bags.filter((bag) => bag.status === "active").length,
+          statBindings: bags.reduce((sum, bag) => sum + bag.bindingCount, 0),
+          statWeight: bags.reduce((sum, bag) => sum + toNumber(bag.totalWeight), 0),
+        };
+        if (this.hasLoaded) {
+          this.setData(stats);
+        } else {
+          countUp(this, stats);
         }
         this.hasLoaded = true;
       } catch (error) {
-        wx.showToast({
+        showToast({
           title: error.message || "加载失败",
           icon: "none",
         });
@@ -121,7 +169,13 @@ Component({
         const matchesFromCity = includesText(bag.fromCity, fromCity);
         const matchesToCity = includesText(bag.toCity, toCity);
         const matchesBagNo = !bagNo || bag.bagNo === bagNo;
-        return matchesDate && matchesFromCity && matchesToCity && matchesBagNo;
+        return (
+          matchesSegment(bag, this.data.segment) &&
+          matchesDate &&
+          matchesFromCity &&
+          matchesToCity &&
+          matchesBagNo
+        );
       });
     },
 
@@ -137,19 +191,24 @@ Component({
 
       this.setData({
         bags: visibleBags,
-        statCount: visibleBags.length,
         hasSearchFilters,
-        emptyMessage: allBags.length
-          ? hasSearchFilters
+        emptyMessage:
+          allBags.length && (hasSearchFilters || this.data.segment !== "all")
             ? noSearchResultMessage
-            : defaultEmptyMessage
-          : defaultEmptyMessage,
+            : defaultEmptyMessage,
       });
+    },
+
+    selectSegment(event) {
+      const { value } = event.currentTarget.dataset;
+      if (value === this.data.segment) {
+        return;
+      }
+      this.setData({ segment: value }, () => this.applySearchFilters());
     },
 
     openSearchPanel() {
       clearTimeout(this.closeSearchTimer);
-      clearTimeout(this._countUpTimer);
       this.setData({ searchPanelOpen: true, searchPanelClosing: false });
     },
 

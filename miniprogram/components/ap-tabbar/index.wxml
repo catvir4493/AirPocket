@@ -9,5 +9,8 @@
     hover-stay-time="90"
     data-index="{{index}}"
     bindtap="onTap"
-  >{{item.text}}</view>
+  >
+    <ap-icon name="{{item.icon}}" color="{{index === activeIndex ? iconActiveColor : iconColor}}" size="{{36}}" stroke="{{2}}" />
+    <text class="ap-tabbar-text">{{item.text}}</text>
+  </view>
 </view>

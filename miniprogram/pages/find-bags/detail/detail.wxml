@@ -1,68 +1,47 @@
 <view class="page no-bottom-nav detail-page {{bag ? 'has-sticky-action' : ''}}">
-  <view class="detail-page-title fade-up">Bag Detail</view>
-
-  <view wx:if="{{loading}}" class="detail-skeleton">
-    <view class="detail-skeleton-code skeleton-shine"></view>
-    <view wx:for="{{[0, 1, 2, 3, 4, 5]}}" wx:key="*this" class="detail-skeleton-row skeleton-shine"></view>
+  <view wx:if="{{loading}}" class="pass-skeleton">
+    <view class="pass-skeleton-card skeleton-shine"></view>
+    <view class="pass-skeleton-line skeleton-shine"></view>
+    <view class="pass-skeleton-line short skeleton-shine"></view>
   </view>
 
   <block wx:elif="{{bag}}">
-    <view class="detail-code">#{{bag.bagNo}}</view>
-
-    <view class="detail-sheet">
-      <view class="detail-row">
-        <view class="detail-label">袋子编号</view>
-        <view class="detail-value">{{bag.bagNo}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">出发地</view>
-        <view class="detail-value">{{bag.fromCity}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">目的地</view>
-        <view class="detail-value">{{bag.toCity}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">日期</view>
-        <view class="detail-value">{{bag.departureDate}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">航班号</view>
-        <view class="detail-value">{{bag.flightNo || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">{{bag.isFullCase ? '剩余箱数' : '剩余重量'}}</view>
-        <view class="detail-value">{{bag.isFullCase ? bag.remainingCasesText : bag.remainingWeightText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">特殊物品</view>
-        <view class="detail-value">{{bag.specialItemOptionsText}}</view>
-      </view>
-      <view wx:if="{{bag.note}}" class="detail-note">{{bag.note}}</view>
-    </view>
+    <ap-pass
+      code="{{bag.bagNo}}"
+      status-text="{{bag.statusText}}"
+      status-tone="{{bag.statusTone}}"
+      from-city="{{bag.fromCity}}"
+      to-city="{{bag.toCity}}"
+      date="{{bag.departureDate}}"
+      flight-no="{{bag.flightNo}}"
+      metric-label="{{bag.isFullCase ? 'Cases' : 'Left'}}"
+      metric-value="{{bag.isFullCase ? bag.remainingCases : bag.remainingWeight}}"
+      metric-unit="{{bag.isFullCase ? '件' : 'kg'}}"
+      chips="{{bag.passChips}}"
+      note="{{bag.note}}"
+    />
 
     <view class="form detail-form">
-      <view class="form-group-title">物品信息</view>
+      <view class="form-group-title">物品信息<text class="eyebrow">Item</text></view>
 
       <view wx:if="{{!bag.isFullCase}}" class="field {{focusedField === 'requestedWeight' ? 'focused' : ''}}">
-        <view class="field-label">Requested weight / 想占用重量 kg</view>
-        <input class="input" type="digit" value="{{form.requestedWeight}}" bindinput="onRequestedWeightInput" data-focus="requestedWeight" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="最多 {{bag.remainingWeightText}}" />
-        <view class="field-hint">最多可绑定 {{bag.remainingWeightText}}</view>
+        <view class="field-label">想占用重量（最多 {{bag.remainingWeightText}}）</view>
+        <input class="input" type="digit" value="{{form.requestedWeight}}" bindinput="onRequestedWeightInput" data-focus="requestedWeight" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="输入公斤数" placeholder-class="placeholder" />
       </view>
 
       <view wx:else class="field">
-        <view class="field-label">Requested case / 想占用整箱</view>
+        <view class="field-label">想占用整箱</view>
         <view class="fixed-value">绑定 1 个整箱 · 23 kg</view>
         <view class="field-hint">当前剩余 {{bag.remainingCasesText}}</view>
       </view>
 
       <view class="field {{focusedField === 'itemDescription' ? 'focused' : ''}}">
-        <view class="field-label">Item description / 物品描述</view>
+        <view class="field-label">物品描述</view>
         <textarea class="textarea" value="{{form.itemDescription}}" data-field="itemDescription" bindinput="onFieldInput" data-focus="itemDescription" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="例如 文件、衣服、伴手礼" />
       </view>
 
       <view class="field">
-        <view class="field-label">Special items / 实际特殊物品</view>
+        <view class="field-label">实际特殊物品</view>
         <view wx:if="{{specialItemOptions.length}}" class="choice-grid">
           <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
         </view>
@@ -70,47 +49,48 @@
         <view class="field-hint">如有电脑、手机、相机等特殊物品，只能从带货者可接受范围中选择。</view>
       </view>
 
-      <view class="form-group-title">联系与取货</view>
+      <view class="form-group-title">联系与取货<text class="eyebrow">Pickup</text></view>
 
       <view class="field {{focusedField === 'senderWechat' ? 'focused' : ''}}">
-        <view class="field-label">WeChat ID / 微信号</view>
+        <view class="field-label">微信号</view>
         <input class="input" value="{{form.senderWechat}}" data-field="senderWechat" bindinput="onFieldInput" data-focus="senderWechat" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台客服将通过微信联系你" />
       </view>
 
       <view class="field {{focusedField === 'pickupAddress' ? 'focused' : ''}}">
-        <view class="field-label">Pickup address / 取货地址</view>
+        <view class="field-label">取货地址</view>
         <textarea class="textarea" value="{{form.pickupAddress}}" data-field="pickupAddress" bindinput="onFieldInput" data-focus="pickupAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台上门或约点取货的地址，仅平台后台可见" />
       </view>
 
-      <view class="form-group-title">收件信息</view>
+      <view class="form-group-title">收件信息<text class="eyebrow">Receiver</text></view>
 
       <view class="field {{focusedField === 'receiverName' ? 'focused' : ''}}">
-        <view class="field-label">Receiver name / 收件人姓名</view>
+        <view class="field-label">收件人姓名</view>
         <input class="input" value="{{form.receiverName}}" data-field="receiverName" bindinput="onFieldInput" data-focus="receiverName" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="到达目的地后的快递收件人姓名" />
       </view>
 
       <view class="field {{focusedField === 'receiverPhone' ? 'focused' : ''}}">
-        <view class="field-label">Receiver phone / 收件人电话</view>
+        <view class="field-label">收件人电话</view>
         <input class="input" value="{{form.receiverPhone}}" data-field="receiverPhone" bindinput="onFieldInput" data-focus="receiverPhone" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="到达目的地后的快递联系电话" />
       </view>
 
       <view class="field {{focusedField === 'deliveryAddress' ? 'focused' : ''}}">
-        <view class="field-label">Delivery address / 目的地快递地址</view>
+        <view class="field-label">目的地快递地址</view>
         <textarea class="textarea" value="{{form.deliveryAddress}}" data-field="deliveryAddress" bindinput="onFieldInput" data-focus="deliveryAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台到达目的地后发快递使用，仅平台后台可见" />
       </view>
 
-      <view class="form-group-title">备注</view>
+      <view class="form-group-title">备注<text class="eyebrow">Note</text></view>
 
       <view class="field {{focusedField === 'senderNote' ? 'focused' : ''}}">
-        <view class="field-label">Sender note / 备注</view>
+        <view class="field-label">备注</view>
         <textarea class="textarea" value="{{form.senderNote}}" data-field="senderNote" bindinput="onFieldInput" data-focus="senderNote" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="给带货者的补充说明，可不填" />
       </view>
     </view>
 
     <view class="sticky-action">
-      <button class="primary-button {{bindDone ? 'success' : ''}}" loading="{{submitting}}" disabled="{{submitting || bindDone}}" bindtap="submitBinding">{{bindDone ? '✓ 已绑定' : 'Bind Bag'}}</button>
+      <button class="primary-button {{bindDone ? 'success' : ''}}" loading="{{submitting}}" disabled="{{submitting || bindDone}}" bindtap="submitBinding"><block wx:if="{{bindDone}}">✓ 已绑定</block><block wx:else>绑定这个行李额<text wx:if="{{bag.isFullCase || form.requestedWeight}}" class="button-num">{{bag.isFullCase ? 23 : form.requestedWeight}}KG</text></block></button>
     </view>
   </block>
 
-  <view wx:else class="empty-state">没有找到这个 bag。</view>
+  <view wx:else class="empty-state">没有找到这个行李额。</view>
 </view>
+<ap-toast id="ap-toast" />

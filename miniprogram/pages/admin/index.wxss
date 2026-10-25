@@ -12,40 +12,42 @@
 .summary-item {
   box-sizing: border-box;
   padding: 26rpx;
-  border-radius: 22rpx;
-  background: #f6f6f3;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
 }
 
 .summary-item:first-child {
-  background: #2f2f2f;
+  background: var(--ink);
 }
 
 .summary-item:first-child .summary-number {
-  color: #fff51f;
+  color: var(--yellow);
 }
 
 .summary-item:first-child .summary-label {
-  color: #cfcfcf;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .summary-number {
-  color: #111111;
+  color: var(--ink);
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
   font-size: 46rpx;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
 }
 
 .summary-label {
   margin-top: 8rpx;
-  color: #666666;
+  color: var(--ink-2);
   font-size: 24rpx;
 }
 
 .filter-panel {
   padding: 22rpx;
   border-radius: 22rpx;
-  background: #f6f6f3;
+  background: var(--fill);
 }
 
 .admin-search {
@@ -55,7 +57,7 @@
   padding: 0 22rpx;
   border-radius: 14rpx;
   background: #ffffff;
-  color: #111111;
+  color: var(--ink);
   font-size: 26rpx;
 }
 
@@ -75,7 +77,7 @@
   padding: 18rpx 16rpx;
   border-radius: 14rpx;
   background: #ffffff;
-  color: #333333;
+  color: var(--ink);
   font-size: 23rpx;
   line-height: 1.25;
 }
@@ -83,12 +85,12 @@
 .reset-button {
   min-height: 64rpx;
   margin-top: 16rpx;
-  border: 1rpx solid #2f2f2f;
+  border: 1rpx solid var(--ink);
   border-radius: 999rpx;
   background: transparent;
-  color: #2f2f2f;
+  color: var(--ink);
   font-size: 24rpx;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .desk-section {
@@ -103,46 +105,59 @@
 }
 
 .section-title {
-  color: #111111;
+  color: var(--ink);
   font-size: 32rpx;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .section-count {
   min-width: 52rpx;
   padding: 6rpx 12rpx;
   border-radius: 999rpx;
-  background: #2f2f2f;
-  color: #fff51f;
+  background: var(--ink);
+  color: var(--yellow);
   font-size: 22rpx;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
 }
 
 .work-card,
 .bag-card {
   margin-bottom: 18rpx;
-  padding: 26rpx;
-  border-radius: 22rpx;
-  background: #f6f6f3;
+  padding: 28rpx;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
 }
 
-.pill.status-cancelled {
-  background: #ececec;
-  color: #777777;
+.pill.status-cancelled,
+.pill.status-closed,
+.pill.status-expired {
+  background: var(--fill);
+  color: var(--ink-3);
+  text-decoration: line-through;
+}
+
+.pill.status-locked,
+.pill.status-contacted,
+.pill.status-picked_up,
+.pill.status-packed,
+.pill.status-delivered_to_carrier {
+  background: var(--fill);
+  color: var(--ink-2);
 }
 
 .pill.status-completed,
-.pill.status-delivered_to_carrier {
-  background: #2f2f2f;
-  color: #fff51f;
+.pill.status-active {
+  background: var(--green-bg);
+  color: var(--green);
 }
 
 .admin-skeleton-card {
   height: 260rpx;
   margin-bottom: 18rpx;
   border-radius: 22rpx;
-  background: #f4f4f1;
+  background: var(--fill);
 }
 
 .work-top {
@@ -153,15 +168,15 @@
 }
 
 .work-code {
-  color: #111111;
+  color: var(--ink);
   font-size: 31rpx;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.25;
 }
 
 .work-route {
   margin-top: 6rpx;
-  color: #555555;
+  color: var(--ink-2);
   font-size: 24rpx;
   line-height: 1.35;
 }
@@ -174,14 +189,15 @@
 }
 
 .info-label {
-  color: #8a8a8a;
+  color: var(--ink-3);
   font-size: 21rpx;
   font-weight: 700;
 }
 
 .info-value {
+  text-align: left;
   margin-top: 4rpx;
-  color: #222222;
+  color: var(--ink);
   font-size: 24rpx;
   font-weight: 700;
   line-height: 1.35;
@@ -191,19 +207,19 @@
 .sensitive-block {
   margin-top: 16rpx;
   padding: 18rpx;
-  border-radius: 14rpx;
-  background: #ffffff;
+  border-radius: var(--r-m);
+  background: var(--fill);
 }
 
 .sensitive-label {
-  color: #666666;
+  color: var(--ink-2);
   font-size: 22rpx;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .sensitive-value {
   margin-top: 8rpx;
-  color: #111111;
+  color: var(--ink);
   font-size: 25rpx;
   line-height: 1.45;
   word-break: break-word;
@@ -220,10 +236,10 @@
   min-height: 56rpx;
   margin: 8rpx 6rpx 0;
   padding: 0 16rpx;
-  border: 1rpx solid #cfcfcf;
+  border: 1rpx solid var(--line-strong);
   border-radius: 999rpx;
   background: #ffffff;
-  color: #333333;
+  color: var(--ink);
   font-size: 22rpx;
   font-weight: 700;
   text-align: center;
@@ -234,9 +250,9 @@
 }
 
 .status-button.active {
-  border-color: #2f2f2f;
-  background: #2f2f2f;
-  color: #fff51f;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--yellow);
   animation: ap-pop 320ms var(--ease-spring);
 }
 
@@ -245,7 +261,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10rpx 16rpx;
   margin-top: 16rpx;
-  color: #333333;
+  color: var(--ink);
   font-size: 24rpx;
   font-weight: 700;
   line-height: 1.35;
@@ -253,7 +269,7 @@
 
 .audit-row {
   padding: 18rpx 0;
-  border-bottom: 1rpx solid #d4d4d4;
+  border-bottom: 1rpx solid var(--line);
 }
 
 .audit-top {
@@ -264,23 +280,23 @@
 }
 
 .audit-target {
-  color: #111111;
+  color: var(--ink);
   font-size: 25rpx;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .audit-time,
 .audit-actor {
-  color: #777777;
+  color: var(--ink-3);
   font-size: 22rpx;
   line-height: 1.4;
 }
 
 .audit-status {
   margin-top: 8rpx;
-  color: #8a7d00;
+  color: var(--ink-2);
   font-size: 24rpx;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .compact {

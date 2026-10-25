@@ -2,9 +2,10 @@
 // Both tabs live in one page as panels, so switching never reloads a page.
 const { getNavMetrics } = require("./navMetrics");
 
-const createTabShell = ({ titles, initialTab }) => ({
+const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
   data: {
     titles,
+    eyebrows,
     activeTab: initialTab,
     visited: titles.map((title, index) => index === initialTab),
     navCollapsed: false,

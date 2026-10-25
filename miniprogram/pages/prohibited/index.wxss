@@ -3,58 +3,64 @@
   width: 100%;
   margin-bottom: 18rpx;
   padding: 24rpx 26rpx;
-  border-radius: 8rpx;
-  background: #f1f1f1;
-}
-
-.statement-card {
-  background: #f6f6f6;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
 }
 
 .warning-card {
-  border-left: 8rpx solid #fff51f;
+  position: relative;
+  padding-left: 46rpx;
+}
+
+.warning-card::before {
+  content: "";
+  position: absolute;
+  top: 34rpx;
+  left: 24rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 6rpx var(--yellow);
 }
 
 .rule-title {
-  color: #242424;
+  color: var(--ink);
   font-size: 27rpx;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.35;
 }
 
 .rule-copy {
   margin-top: 10rpx;
-  color: #666666;
+  color: var(--ink-2);
   font-size: 24rpx;
   line-height: 1.55;
 }
 
 .statement-copy {
   margin-top: 0;
-  color: #4a4a4a;
+  color: var(--ink-2);
   text-align: justify;
-}
-
-.source-card {
-  background: #eeeeee;
 }
 
 .source-item + .source-item {
   margin-top: 18rpx;
   padding-top: 18rpx;
-  border-top: 1rpx solid #d8d8d8;
+  border-top: 1rpx solid var(--line);
 }
 
 .source-title {
-  color: #333333;
+  color: var(--ink);
   font-size: 24rpx;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.45;
 }
 
 .source-url {
   margin-top: 8rpx;
-  color: #777777;
+  color: var(--ink-3);
   font-size: 20rpx;
   line-height: 1.45;
   word-break: break-all;
@@ -62,9 +68,9 @@
 
 .source-action {
   margin-top: 8rpx;
-  color: #2f2f2f;
+  color: var(--ink);
   font-size: 21rpx;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .primary-button {

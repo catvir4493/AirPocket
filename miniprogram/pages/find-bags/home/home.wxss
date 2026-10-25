@@ -4,7 +4,11 @@
 }
 
 .large-title {
-  margin-top: 0;
+  margin: 4rpx 0 28rpx;
+}
+
+.large-title .page-title {
+  margin: 6rpx 0 0;
 }
 
 .title-swap {

@@ -1,7 +1,8 @@
 const { createTabShell } = require("../../../utils/tabShell");
 
 const shell = createTabShell({
-  titles: ["", "Offer Space", "My Bags"],
+  titles: ["", "发布行李额", "我的发布"],
+  eyebrows: ["", "Offer Space", "My Bags"],
   initialTab: 2,
 });
 

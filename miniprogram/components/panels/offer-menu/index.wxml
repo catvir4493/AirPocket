@@ -1,42 +1,39 @@
 <view class="offer-panel">
-  <view class="welcome-card fade-up delay-1">
-    <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
-    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
-      <view class="welcome-watermark">WELCOME AIRPOCKET</view>
-      <view class="traveler-scene">
-        <view class="traveler traveler-a">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-a"></view>
-        <view class="traveler traveler-b">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-b"></view>
-      </view>
-    </view>
+  <view class="offer-hero fade-up delay-1">
+    <view class="offer-hero-watermark">OFFER</view>
+    <view class="eyebrow offer-hero-eyebrow">我有空余行李额</view>
+    <view class="offer-hero-title">顺路帮人带一点</view>
+    <view class="offer-hero-desc">填好航班和可用重量，寄东西的人就能在「找行李额」里看到你。</view>
+    <button class="offer-hero-cta" hover-class="button-hover" bindtap="goReleaseBag">
+      <text>发布行李额</text>
+      <ap-icon name="arrow" size="{{28}}" stroke="{{2.4}}" />
+    </button>
   </view>
 
-  <view class="offer-menu">
-    <view class="offer-menu-title fade-up delay-2">Welcome to Airpocket</view>
-
-    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
-      <view class="offer-menu-dot"></view>
-      <view class="offer-menu-copy">
-        <view class="offer-menu-name">Release bags</view>
-        <view class="offer-menu-desc">发布新袋子</view>
+  <view class="icon-list offer-links fade-up delay-2">
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
+      <view class="icon-box"><ap-icon name="plus" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">发布新行李额</view>
+        <view class="icon-row-desc">散件按重量，整箱每箱 23kg</view>
       </view>
+      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
     </view>
-
-    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goMyBags">
-      <view class="offer-menu-dot"></view>
-      <view class="offer-menu-copy">
-        <view class="offer-menu-name">My Bags</view>
-        <view class="offer-menu-desc">查看我的袋子</view>
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goMyBags">
+      <view class="icon-box"><ap-icon name="list" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">我的发布</view>
+        <view class="icon-row-desc">查看绑定情况和剩余重量</view>
       </view>
+      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
+    </view>
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goCompliance">
+      <view class="icon-box"><ap-icon name="shield" size="{{32}}" color="#55534c" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">物品合规</view>
+        <view class="icon-row-desc">带之前先看看哪些不能带</view>
+      </view>
+      <ap-icon name="chevron" size="{{28}}" color="#c4c2b9" stroke="{{2}}" />
     </view>
   </view>
 </view>

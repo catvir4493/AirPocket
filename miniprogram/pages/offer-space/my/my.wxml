@@ -1,8 +1,13 @@
 <ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 
 <view class="page tab-shell">
-  <view class="page-title large-title">
-    <block wx:for="{{[activeTab]}}" wx:key="*this"><view class="title-swap">{{titles[item]}}</view></block>
+  <view class="large-title">
+    <block wx:for="{{[activeTab]}}" wx:key="*this">
+      <view class="title-swap">
+        <view class="eyebrow">{{eyebrows[item]}}</view>
+        <view class="page-title">{{titles[item]}}</view>
+      </view>
+    </block>
   </view>
 
   <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? '' : 'tab-panel-hidden'}}">
@@ -14,3 +19,4 @@
 
   <ap-tabbar preset="offer" current="{{activeTab}}" inline bind:change="onTabChange" />
 </view>
+<ap-toast id="ap-toast" custom-nav />

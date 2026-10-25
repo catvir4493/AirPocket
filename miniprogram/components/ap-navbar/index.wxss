@@ -5,7 +5,7 @@
   left: 0;
   z-index: 25;
   box-sizing: border-box;
-  background: #ffffff;
+  background: #fffefa;
   box-shadow: 0 1rpx 0 rgba(0, 0, 0, 0);
   transition: box-shadow 240ms ease;
 }
@@ -37,19 +37,21 @@
   width: 20rpx;
   height: 20rpx;
   margin-left: 10rpx;
-  border-bottom: 4rpx solid #242424;
-  border-left: 4rpx solid #242424;
+  border-bottom: 4rpx solid #1c1c1a;
+  border-left: 4rpx solid #1c1c1a;
   transform: rotate(45deg);
 }
 
 .ap-navbar-home {
-  margin-left: 16rpx;
-  padding: 8rpx 18rpx;
-  border-radius: 999rpx;
-  background: #f2f2f2;
-  color: #333333;
-  font-size: 22rpx;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60rpx;
+  height: 60rpx;
+  margin-left: 20rpx;
+  border: 1rpx solid rgba(28, 28, 26, 0.08);
+  border-radius: 50%;
+  background: #ffffff;
 }
 
 .ap-navbar-title {
@@ -64,7 +66,7 @@
 
 .ap-navbar-title-text {
   overflow: hidden;
-  color: #242424;
+  color: #1c1c1a;
   font-size: 32rpx;
   font-weight: 700;
   white-space: nowrap;
@@ -84,8 +86,8 @@
   width: 26rpx;
   height: 26rpx;
   margin-right: 12rpx;
-  border: 4rpx solid #e6e6e6;
-  border-top-color: #2f2f2f;
+  border: 4rpx solid #e9e7df;
+  border-top-color: #1c1c1a;
   border-radius: 50%;
   animation: ap-navbar-spin 0.7s linear infinite;
 }

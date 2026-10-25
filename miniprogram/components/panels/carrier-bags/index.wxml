@@ -1,34 +1,48 @@
 <view class="my-panel">
-  <view class="my-hero fade-up delay-1">
-    <image class="my-hero-logo" src="/images/300分辨率/黄色logo.png" mode="aspectFit" />
-    <view class="my-search {{hasSearchFilters ? 'active' : ''}}" bindtap="openSearchPanel">Search</view>
-    <view class="my-stat-row">
-      <view class="my-stat">
-        <view class="my-stat-label">总数量</view>
-        <view class="my-stat-value">{{statCount}}</view>
-      </view>
-      <view class="my-stat">
-        <view class="my-stat-label">类型</view>
-        <view class="my-stat-value small">发布</view>
-      </view>
+  <view class="my-stats fade-up delay-1">
+    <view class="my-stat">
+      <view class="my-stat-value num">{{statActive}}</view>
+      <view class="my-stat-label">可绑定</view>
+    </view>
+    <view class="my-stat">
+      <view class="my-stat-value num">{{statBindings}}</view>
+      <view class="my-stat-label">绑定单数</view>
+    </view>
+    <view class="my-stat">
+      <view class="my-stat-value num">{{statWeight}}</view>
+      <view class="my-stat-label">累计发布 kg</view>
     </view>
   </view>
 
-  <view wx:if="{{loading}}" class="my-list my-list-skeleton">
-    <view class="my-skeleton-head"></view>
-    <view wx:for="{{[0, 1, 2, 3]}}" wx:key="*this" class="my-skeleton-row skeleton-shine"></view>
+  <view class="my-segments fade-up delay-2">
+    <view wx:for="{{segments}}" wx:key="value" class="my-segment {{segment === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectSegment">{{item.label}}</view>
+    <view class="my-segment my-segment-search {{hasSearchFilters ? 'filtered' : ''}}" bindtap="openSearchPanel">
+      <ap-icon name="search" size="{{24}}" stroke="{{2.2}}" color="{{hasSearchFilters ? '#1c1c1a' : '#55534c'}}" />
+      <text>搜索</text>
+    </view>
   </view>
 
-  <view wx:elif="{{bags.length}}" class="my-list fade-up delay-2">
-    <view class="my-table-head">
-      <view>日期</view>
-      <view>地点</view>
-      <view>编号</view>
-    </view>
-    <view wx:for="{{bags}}" wx:key="_id" class="my-table-row list-enter" style="animation-delay: {{index < 8 ? 120 + index * 40 : 0}}ms" hover-class="row-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
-      <view>{{item.listDateText}}</view>
-      <view class="my-table-route">{{item.listRouteText}}</view>
-      <view>{{item.bagNo}}</view>
+  <view wx:if="{{loading}}" class="my-skeleton">
+    <view wx:for="{{[0, 1, 2, 3]}}" wx:key="*this" class="my-skeleton-ticket skeleton-shine"></view>
+  </view>
+
+  <view wx:elif="{{bags.length}}" class="my-tickets">
+    <view wx:for="{{bags}}" wx:key="_id" class="ticket list-enter" style="animation-delay: {{index < 8 ? 120 + index * 40 : 0}}ms" hover-class="ticket-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
+      <view class="ticket-stub">
+        <view class="ticket-day num">{{item.day.day}}</view>
+        <view class="ticket-month">{{item.day.month}}</view>
+      </view>
+      <view class="ticket-main">
+        <view class="ticket-route">{{item.routeText}}</view>
+        <view class="ticket-meta">
+          <view class="tag tag-{{item.statusTone}}">{{item.statusText}}</view>
+          <text class="tag-code">#{{item.bagNo}}</text>
+        </view>
+      </view>
+      <view class="ticket-metric stacked">
+        <view><text class="num">{{item.metricValue}}</text><text class="ticket-unit">{{item.metricUnit}}</text></view>
+        <text class="ticket-sub">{{item.bindingCount}} 单</text>
+      </view>
     </view>
   </view>
 

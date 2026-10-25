@@ -1,0 +1,8 @@
+<view wx:if="{{visible}}" class="ap-toast-wrap" style="top: {{top}}px;">
+  <block wx:for="{{[seq]}}" wx:key="*this">
+    <view class="ap-toast {{leaving ? 'leaving' : ''}}">
+      <ap-icon name="{{icon}}" color="{{icon === 'check' ? '#fff51f' : '#ffffff'}}" size="{{30}}" stroke="{{2}}" />
+      <text class="ap-toast-text">{{title}}</text>
+    </view>
+  </block>
+</view>

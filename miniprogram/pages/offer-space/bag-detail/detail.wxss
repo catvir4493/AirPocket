@@ -1,16 +1,15 @@
 @import "../../find-bags/detail/detail.wxss";
 
-.detail-actions {
-  margin: 24rpx 0 34rpx;
-}
-
 .binding-section {
-  margin-top: 22rpx;
+  margin-top: 12rpx;
 }
 
 .binding-item {
-  padding: 22rpx 0;
-  border-bottom: 1rpx solid #dddddd;
+  margin-bottom: 16rpx;
+  padding: 26rpx 28rpx;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
 }
 
 .binding-top {
@@ -18,29 +17,47 @@
   align-items: center;
   justify-content: space-between;
   gap: 16rpx;
-  margin-bottom: 10rpx;
 }
 
 .binding-title {
-  color: #242424;
-  font-size: 27rpx;
-  font-weight: 900;
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+  color: var(--ink);
 }
 
-.binding-status {
-  flex: 0 0 auto;
-  color: #777700;
-  font-size: 22rpx;
-  font-weight: 800;
+.binding-title .num {
+  font-size: 40rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.binding-unit {
+  color: var(--ink-3);
+  font-size: 21rpx;
 }
 
 .binding-copy {
-  color: #777777;
-  font-size: 23rpx;
+  margin-top: 14rpx;
+  color: var(--ink);
+  font-size: 25rpx;
   line-height: 1.5;
+}
+
+.binding-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  color: var(--ink-3);
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.binding-time {
+  margin-left: auto;
 }
 
 .tight-empty {
   margin-top: 0;
-  padding: 24rpx 0;
 }

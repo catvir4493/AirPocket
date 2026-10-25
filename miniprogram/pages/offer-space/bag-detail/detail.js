@@ -1,23 +1,7 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
-
-const statusLabels = {
-  active: "可绑定",
-  locked: "已锁定",
-  closed: "已关闭",
-  expired: "已过期",
-};
-
-const bindingStatusLabels = {
-  pending: "等待确认",
-  locked: "已锁单",
-  contacted: "已联系",
-  picked_up: "已取货",
-  packed: "已打包",
-  delivered_to_carrier: "已送至带货者",
-  completed: "已完成",
-  cancelled: "已取消",
-};
+const { showToast } = require("../../../utils/toast");
+const { bagStatus, bindingStatus } = require("../../../utils/status");
 
 const toSafeNumber = (value, fallback = 0) => {
   const number = Number(value);
@@ -34,8 +18,13 @@ const buildBagView = (bag) => {
     ? Number(bag.caseCount)
     : remainingCases || (isFullCase ? 1 : 0);
 
+  const status = bagStatus(bag.status);
+  const specialItemOptionsText = formatSpecialItems(bag.specialItemOptions);
+
   return {
     ...bag,
+    remainingWeight,
+    remainingCases,
     isFullCase,
     isLoose: !isFullCase,
     canEdit: !bag.bindingCount,
@@ -45,7 +34,10 @@ const buildBagView = (bag) => {
     totalWeightText: formatWeight(bag.totalWeight),
     remainingWeightText: formatWeight(bag.remainingWeight),
     boundWeightText: formatWeight(bag.boundWeight || 0),
-    specialItemOptionsText: formatSpecialItems(bag.specialItemOptions),
+    specialItemOptionsText,
+    passChips: [isFullCase ? "整箱 · 每箱 23kg" : "散件"].concat(
+      specialItemOptionsText === "无" ? [] : specialItemOptionsText.split(", ").map((label) => `可带${label}`)
+    ),
     allowedItemsText: Array.isArray(bag.allowedItems) && bag.allowedItems.length
       ? bag.allowedItems.join(", ")
       : "-",
@@ -54,17 +46,21 @@ const buildBagView = (bag) => {
       : "-",
     createdAtText: formatDateTime(bag.createdAt),
     updatedAtText: formatDateTime(bag.updatedAt),
-    statusText: statusLabels[bag.status] || bag.status,
+    statusText: status.text,
+    statusTone: status.tone,
     bindings: (bag.bindings || []).map((binding) => {
       const bindingIsFullCase = binding.spaceType === "fullCase";
+      const bindingState = bindingStatus(binding.status);
       return {
         ...binding,
         spaceTypeText: bindingIsFullCase ? "整箱" : "散件",
+        requestedCases: Number(binding.requestedCases || (bindingIsFullCase ? 1 : 0)),
         requestedCasesText: `${Number(binding.requestedCases || (bindingIsFullCase ? 1 : 0))} 件`,
         requestedWeightText: formatWeight(binding.requestedWeight),
         requestedSpecialItemsText: formatSpecialItems(binding.requestedSpecialItems),
         createdAtText: formatDateTime(binding.createdAt),
-        statusText: bindingStatusLabels[binding.status] || binding.status,
+        statusText: bindingState.text,
+        statusTone: bindingState.tone,
       };
     }),
   };
@@ -79,7 +75,7 @@ Page({
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
@@ -117,7 +113,7 @@ Page({
 
       this.setData({ bag: buildBagView(source) });
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });

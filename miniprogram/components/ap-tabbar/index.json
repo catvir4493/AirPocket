@@ -1,3 +1,6 @@
 {
-  "component": true
+  "component": true,
+  "usingComponents": {
+    "ap-icon": "/components/ap-icon/index"
+  }
 }

@@ -1,0 +1,254 @@
+.pass {
+  position: relative;
+  border: 1rpx solid rgba(28, 28, 26, 0.08);
+  border-radius: 40rpx;
+  background: #ffffff;
+  box-shadow: 0 32rpx 60rpx -44rpx rgba(28, 28, 26, 0.5);
+  animation: pass-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.pass-top {
+  padding: 30rpx 32rpx 26rpx;
+}
+
+.pass-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.pass-code {
+  color: #9a978c;
+  font-family: "DIN Alternate", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  font-size: 24rpx;
+  letter-spacing: 0.06em;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #f4f3ee;
+  color: #55534c;
+  font-size: 20rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag-wait {
+  background: #fff51f;
+  color: #1c1c1a;
+}
+
+.tag-ok,
+.tag-done {
+  background: #e8f3df;
+  color: #3f6a1d;
+}
+
+.tag-off {
+  color: #9a978c;
+  text-decoration: line-through;
+}
+
+.pass-route {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28rpx;
+}
+
+.pass-city {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 42%;
+}
+
+.pass-city.right {
+  text-align: right;
+}
+
+.pass-city-name {
+  overflow: hidden;
+  color: #1c1c1a;
+  font-family: "DIN Alternate", "DIN Condensed", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pass-city-name.xl {
+  font-size: 58rpx;
+}
+
+.pass-city-name.l {
+  font-size: 46rpx;
+}
+
+.pass-city-name.m {
+  font-size: 36rpx;
+}
+
+.pass-city-sub {
+  margin-top: 8rpx;
+  color: #9a978c;
+  font-size: 20rpx;
+}
+
+.pass-flight {
+  position: relative;
+  flex: 1;
+  min-width: 60rpx;
+  height: 40rpx;
+  margin: 0 16rpx 28rpx;
+}
+
+.pass-flight-line {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top: 3rpx dashed #d6d4ca;
+  transform-origin: left;
+  animation: pass-line 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms backwards;
+}
+
+.pass-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  padding: 0 8rpx;
+  background: #ffffff;
+  transform: translate(-50%, -50%) rotate(90deg);
+  animation: pass-plane 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms backwards;
+}
+
+.pass-perf {
+  position: relative;
+  height: 0;
+  margin: 0 28rpx;
+  border-top: 3rpx dashed #e6e4da;
+}
+
+.pass-perf::before,
+.pass-perf::after {
+  content: "";
+  position: absolute;
+  top: -18rpx;
+  width: 36rpx;
+  height: 36rpx;
+  box-sizing: border-box;
+  border: 1rpx solid rgba(28, 28, 26, 0.08);
+  border-radius: 50%;
+  background: #fffefa;
+}
+
+.pass-perf::before {
+  left: -47rpx;
+  clip-path: inset(0 0 0 50%);
+}
+
+.pass-perf::after {
+  right: -47rpx;
+  clip-path: inset(0 50% 0 0);
+}
+
+.pass-grid {
+  display: flex;
+  padding: 26rpx 32rpx 28rpx;
+}
+
+.pass-cell {
+  flex: 1;
+  min-width: 0;
+}
+
+.pass-cell + .pass-cell {
+  padding-left: 20rpx;
+}
+
+.eyebrow {
+  color: #9a978c;
+  font-size: 18rpx;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pass-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+  margin-top: 8rpx;
+  overflow: hidden;
+  color: #1c1c1a;
+  white-space: nowrap;
+}
+
+.num {
+  font-family: "DIN Alternate", "DIN Condensed", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  font-size: 36rpx;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.pass-unit {
+  color: #9a978c;
+  font-size: 20rpx;
+}
+
+.pass-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  padding: 0 32rpx 28rpx;
+}
+
+.pass-note {
+  margin: 0 32rpx 28rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 20rpx;
+  background: #f4f3ee;
+  color: #55534c;
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+@keyframes pass-in {
+  from {
+    opacity: 0;
+    transform: translateY(24rpx) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pass-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pass-plane {
+  from {
+    opacity: 0;
+    transform: translate(-150%, -50%) rotate(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+}

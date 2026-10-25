@@ -1,11 +1,19 @@
 @import "../detail/detail.wxss";
 
-.detail-actions {
-  margin-top: 28rpx;
+.lock-banner {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: var(--r-m);
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 24rpx;
+  line-height: 1.45;
 }
 
-.cancel-button {
-  margin-top: 18rpx;
-  border-color: #a83232;
-  color: #a83232;
+.lock-banner.editable {
+  background: var(--yellow-soft);
+  color: var(--ink);
 }

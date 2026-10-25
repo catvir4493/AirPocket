@@ -1,6 +1,7 @@
 const { formatDateTime, formatWeight, toDate } = require("../../utils/format");
 const { formatSpecialItems } = require("../../utils/specialItems");
 const { countUp } = require("../../utils/countUp");
+const { showToast } = require("../../utils/toast");
 
 const bagStatusLabels = {
   active: "可绑定",
@@ -207,7 +208,7 @@ Page({
       this.setData({
         errorMessage: error.message || "加载失败",
       });
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
@@ -389,7 +390,7 @@ Page({
 
   confirmStatusChange({ targetType, targetCode, currentStatus, nextStatus }) {
     if (currentStatus === nextStatus) {
-      wx.showToast({
+      showToast({
         title: "状态没有变化",
         icon: "none",
       });
@@ -451,13 +452,13 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
+      showToast({
         title: "已更新",
         icon: "success",
       });
       this.fetchDashboard();
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });
@@ -493,13 +494,13 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
+      showToast({
         title: "已更新",
         icon: "success",
       });
       this.fetchDashboard();
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });

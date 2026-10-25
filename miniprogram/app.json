@@ -16,15 +16,18 @@
     "pages/example/index"
   ],
   "window": {
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#fffefa",
     "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "#fffefa",
     "navigationBarTitleText": "AirPocket",
     "navigationBarTextStyle": "black"
   },
   "usingComponents": {
     "ap-tabbar": "/components/ap-tabbar/index",
-    "ap-navbar": "/components/ap-navbar/index"
+    "ap-navbar": "/components/ap-navbar/index",
+    "ap-icon": "/components/ap-icon/index",
+    "ap-toast": "/components/ap-toast/index",
+    "ap-pass": "/components/ap-pass/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

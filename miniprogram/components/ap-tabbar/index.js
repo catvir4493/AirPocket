@@ -1,20 +1,23 @@
 const PRESETS = {
   landing: [
-    { text: "Airpocket", url: "/pages/index/index", type: "reLaunch" },
-    { text: "Find Bags", url: "/pages/find-bags/home/home", type: "navigateTo" },
-    { text: "Offer Space", url: "/pages/offer-space/home/home", type: "navigateTo" },
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "找行李额", icon: "search", url: "/pages/find-bags/home/home", type: "navigateTo" },
+    { text: "发布", icon: "suitcase", url: "/pages/offer-space/home/home", type: "navigateTo" },
   ],
   find: [
-    { text: "Home", url: "/pages/index/index", type: "reLaunch" },
-    { text: "Find Bags", url: "/pages/find-bags/home/home", type: "redirectTo" },
-    { text: "My Bags", url: "/pages/find-bags/my/my", type: "redirectTo" },
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "找行李额", icon: "search", url: "/pages/find-bags/home/home", type: "redirectTo" },
+    { text: "我的绑定", icon: "list", url: "/pages/find-bags/my/my", type: "redirectTo" },
   ],
   offer: [
-    { text: "Airpocket", url: "/pages/index/index", type: "reLaunch" },
-    { text: "Offer Space", url: "/pages/offer-space/home/home", type: "redirectTo" },
-    { text: "My Bags", url: "/pages/offer-space/my/my", type: "redirectTo" },
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "发布", icon: "suitcase", url: "/pages/offer-space/home/home", type: "redirectTo" },
+    { text: "我的发布", icon: "list", url: "/pages/offer-space/my/my", type: "redirectTo" },
   ],
 };
+
+const ICON_COLOR = "#8f8d85";
+const ICON_ACTIVE_COLOR = "#1c1c1a";
 
 // Let the indicator start sliding before the page is replaced.
 const SWITCH_DELAY = 160;
@@ -39,6 +42,8 @@ Component({
   data: {
     items: [],
     activeIndex: 0,
+    iconColor: ICON_COLOR,
+    iconActiveColor: ICON_ACTIVE_COLOR,
   },
 
   observers: {

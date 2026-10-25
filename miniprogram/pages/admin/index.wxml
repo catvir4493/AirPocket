@@ -1,5 +1,6 @@
 <view class="page admin-page">
-  <view class="page-title fade-up">Admin Desk</view>
+  <view class="eyebrow page-eyebrow fade-up">Admin Desk</view>
+  <view class="page-title fade-up">后台运营</view>
   <view class="page-subtitle">客服工作台：处理绑定、查看地址与联系方式、推进订单状态。</view>
 
   <view class="summary-grid">
@@ -118,7 +119,7 @@
               <view class="work-code">{{item.bagNo}} · {{item.spaceTypeText}}</view>
               <view class="work-route">{{item.departureDate}} · {{item.fromCity}} → {{item.toCity}}</view>
             </view>
-            <view class="pill {{item.status === 'active' ? '' : 'gray'}}">{{item.statusText}}</view>
+            <view class="pill status-{{item.status}}">{{item.statusText}}</view>
           </view>
 
           <view class="bag-meta">
@@ -161,3 +162,4 @@
     </view>
   </block>
 </view>
+<ap-toast id="ap-toast" />

@@ -1,10 +1,11 @@
 <view class="page no-bottom-nav release-page has-sticky-action">
-  <view class="page-title fade-up">Release Bag</view>
-  <view class="page-subtitle fade-up delay-1">发布空余行李额后，寄货者会在 Find Bags 中看到这条 active 记录。</view>
+  <view class="eyebrow page-eyebrow fade-up">Offer Space</view>
+  <view class="page-title fade-up">发布行李额</view>
+  <view class="page-subtitle fade-up delay-1">发布后，寄东西的人会在「找行李额」里看到这条记录。</view>
 
   <view class="form fade-up delay-2">
     <view class="field">
-      <view class="field-label">Space type / 行李额类型</view>
+      <view class="field-label">行李额类型</view>
       <view class="type-selector">
         <button class="type-option {{form.spaceType === 'loose' ? 'active' : ''}}" data-type="loose" bindtap="selectSpaceType">
           <view class="type-title">散件</view>
@@ -18,55 +19,55 @@
     </view>
 
     <view class="field {{focusedField === 'fromCity' ? 'focused' : ''}}">
-      <view class="field-label">From city / 出发城市</view>
+      <view class="field-label">出发城市</view>
       <input class="input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="Budapest" data-focus="fromCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field {{focusedField === 'toCity' ? 'focused' : ''}}">
-      <view class="field-label">To city / 到达城市</view>
+      <view class="field-label">到达城市</view>
       <input class="input" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="Shanghai" data-focus="toCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field">
-      <view class="field-label">Departure date / 出发日期</view>
+      <view class="field-label">出发日期</view>
       <picker mode="date" value="{{form.departureDate}}" start="{{minDate}}" bindchange="onDateChange">
         <view class="picker-value {{form.departureDate ? '' : 'placeholder'}}">{{form.departureDate || '选择日期'}}</view>
       </picker>
     </view>
 
     <view class="field {{focusedField === 'flightNo' ? 'focused' : ''}}">
-      <view class="field-label">Flight No. / 航班号</view>
+      <view class="field-label">航班号</view>
       <input class="input" value="{{form.flightNo}}" data-field="flightNo" bindinput="onFieldInput" placeholder="例如 MF97" data-focus="flightNo" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field {{focusedField === 'carrierWechat' ? 'focused' : ''}}">
-      <view class="field-label">WeChat ID / 微信号</view>
+      <view class="field-label">微信号</view>
       <input class="input" value="{{form.carrierWechat}}" data-field="carrierWechat" bindinput="onFieldInput" placeholder="平台客服将通过微信联系你" data-focus="carrierWechat" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field {{focusedField === 'carrierReceiveAddress' ? 'focused' : ''}}">
-      <view class="field-label">Receive address / 收货地址</view>
+      <view class="field-label">收货地址</view>
       <textarea class="textarea" value="{{form.carrierReceiveAddress}}" data-field="carrierReceiveAddress" bindinput="onFieldInput" placeholder="平台统一打包后送达给你的地址，仅平台后台可见" data-focus="carrierReceiveAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view wx:if="{{form.spaceType === 'loose'}}" class="field {{focusedField === 'totalWeight' ? 'focused' : ''}}">
-      <view class="field-label">Available weight / 可用重量 kg</view>
+      <view class="field-label">可用重量 kg</view>
       <input class="input" type="digit" value="{{form.totalWeight}}" data-field="totalWeight" bindinput="onFieldInput" placeholder="例如 10" data-focus="totalWeight" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view wx:else class="field {{focusedField === 'caseCount' ? 'focused' : ''}}">
-      <view class="field-label">Case count / 整箱数量</view>
+      <view class="field-label">整箱数量</view>
       <input class="input" type="number" value="{{form.caseCount}}" data-field="caseCount" bindinput="onFieldInput" placeholder="例如 1" data-focus="caseCount" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
       <view class="field-hint">每个整箱默认 23 kg</view>
     </view>
 
     <view class="field {{focusedField === 'availableVolume' ? 'focused' : ''}}">
-      <view class="field-label">Available volume / 可用体积</view>
+      <view class="field-label">可用体积</view>
       <input class="input" value="{{form.availableVolume}}" data-field="availableVolume" bindinput="onFieldInput" placeholder="例如 小箱一角、约 20L" data-focus="availableVolume" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field">
-      <view class="field-label">Special items / 可接受特殊物品</view>
+      <view class="field-label">可接受特殊物品</view>
       <view class="choice-grid">
         <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
       </view>
@@ -74,22 +75,23 @@
     </view>
 
     <view class="field {{focusedField === 'allowedItemsText' ? 'focused' : ''}}">
-      <view class="field-label">Allowed items / 可接受物品</view>
+      <view class="field-label">可接受物品</view>
       <input class="input" value="{{form.allowedItemsText}}" data-field="allowedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 文件, 衣服" data-focus="allowedItemsText" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field {{focusedField === 'restrictedItemsText' ? 'focused' : ''}}">
-      <view class="field-label">Restricted items / 不接受物品</view>
+      <view class="field-label">不接受物品</view>
       <input class="input" value="{{form.restrictedItemsText}}" data-field="restrictedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 液体, 食品" data-focus="restrictedItemsText" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
 
     <view class="field {{focusedField === 'note' ? 'focused' : ''}}">
-      <view class="field-label">Note / 备注</view>
+      <view class="field-label">备注</view>
       <textarea class="textarea" value="{{form.note}}" data-field="note" bindinput="onFieldInput" placeholder="补充时间、交接地点或其他要求" data-focus="note" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
   </view>
 
   <view class="sticky-action">
-    <button class="primary-button {{releasedNo ? 'success' : ''}}" loading="{{submitting}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">{{releasedNo ? '✓ ' + releasedNo + ' 已发布' : 'Release Bag'}}</button>
+    <button class="primary-button {{releasedNo ? 'success' : ''}}" loading="{{submitting}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">{{releasedNo ? '✓ ' + releasedNo + ' 已发布' : '发布行李额'}}</button>
   </view>
 </view>
+<ap-toast id="ap-toast" />

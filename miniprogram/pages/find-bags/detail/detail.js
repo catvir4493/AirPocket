@@ -1,10 +1,16 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const {
+  SPECIAL_ITEM_OPTIONS,
   buildSpecialItemOptions,
   formatSpecialItems,
   normalizeSpecialItems,
   toggleSpecialItem,
 } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
+const { bagStatus } = require("../../../utils/status");
+
+const specialLabel = (value) =>
+  (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
 
 Page({
   data: {
@@ -30,7 +36,7 @@ Page({
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
@@ -78,6 +84,7 @@ Page({
         ? Number(bag.caseCount)
         : remainingCases || (isFullCase ? 1 : 0);
       const availableSpecialItems = normalizeSpecialItems(bag.specialItemOptions);
+      const status = bagStatus(bag.status || "active");
       this.setData({
         specialItemOptions: buildSpecialItemOptions([], availableSpecialItems),
         "form.requestedSpecialItems": [],
@@ -94,12 +101,17 @@ Page({
           remainingCasesText: `${remainingCases} 件`,
           specialItemOptionsText: formatSpecialItems(availableSpecialItems),
           availableSpecialItems,
+          statusText: status.text,
+          statusTone: status.tone,
+          passChips: [isFullCase ? "整箱 · 每箱 23kg" : "散件"].concat(
+            availableSpecialItems.map((value) => `可带${specialLabel(value)}`)
+          ),
           createdAtText: formatDateTime(bag.createdAt),
           updatedAtText: formatDateTime(bag.updatedAt),
         },
       });
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
@@ -140,7 +152,7 @@ Page({
       this.setData({
         "form.requestedWeight": `${maxWeight}`,
       });
-      wx.showToast({
+      showToast({
         title: `最多可绑定 ${formatWeight(maxWeight)}`,
         icon: "none",
       });
@@ -187,14 +199,14 @@ Page({
       bag.availableSpecialItems
     );
     if (bag.isFullCase && Number(bag.remainingCases || 0) <= 0) {
-      wx.showToast({
+      showToast({
         title: "整箱已无剩余数量",
         icon: "none",
       });
       return;
     }
     if (!Number.isFinite(requestedWeight) || requestedWeight <= 0) {
-      wx.showToast({
+      showToast({
         title: "请输入大于 0 的重量",
         icon: "none",
       });
@@ -202,7 +214,7 @@ Page({
     }
 
     if (!bag.isFullCase && requestedWeight > Number(bag.remainingWeight)) {
-      wx.showToast({
+      showToast({
         title: `最多可绑定 ${bag.remainingWeightText}`,
         icon: "none",
       });
@@ -210,7 +222,7 @@ Page({
     }
 
     if (!form.itemDescription.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写物品描述",
         icon: "none",
       });
@@ -218,7 +230,7 @@ Page({
     }
 
     if (!form.senderWechat.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写微信号",
         icon: "none",
       });
@@ -226,7 +238,7 @@ Page({
     }
 
     if (!form.pickupAddress.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写取货地址",
         icon: "none",
       });
@@ -234,7 +246,7 @@ Page({
     }
 
     if (!form.receiverName.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写收件人姓名",
         icon: "none",
       });
@@ -242,7 +254,7 @@ Page({
     }
 
     if (!form.receiverPhone.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写收件人电话",
         icon: "none",
       });
@@ -250,7 +262,7 @@ Page({
     }
 
     if (!form.deliveryAddress.trim()) {
-      wx.showToast({
+      showToast({
         title: "请填写目的地快递地址",
         icon: "none",
       });
@@ -286,7 +298,7 @@ Page({
         });
       }, 900);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "绑定失败",
         icon: "none",
       });

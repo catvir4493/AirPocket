@@ -1,4 +1,5 @@
 <view class="page no-bottom-nav prohibited-page">
+  <view class="eyebrow page-eyebrow">Compliance</view>
   <view class="page-title">物品合规与责任声明</view>
 
   <view class="section-title">责任声明</view>
@@ -21,5 +22,6 @@
     </view>
   </view>
 
-  <button class="primary-button" bindtap="goHome">Back</button>
+  <button class="primary-button" bindtap="goHome">返回</button>
 </view>
+<ap-toast id="ap-toast" />

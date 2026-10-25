@@ -1,5 +1,6 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
 
 const sortOptions = [
   { value: "departureAsc", label: "出发日期最近" },
@@ -56,7 +57,7 @@ Component({
     bags: [],
     filterPanelOpen: false,
     filterPanelClosing: false,
-    scenePaused: false,
+    overview: { hasRoute: false, from: "—", to: "—", count: 0, next: "--.--", max: 0 },
     hasActiveFilters: false,
     filters: {
       fromCity: "",
@@ -80,14 +81,7 @@ Component({
 
   methods: {
     onPanelShow() {
-      if (this.data.scenePaused) {
-        this.setData({ scenePaused: false });
-      }
       this.fetchBags();
-    },
-
-    onPanelHide() {
-      this.setData({ scenePaused: true });
     },
 
     refresh() {
@@ -134,6 +128,7 @@ Component({
             markOnRight: listMark === "B",
             spaceTypeText,
             caseCountText: `${caseCount} 件`,
+            remainingCases,
             remainingCasesText: `${remainingCases} 件`,
             compactSpaceText: isFullCase ? "整箱" : `剩余 ${formatWeight(bag.remainingWeight)}`,
             listDateText: formatListDate(bag.departureDate),
@@ -151,17 +146,50 @@ Component({
         });
         this.setData({
           allBags: bags,
+          overview: this.buildOverview(bags),
         });
         this.applyFiltersAndSort(bags);
         this.hasLoaded = true;
       } catch (error) {
-        wx.showToast({
+        showToast({
           title: error.message || "加载失败",
           icon: "none",
         });
       } finally {
         this.setData({ loading: false });
       }
+    },
+
+    // Route summary card above the list: busiest route, count, next departure, largest space.
+    buildOverview(bags) {
+      const routeCounts = {};
+      let topRoute = null;
+      bags.forEach((bag) => {
+        const key = `${bag.fromCity || "-"}→${bag.toCity || "-"}`;
+        routeCounts[key] = (routeCounts[key] || 0) + 1;
+        if (!topRoute || routeCounts[key] > routeCounts[topRoute]) {
+          topRoute = key;
+        }
+      });
+      const dates = bags
+        .map((bag) => `${bag.departureDate || ""}`)
+        .filter(Boolean)
+        .sort();
+      const max = bags.reduce((largest, bag) => {
+        const weight = bag.isFullCase
+          ? Number(bag.remainingCases || 0) * 23
+          : Number(bag.remainingWeight || 0);
+        return Number.isFinite(weight) && weight > largest ? weight : largest;
+      }, 0);
+      const [from, to] = topRoute ? topRoute.split("→") : ["—", "—"];
+      return {
+        hasRoute: Boolean(topRoute),
+        from,
+        to,
+        count: bags.length,
+        next: dates.length ? formatListDate(dates[0]).slice(5) : "--.--",
+        max,
+      };
     },
 
     getVisibleBags(allBags, filters, sortKey) {

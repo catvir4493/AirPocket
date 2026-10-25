@@ -1,3 +1,5 @@
+const { showToast } = require("../../utils/toast");
+
 Page({
   data: {
     statementText:
@@ -61,7 +63,7 @@ Page({
     wx.setClipboardData({
       data: url,
       success: () => {
-        wx.showToast({
+        showToast({
           title: "链接已复制",
           icon: "success",
         });

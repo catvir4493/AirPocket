@@ -3,6 +3,7 @@ const {
   normalizeSpecialItems,
   toggleSpecialItem,
 } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
 
 const today = () => {
   const date = new Date();
@@ -42,7 +43,7 @@ Page({
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
@@ -87,7 +88,7 @@ Page({
         },
       });
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
@@ -195,7 +196,7 @@ Page({
 
     const errorMessage = this.validateForm();
     if (errorMessage) {
-      wx.showToast({
+      showToast({
         title: errorMessage,
         icon: "none",
       });
@@ -226,7 +227,7 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
+      showToast({
         title: "已更新",
         icon: "success",
       });
@@ -236,7 +237,7 @@ Page({
         });
       }, 700);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });
