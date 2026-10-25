@@ -29,6 +29,11 @@ Component({
       type: Number,
       value: 0,
     },
+    // Tabs inside the same page: emit "change" instead of navigating.
+    inline: {
+      type: Boolean,
+      value: false,
+    },
   },
 
   data: {
@@ -73,6 +78,12 @@ Component({
       const index = Number(event.currentTarget.dataset.index);
       const item = this.data.items[index];
       if (!item || index === this.data.current || this.switching) {
+        return;
+      }
+
+      if (this.data.inline && item.type === "redirectTo") {
+        this.setData({ activeIndex: index });
+        this.triggerEvent("change", { index });
         return;
       }
 

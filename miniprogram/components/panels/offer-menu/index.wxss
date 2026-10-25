@@ -1,0 +1,129 @@
+@import "../find-list/index.wxss";
+
+.offer-menu {
+  padding: 26rpx 8rpx 0;
+  border-top: 1rpx solid #eeeeee;
+}
+
+.offer-menu-title {
+  margin-bottom: 18rpx;
+  color: #666666;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.offer-menu-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 24rpx 0 34rpx;
+}
+
+.offer-menu-item::after {
+  content: "";
+  position: absolute;
+  top: 29rpx;
+  bottom: -29rpx;
+  left: 5rpx;
+  width: 1rpx;
+  background: rgba(34, 34, 34, 0.18);
+}
+
+.offer-menu-item:last-child::after {
+  display: none;
+}
+
+.offer-menu-dot {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 10rpx;
+  height: 10rpx;
+  margin: 16rpx 28rpx 0 0;
+  border-radius: 50%;
+  background: #222222;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.offer-menu-copy {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.menu-item-press .offer-menu-dot {
+  transform: scale(1.6);
+}
+
+.menu-item-press .offer-menu-copy {
+  transform: translateX(6rpx);
+}
+
+.offer-menu-name {
+  color: #303030;
+  font-size: 29rpx;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.offer-menu-desc {
+  margin-top: 8rpx;
+  color: #9b9b9b;
+  font-size: 23rpx;
+}
+
+/* Menu entrance: items slide in one by one, the timeline draws downward after each. */
+.offer-menu-item {
+  animation: ap-slide-in var(--dur-slow) var(--ease-out) backwards;
+}
+
+.offer-menu-item::after {
+  transform-origin: top;
+  animation: ap-draw-line 420ms var(--ease-out) backwards;
+}
+
+.offer-menu-item:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.offer-menu-item:nth-child(2)::after {
+  animation-delay: 260ms;
+}
+
+.offer-menu-item:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.offer-menu-item:nth-child(3)::after {
+  animation-delay: 320ms;
+}
+
+.offer-menu-item:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.offer-menu-item:nth-child(4)::after {
+  animation-delay: 380ms;
+}
+
+.offer-menu-item:nth-child(5) {
+  animation-delay: 300ms;
+}
+
+.offer-menu-item:nth-child(5)::after {
+  animation-delay: 440ms;
+}
+
+.offer-menu-item:nth-child(6) {
+  animation-delay: 360ms;
+}
+
+.offer-menu-item:nth-child(6)::after {
+  animation-delay: 500ms;
+}
+
+.offer-menu-item:nth-child(7) {
+  animation-delay: 420ms;
+}
+
+.offer-menu-item:nth-child(7)::after {
+  animation-delay: 560ms;
+}

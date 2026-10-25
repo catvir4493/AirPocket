@@ -1,0 +1,80 @@
+<view class="my-panel">
+  <view class="my-hero fade-up delay-1">
+    <image class="my-hero-logo" src="/images/300分辨率/黄色logo.png" mode="aspectFit" />
+    <view class="my-search {{hasSearchFilters ? 'active' : ''}}" bindtap="openSearchPanel">Search</view>
+    <view class="my-stat-row">
+      <view class="my-stat">
+        <view class="my-stat-label">总数量</view>
+        <view class="my-stat-value">{{statCount}}</view>
+      </view>
+      <view class="my-stat">
+        <view class="my-stat-label">类型</view>
+        <view class="my-stat-value small">发布</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="my-list my-list-skeleton">
+    <view class="my-skeleton-head"></view>
+    <view wx:for="{{[0, 1, 2, 3]}}" wx:key="*this" class="my-skeleton-row skeleton-shine"></view>
+  </view>
+
+  <view wx:elif="{{bags.length}}" class="my-list fade-up delay-2">
+    <view class="my-table-head">
+      <view>日期</view>
+      <view>地点</view>
+      <view>编号</view>
+    </view>
+    <view wx:for="{{bags}}" wx:key="_id" class="my-table-row list-enter" style="animation-delay: {{index < 8 ? 120 + index * 40 : 0}}ms" hover-class="row-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
+      <view>{{item.listDateText}}</view>
+      <view class="my-table-route">{{item.listRouteText}}</view>
+      <view>{{item.bagNo}}</view>
+    </view>
+  </view>
+
+  <view wx:else class="empty-state">
+    <image class="empty-art" src="/images/empty-bag-large.png" mode="aspectFit" />
+    <view>{{emptyMessage}}</view>
+  </view>
+
+  <view wx:if="{{searchPanelOpen}}" class="my-search-drawer {{searchPanelClosing ? 'closing' : ''}}">
+    <view class="my-search-mask sheet-mask-anim" bindtap="closeSearchPanel"></view>
+    <view class="my-search-sheet sheet-panel-anim">
+      <view class="sheet-grab"></view>
+      <view class="my-search-sheet-header">
+        <view class="my-search-sheet-title">搜索我的袋子</view>
+        <button class="my-search-close" bindtap="closeSearchPanel">关闭</button>
+      </view>
+
+      <view class="my-search-panel">
+        <view class="my-search-row">
+          <view class="my-search-field">
+            <view class="my-search-label">日期</view>
+            <picker mode="date" value="{{searchFilters.departureDate}}" bindchange="onSearchDateChange">
+              <view class="my-search-picker {{searchFilters.departureDate ? '' : 'placeholder'}}">{{searchFilters.departureDate || '选择日期'}}</view>
+            </picker>
+          </view>
+          <view class="my-search-field">
+            <view class="my-search-label">袋子编号</view>
+            <picker mode="selector" range="{{bagOptions}}" range-key="label" value="{{bagIndex}}" bindchange="onSearchBagChange">
+              <view class="my-search-picker {{searchFilters.bagNo ? '' : 'placeholder'}}">{{searchFilters.bagNo || '全部编号'}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="my-search-row">
+          <view class="my-search-field">
+            <view class="my-search-label">出发地</view>
+            <input class="my-search-input" value="{{searchFilters.fromCity}}" data-field="fromCity" bindinput="onSearchInput" placeholder="输入出发地" />
+          </view>
+          <view class="my-search-field">
+            <view class="my-search-label">目的地</view>
+            <input class="my-search-input" value="{{searchFilters.toCity}}" data-field="toCity" bindinput="onSearchInput" placeholder="输入目的地" />
+          </view>
+        </view>
+
+        <button class="my-clear-search" bindtap="clearSearchFilters">清空搜索</button>
+      </view>
+    </view>
+  </view>
+</view>

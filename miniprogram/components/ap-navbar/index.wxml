@@ -1,0 +1,13 @@
+<view class="ap-navbar-placeholder" style="height: {{navTotal}}px;"></view>
+<view class="ap-navbar {{collapsed ? 'collapsed' : ''}}" style="height: {{navTotal}}px; padding-top: {{statusBarHeight}}px;">
+  <view class="ap-navbar-bar" style="height: {{navHeight}}px;">
+    <view class="ap-navbar-back" hover-class="ap-navbar-back-press" hover-stay-time="90" bindtap="onBack">
+      <view wx:if="{{canGoBack}}" class="ap-navbar-chevron"></view>
+      <view wx:else class="ap-navbar-home">Home</view>
+    </view>
+    <view class="ap-navbar-title" style="left: {{sideSpace}}px; right: {{sideSpace}}px;">
+      <view wx:if="{{loading}}" class="ap-navbar-spinner"></view>
+      <text class="ap-navbar-title-text">{{title}}</text>
+    </view>
+  </view>
+</view>

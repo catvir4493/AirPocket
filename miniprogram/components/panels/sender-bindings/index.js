@@ -1,0 +1,269 @@
+const { formatDateTime, formatWeight, toDate } = require("../../../utils/format");
+const { formatSpecialItems } = require("../../../utils/specialItems");
+const { countUp } = require("../../../utils/countUp");
+
+const statusLabels = {
+  pending: "等待确认",
+  locked: "已锁单",
+  contacted: "已联系",
+  picked_up: "已取货",
+  packed: "已打包",
+  delivered_to_carrier: "已送至带货者",
+  completed: "已完成",
+  cancelled: "已取消",
+};
+
+const defaultEmptyMessage = "暂无绑定记录。去 Find Bags 选择一个可用行李额后，会在这里看到历史。";
+const noSearchResultMessage = "没有符合搜索条件的绑定记录。";
+const defaultBagOption = { label: "全部编号", value: "" };
+
+const includesText = (source, keyword) =>
+  !keyword || `${source || ""}`.toLowerCase().includes(keyword.toLowerCase());
+
+const buildBagOptions = (items) => {
+  const seen = {};
+  const options = [defaultBagOption];
+  (items || []).forEach((item) => {
+    const bagNo = `${item.bagNo || ""}`.trim();
+    if (bagNo && !seen[bagNo]) {
+      seen[bagNo] = true;
+      options.push({ label: bagNo, value: bagNo });
+    }
+  });
+  return options;
+};
+
+const getEditState = (binding) => {
+  const lockDeadlineAt = toDate(binding.lockDeadlineAt);
+  const now = new Date();
+  const canEdit =
+    binding.status === "pending" && lockDeadlineAt && lockDeadlineAt.getTime() > now.getTime();
+
+  if (canEdit) {
+    const remainingMinutes = Math.max(
+      1,
+      Math.ceil((lockDeadlineAt.getTime() - now.getTime()) / 60000)
+    );
+    return {
+      canEdit: true,
+      lockText: `可编辑，剩余 ${remainingMinutes} 分钟`,
+    };
+  }
+
+  if (binding.status === "cancelled") {
+    return {
+      canEdit: false,
+      lockText: "已取消",
+    };
+  }
+
+  return {
+    canEdit: false,
+    lockText: binding.status === "pending" ? "锁单信息待同步" : "已锁单，需联系平台修改",
+  };
+};
+
+Component({
+  options: {
+    styleIsolation: "apply-shared",
+  },
+
+  data: {
+    loading: true,
+    allBindings: [],
+    bindings: [],
+    searchPanelOpen: false,
+    searchPanelClosing: false,
+    statCount: 0,
+    hasSearchFilters: false,
+    bagOptions: [defaultBagOption],
+    bagIndex: 0,
+    searchFilters: {
+      departureDate: "",
+      fromCity: "",
+      toCity: "",
+      bagNo: "",
+    },
+    emptyMessage: defaultEmptyMessage,
+  },
+
+  lifetimes: {
+    detached() {
+      this.cleanup();
+    },
+  },
+
+  methods: {
+    onPanelShow() {
+      this.fetchBindings();
+    },
+
+    refresh() {
+      return this.fetchBindings();
+    },
+
+    cleanup() {
+      clearTimeout(this.closeSearchTimer);
+      clearTimeout(this._countUpTimer);
+    },
+
+    async fetchBindings() {
+      // After the first load, refresh silently so the list does not flash on return.
+      if (!this.hasLoaded) {
+        this.setData({ loading: true });
+      }
+      try {
+        const resp = await wx.cloud.callFunction({
+          name: "getMySenderBindings",
+        });
+        const result = resp.result || {};
+        if (!result.success) {
+          throw new Error(result.errMsg || "加载失败");
+        }
+        const bindings = (result.data || []).map((binding) => ({
+          ...binding,
+          ...getEditState(binding),
+          spaceTypeText: binding.spaceType === "fullCase" ? "整箱" : "散件",
+          requestedCasesText: `${Number(binding.requestedCases || (binding.spaceType === "fullCase" ? 1 : 0))} 件`,
+          requestedWeightText: formatWeight(binding.requestedWeight),
+          requestedSpecialItemsText: formatSpecialItems(binding.requestedSpecialItems),
+          listDateText: binding.departureDate || "-",
+          listRouteText: `${binding.fromCity || "-"} - ${binding.toCity || "-"}`,
+          createdAtText: formatDateTime(binding.createdAt),
+          lockDeadlineText: formatDateTime(binding.lockDeadlineAt),
+          lockedAtText: formatDateTime(binding.lockedAt),
+          statusText: statusLabels[binding.status] || binding.status,
+        }));
+        const bagOptions = buildBagOptions(bindings);
+        const nextBagIndex = Math.max(
+          0,
+          bagOptions.findIndex((item) => item.value === this.data.searchFilters.bagNo)
+        );
+        this.setData({
+          allBindings: bindings,
+          bagOptions,
+          bagIndex: nextBagIndex,
+          "searchFilters.bagNo": bagOptions[nextBagIndex].value,
+        });
+        this.applySearchFilters(bindings);
+        if (!this.hasLoaded) {
+          countUp(this, { statCount: this.data.bindings.length });
+        }
+        this.hasLoaded = true;
+      } catch (error) {
+        wx.showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      } finally {
+        this.setData({ loading: false });
+      }
+    },
+
+    getVisibleBindings(allBindings, filters) {
+      const departureDate = `${filters.departureDate || ""}`.trim();
+      const fromCity = `${filters.fromCity || ""}`.trim();
+      const toCity = `${filters.toCity || ""}`.trim();
+      const bagNo = `${filters.bagNo || ""}`.trim();
+
+      return (allBindings || []).filter((binding) => {
+        const matchesDate = !departureDate || binding.departureDate === departureDate;
+        const matchesFromCity = includesText(binding.fromCity, fromCity);
+        const matchesToCity = includesText(binding.toCity, toCity);
+        const matchesBagNo = !bagNo || binding.bagNo === bagNo;
+        return matchesDate && matchesFromCity && matchesToCity && matchesBagNo;
+      });
+    },
+
+    applySearchFilters(nextAllBindings) {
+      const allBindings = nextAllBindings || this.data.allBindings;
+      const visibleBindings = this.getVisibleBindings(allBindings, this.data.searchFilters);
+      const hasSearchFilters = Boolean(
+        this.data.searchFilters.departureDate ||
+          this.data.searchFilters.fromCity ||
+          this.data.searchFilters.toCity ||
+          this.data.searchFilters.bagNo
+      );
+
+      this.setData({
+        bindings: visibleBindings,
+        statCount: visibleBindings.length,
+        hasSearchFilters,
+        emptyMessage: allBindings.length
+          ? hasSearchFilters
+            ? noSearchResultMessage
+            : defaultEmptyMessage
+          : defaultEmptyMessage,
+      });
+    },
+
+    openSearchPanel() {
+      clearTimeout(this.closeSearchTimer);
+      clearTimeout(this._countUpTimer);
+      this.setData({ searchPanelOpen: true, searchPanelClosing: false });
+    },
+
+    closeSearchPanel() {
+      if (!this.data.searchPanelOpen || this.data.searchPanelClosing) {
+        return;
+      }
+      this.setData({ searchPanelClosing: true });
+      this.closeSearchTimer = setTimeout(() => {
+        this.setData({ searchPanelOpen: false, searchPanelClosing: false });
+      }, 240);
+    },
+
+    onSearchInput(event) {
+      const { field } = event.currentTarget.dataset;
+      this.setData(
+        {
+          [`searchFilters.${field}`]: event.detail.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    onSearchDateChange(event) {
+      this.setData(
+        {
+          "searchFilters.departureDate": event.detail.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    onSearchBagChange(event) {
+      const bagIndex = Number(event.detail.value || 0);
+      const bagOption = this.data.bagOptions[bagIndex] || defaultBagOption;
+      this.setData(
+        {
+          bagIndex,
+          "searchFilters.bagNo": bagOption.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    clearSearchFilters() {
+      this.setData(
+        {
+          bagIndex: 0,
+          searchFilters: {
+            departureDate: "",
+            fromCity: "",
+            toCity: "",
+            bagNo: "",
+          },
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    openBindingDetail(event) {
+      const { id } = event.currentTarget.dataset;
+      wx.navigateTo({
+        url: `/pages/find-bags/binding-detail/detail?id=${id}`,
+      });
+    },
+  },
+});

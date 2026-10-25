@@ -1,3 +1,9 @@
 {
-  "navigationBarTitleText": "Offer Space"
+  "navigationBarTitleText": "Offer Space",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "offer-menu-panel": "/components/panels/offer-menu/index",
+    "carrier-bags-panel": "/components/panels/carrier-bags/index"
+  }
 }

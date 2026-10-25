@@ -23,7 +23,8 @@
     "navigationBarTextStyle": "black"
   },
   "usingComponents": {
-    "ap-tabbar": "/components/ap-tabbar/index"
+    "ap-tabbar": "/components/ap-tabbar/index",
+    "ap-navbar": "/components/ap-navbar/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

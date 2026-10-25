@@ -1,105 +1,16 @@
-<view class="page find-page">
-  <view class="page-title fade-up">Find Bags</view>
+<ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 
-  <view class="welcome-card fade-up delay-1">
-    <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
-    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
-      <view class="welcome-watermark">WELCOME AIRPOCKET</view>
-      <view class="traveler-scene">
-        <view class="traveler traveler-a">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-a"></view>
-        <view class="traveler traveler-b">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-b"></view>
-      </view>
-    </view>
+<view class="page tab-shell">
+  <view class="page-title large-title">
+    <block wx:for="{{[activeTab]}}" wx:key="*this"><view class="title-swap">{{titles[item]}}</view></block>
   </view>
 
-  <view class="bag-list-header fade-up delay-2">
-    <view class="bag-list-title">Available Bags · <block wx:for="{{[bags.length]}}" wx:key="*this"><text class="count-swap">{{item}}</text></block></view>
-    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters">筛选<view wx:if="{{hasActiveFilters}}" class="filter-dot"></view></button>
+  <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? '' : 'tab-panel-hidden'}}">
+    <find-list-panel id="panel-1" />
+  </view>
+  <view wx:if="{{visited[2]}}" class="tab-panel {{activeTab === 2 ? '' : 'tab-panel-hidden'}}">
+    <sender-bindings-panel id="panel-2" />
   </view>
 
-  <view wx:if="{{loading}}" class="bag-skeleton-list">
-    <view wx:for="{{[0, 1, 2]}}" wx:key="*this" class="bag-skeleton skeleton-shine">
-      <view class="bag-skeleton-line wide"></view>
-      <view class="bag-skeleton-line short"></view>
-    </view>
-  </view>
-
-  <block wx:elif="{{bags.length}}">
-    <view wx:for="{{bags}}" wx:key="_id" class="bag-card list-enter {{item.cardReverse ? 'reverse' : ''}}" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms" hover-class="bag-card-hover" hover-stay-time="80" data-id="{{item._id}}" bindtap="openDetail">
-      <view class="bag-card-inner">
-        <view class="bag-card-top">
-          <text wx:if="{{!item.cardReverse}}" class="bag-date">{{item.listDateText}}</text>
-          <text class="bag-route">{{item.listRouteText}}</text>
-          <text wx:if="{{item.cardReverse}}" class="bag-date">{{item.listDateText}}</text>
-        </view>
-        <view class="bag-card-bottom">
-          <text wx:if="{{!item.cardReverse}}" class="bag-weight">{{item.listWeightText}}</text>
-          <text class="bag-tags">{{item.listTagsText}}</text>
-          <text wx:if="{{item.cardReverse}}" class="bag-weight">{{item.listWeightText}}</text>
-        </view>
-      </view>
-    </view>
-  </block>
-
-  <view wx:else class="empty-state">
-    <image class="empty-art" src="/images/empty-bag-large.png" mode="aspectFit" />
-    <view>{{emptyMessage}}</view>
-  </view>
-
-  <ap-tabbar preset="find" current="{{1}}" />
-
-  <view wx:if="{{filterPanelOpen}}" class="filter-drawer {{filterPanelClosing ? 'closing' : ''}}">
-    <view class="filter-mask sheet-mask-anim" bindtap="closeFilters"></view>
-    <view class="filter-sheet sheet-panel-anim">
-      <view class="sheet-grab"></view>
-      <view class="filter-sheet-header">
-        <view class="filter-sheet-title">筛选</view>
-        <button class="filter-sheet-close" bindtap="closeFilters">关闭</button>
-      </view>
-
-      <view class="filter-panel">
-        <view class="filter-row">
-          <view class="filter-field">
-            <view class="filter-label">From</view>
-            <input class="filter-input" value="{{filters.fromCity}}" data-field="fromCity" bindinput="onFilterInput" placeholder="出发地" />
-          </view>
-          <view class="filter-field">
-            <view class="filter-label">To</view>
-            <input class="filter-input" value="{{filters.toCity}}" data-field="toCity" bindinput="onFilterInput" placeholder="目的地" />
-          </view>
-        </view>
-
-        <view class="filter-row">
-          <view class="filter-field">
-            <view class="filter-label">Date</view>
-            <picker mode="date" value="{{filters.departureDate}}" bindchange="onFilterDateChange">
-              <view class="filter-picker {{filters.departureDate ? '' : 'placeholder'}}">{{filters.departureDate || '选择日期'}}</view>
-            </picker>
-          </view>
-          <view class="filter-field">
-            <view class="filter-label">Sort</view>
-            <picker mode="selector" range="{{sortOptions}}" range-key="label" value="{{sortIndex}}" bindchange="onSortChange">
-              <view class="filter-picker">{{currentSortLabel}}</view>
-            </picker>
-          </view>
-        </view>
-
-        <view class="filter-type-row">
-          <button wx:for="{{spaceTypeOptions}}" wx:key="value" class="filter-type {{filters.spaceType === item.value ? 'active' : ''}}" data-type="{{item.value}}" bindtap="selectSpaceType">{{item.label}}</button>
-        </view>
-
-        <button class="clear-filter" bindtap="clearFilters">清空筛选</button>
-      </view>
-    </view>
-  </view>
+  <ap-tabbar preset="find" current="{{activeTab}}" inline bind:change="onTabChange" />
 </view>

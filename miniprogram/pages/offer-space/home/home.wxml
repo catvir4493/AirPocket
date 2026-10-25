@@ -1,46 +1,16 @@
-<view class="page offer-page">
-  <view class="page-title fade-up">Offer Space</view>
+<ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 
-  <view class="welcome-card fade-up delay-1">
-    <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
-    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
-      <view class="welcome-watermark">WELCOME AIRPOCKET</view>
-      <view class="traveler-scene">
-        <view class="traveler traveler-a">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-a"></view>
-        <view class="traveler traveler-b">
-          <view class="head"></view>
-          <view class="body"></view>
-          <view class="leg-row"><view></view><view></view></view>
-        </view>
-        <view class="scene-case case-b"></view>
-      </view>
-    </view>
+<view class="page tab-shell">
+  <view class="page-title large-title">
+    <block wx:for="{{[activeTab]}}" wx:key="*this"><view class="title-swap">{{titles[item]}}</view></block>
   </view>
 
-  <view class="offer-menu">
-    <view class="offer-menu-title fade-up delay-2">Welcome to Airpocket</view>
-
-    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
-      <view class="offer-menu-dot"></view>
-      <view class="offer-menu-copy">
-        <view class="offer-menu-name">Release bags</view>
-        <view class="offer-menu-desc">发布新袋子</view>
-      </view>
-    </view>
-
-    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goMyBags">
-      <view class="offer-menu-dot"></view>
-      <view class="offer-menu-copy">
-        <view class="offer-menu-name">My Bags</view>
-        <view class="offer-menu-desc">查看我的袋子</view>
-      </view>
-    </view>
+  <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? '' : 'tab-panel-hidden'}}">
+    <offer-menu-panel id="panel-1" bind:switchtab="onPanelSwitch" />
+  </view>
+  <view wx:if="{{visited[2]}}" class="tab-panel {{activeTab === 2 ? '' : 'tab-panel-hidden'}}">
+    <carrier-bags-panel id="panel-2" />
   </view>
 
-  <ap-tabbar preset="offer" current="{{1}}" />
+  <ap-tabbar preset="offer" current="{{activeTab}}" inline bind:change="onTabChange" />
 </view>

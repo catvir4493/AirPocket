@@ -1,0 +1,42 @@
+<view class="offer-panel">
+  <view class="welcome-card fade-up delay-1">
+    <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
+    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
+      <view class="welcome-watermark">WELCOME AIRPOCKET</view>
+      <view class="traveler-scene">
+        <view class="traveler traveler-a">
+          <view class="head"></view>
+          <view class="body"></view>
+          <view class="leg-row"><view></view><view></view></view>
+        </view>
+        <view class="scene-case case-a"></view>
+        <view class="traveler traveler-b">
+          <view class="head"></view>
+          <view class="body"></view>
+          <view class="leg-row"><view></view><view></view></view>
+        </view>
+        <view class="scene-case case-b"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="offer-menu">
+    <view class="offer-menu-title fade-up delay-2">Welcome to Airpocket</view>
+
+    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
+      <view class="offer-menu-dot"></view>
+      <view class="offer-menu-copy">
+        <view class="offer-menu-name">Release bags</view>
+        <view class="offer-menu-desc">发布新袋子</view>
+      </view>
+    </view>
+
+    <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goMyBags">
+      <view class="offer-menu-dot"></view>
+      <view class="offer-menu-copy">
+        <view class="offer-menu-name">My Bags</view>
+        <view class="offer-menu-desc">查看我的袋子</view>
+      </view>
+    </view>
+  </view>
+</view>

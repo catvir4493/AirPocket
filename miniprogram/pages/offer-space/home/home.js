@@ -1,27 +1,14 @@
+const { createTabShell } = require("../../../utils/tabShell");
+
+const shell = createTabShell({
+  titles: ["", "Offer Space", "My Bags"],
+  initialTab: 1,
+});
+
 Page({
-  data: {
-    scenePaused: false,
-  },
+  ...shell,
 
-  onShow() {
-    if (this.data.scenePaused) {
-      this.setData({ scenePaused: false });
-    }
-  },
-
-  onHide() {
-    this.setData({ scenePaused: true });
-  },
-
-  goReleaseBag() {
-    wx.navigateTo({
-      url: "/pages/offer-space/release/release",
-    });
-  },
-
-  goMyBags() {
-    wx.navigateTo({
-      url: "/pages/offer-space/my/my",
-    });
+  onPanelSwitch(event) {
+    this.switchTab(event.detail.index);
   },
 });
