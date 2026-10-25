@@ -16,6 +16,8 @@ const isPastDate = (value, minDate) => value && value < minDate;
 Page({
   data: {
     submitting: false,
+    releasedNo: "",
+    focusedField: "",
     minDate: today(),
     specialItemOptions: buildSpecialItemOptions([]),
     form: {
@@ -148,6 +150,20 @@ Page({
     });
   },
 
+  onUnload() {
+    clearTimeout(this.redirectTimer);
+  },
+
+  onFieldFocus(event) {
+    this.setData({ focusedField: event.currentTarget.dataset.focus });
+  },
+
+  onFieldBlur(event) {
+    if (this.data.focusedField === event.currentTarget.dataset.focus) {
+      this.setData({ focusedField: "" });
+    }
+  },
+
   async submitBag() {
     if (this.data.submitting) {
       return;
@@ -190,11 +206,9 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "发布失败");
       }
-      wx.showToast({
-        title: `${result.data.bagNo} 已发布`,
-        icon: "success",
-      });
-      setTimeout(() => {
+      this.setData({ releasedNo: result.data.bagNo || "Bag" });
+      wx.vibrateShort({ type: "light" });
+      this.redirectTimer = setTimeout(() => {
         wx.redirectTo({
           url: "/pages/offer-space/my/my",
         });

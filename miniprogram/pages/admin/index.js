@@ -1,5 +1,6 @@
 const { formatDateTime, formatWeight, toDate } = require("../../utils/format");
 const { formatSpecialItems } = require("../../utils/specialItems");
+const { countUp } = require("../../utils/countUp");
 
 const bagStatusLabels = {
   active: "可绑定",
@@ -126,7 +127,7 @@ const getStatusLabel = (targetType, status) => {
 
 Page({
   data: {
-    loading: false,
+    loading: true,
     errorMessage: "",
     searchKeyword: "",
     bindingFilterIndex: 0,
@@ -144,6 +145,12 @@ Page({
       todayNewCount: 0,
       auditLogCount: 0,
     },
+    summaryView: {
+      bagCount: 0,
+      bindingCount: 0,
+      pendingCount: 0,
+      todayNewCount: 0,
+    },
     allBags: [],
     allBindings: [],
     bags: [],
@@ -159,11 +166,18 @@ Page({
     this.fetchDashboard().finally(() => wx.stopPullDownRefresh());
   },
 
+  onUnload() {
+    clearTimeout(this._countUpTimer);
+  },
+
   async fetchDashboard() {
-    this.setData({
-      loading: true,
-      errorMessage: "",
-    });
+    // After the first load (and after status updates), refresh silently instead of blanking the page.
+    if (!this.hasLoaded) {
+      this.setData({
+        loading: true,
+        errorMessage: "",
+      });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "adminGetDashboard",
@@ -174,7 +188,21 @@ Page({
       }
 
       const mapped = this.mapDashboard(result);
-      this.setData(mapped, () => this.applyFilters());
+      this.setData({ ...mapped, errorMessage: "" }, () => this.applyFilters());
+      const { bagCount, bindingCount, pendingCount, todayNewCount } = mapped.summary;
+      const summaryView = { bagCount, bindingCount, pendingCount, todayNewCount };
+      if (this.hasLoaded) {
+        this.setData({ summaryView });
+      } else {
+        countUp(
+          this,
+          Object.keys(summaryView).reduce((acc, key) => {
+            acc[`summaryView.${key}`] = summaryView[key];
+            return acc;
+          }, {})
+        );
+      }
+      this.hasLoaded = true;
     } catch (error) {
       this.setData({
         errorMessage: error.message || "加载失败",

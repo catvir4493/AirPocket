@@ -1,5 +1,6 @@
 .detail-code {
   position: relative;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) backwards;
   margin: 54rpx 0 34rpx;
   padding-left: 44rpx;
   color: #222222;
@@ -25,6 +26,8 @@
 
 .detail-row {
   position: relative;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) backwards;
+  animation-delay: 420ms;
   display: flex;
   align-items: center;
   min-height: 58rpx;
@@ -42,6 +45,16 @@
   border-radius: 50%;
   background: #222222;
 }
+
+.detail-row:nth-child(1) { animation-delay: 60ms; }
+.detail-row:nth-child(2) { animation-delay: 100ms; }
+.detail-row:nth-child(3) { animation-delay: 140ms; }
+.detail-row:nth-child(4) { animation-delay: 180ms; }
+.detail-row:nth-child(5) { animation-delay: 220ms; }
+.detail-row:nth-child(6) { animation-delay: 260ms; }
+.detail-row:nth-child(7) { animation-delay: 300ms; }
+.detail-row:nth-child(8) { animation-delay: 340ms; }
+.detail-row:nth-child(9) { animation-delay: 380ms; }
 
 .detail-label {
   flex: 0 0 162rpx;
@@ -71,6 +84,26 @@
 
 .detail-form {
   margin-top: 36rpx;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) 300ms backwards;
+}
+
+.detail-skeleton {
+  margin-top: 54rpx;
+}
+
+.detail-skeleton-code {
+  width: 220rpx;
+  height: 34rpx;
+  margin-bottom: 40rpx;
+  border-radius: 12rpx;
+  background: #ececec;
+}
+
+.detail-skeleton-row {
+  height: 54rpx;
+  margin-bottom: 18rpx;
+  border-radius: 8rpx;
+  background: #f1f1f1;
 }
 
 .primary-button {

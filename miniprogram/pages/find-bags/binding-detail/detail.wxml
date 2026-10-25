@@ -1,7 +1,10 @@
 <view class="page no-bottom-nav detail-page">
-  <view class="detail-page-title">My Bag Detail</view>
+  <view class="detail-page-title fade-up">My Bag Detail</view>
 
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view wx:if="{{loading}}" class="detail-skeleton">
+    <view class="detail-skeleton-code skeleton-shine"></view>
+    <view wx:for="{{[0, 1, 2, 3, 4, 5]}}" wx:key="*this" class="detail-skeleton-row skeleton-shine"></view>
+  </view>
 
   <block wx:elif="{{binding}}">
     <view class="detail-code">#{{binding.bagNo}}</view>

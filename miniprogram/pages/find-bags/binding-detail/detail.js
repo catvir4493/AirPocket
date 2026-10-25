@@ -46,7 +46,7 @@ Page({
   data: {
     bindingId: "",
     binding: null,
-    loading: false,
+    loading: true,
     cancelling: false,
   },
 
@@ -56,6 +56,7 @@ Page({
         title: "缺少 binding 信息",
         icon: "none",
       });
+      this.setData({ loading: false });
       return;
     }
 

@@ -3,16 +3,16 @@
     <image class="home-pattern-art" src="/images/300分辨率/home首页.png" mode="aspectFit" />
   </view>
 
-  <view class="home-logo-wrap fade-up delay-1" bindlongpress="requestAdminAccess">
-    <view class="home-logo-block">
+  <view class="home-logo-wrap" bindlongpress="requestAdminAccess">
+    <view class="home-logo-block logo-enter">
       <image class="home-logo-image" src="/images/300分辨率/logo.png" mode="aspectFit" />
       <view class="home-logo-subtitle">Luggage Sharing Space</view>
       <view class="home-logo-cn">行李空间共享平台</view>
     </view>
   </view>
 
-  <view class="home-menu fade-up delay-2">
-    <view class="home-menu-title">Welcome to Airpocket</view>
+  <view class="home-menu">
+    <view class="home-menu-title fade-up delay-2">Welcome to Airpocket</view>
 
     <view class="home-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goFindBags">
       <view class="home-menu-dot"></view>

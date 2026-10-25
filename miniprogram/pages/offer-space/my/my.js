@@ -1,3 +1,5 @@
+const { countUp } = require("../../../utils/countUp");
+
 const defaultEmptyMessage = "暂无发布记录。回到 Offer Space 后点击 Release Bag 发布一个新的空余行李额。";
 const noSearchResultMessage = "没有符合搜索条件的发布记录。";
 const defaultBagOption = { label: "全部编号", value: "" };
@@ -25,6 +27,7 @@ Page({
     bags: [],
     searchPanelOpen: false,
     searchPanelClosing: false,
+    statCount: 0,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -47,6 +50,7 @@ Page({
 
   onUnload() {
     clearTimeout(this.closeSearchTimer);
+    clearTimeout(this._countUpTimer);
   },
 
   async fetchBags() {
@@ -81,6 +85,9 @@ Page({
         "searchFilters.bagNo": bagOptions[nextBagIndex].value,
       });
       this.applySearchFilters(bags);
+      if (!this.hasLoaded) {
+        countUp(this, { statCount: this.data.bags.length });
+      }
       this.hasLoaded = true;
     } catch (error) {
       wx.showToast({
@@ -119,6 +126,7 @@ Page({
 
     this.setData({
       bags: visibleBags,
+      statCount: visibleBags.length,
       hasSearchFilters,
       emptyMessage: allBags.length
         ? hasSearchFilters
@@ -130,6 +138,7 @@ Page({
 
   openSearchPanel() {
     clearTimeout(this.closeSearchTimer);
+    clearTimeout(this._countUpTimer);
     this.setData({ searchPanelOpen: true, searchPanelClosing: false });
   },
 

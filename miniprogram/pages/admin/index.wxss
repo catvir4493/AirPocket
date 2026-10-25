@@ -1,5 +1,5 @@
 .admin-page {
-  padding-bottom: 80rpx;
+  padding-bottom: calc(80rpx + env(safe-area-inset-bottom));
 }
 
 .summary-grid {
@@ -11,13 +11,26 @@
 
 .summary-item {
   box-sizing: border-box;
-  padding: 24rpx;
-  border: 1rpx solid #d8d8d8;
-  background: #ffffff;
+  padding: 26rpx;
+  border-radius: 22rpx;
+  background: #f6f6f3;
+}
+
+.summary-item:first-child {
+  background: #2f2f2f;
+}
+
+.summary-item:first-child .summary-number {
+  color: #fff51f;
+}
+
+.summary-item:first-child .summary-label {
+  color: #cfcfcf;
 }
 
 .summary-number {
   color: #111111;
+  font-variant-numeric: tabular-nums;
   font-size: 46rpx;
   font-weight: 900;
   line-height: 1;
@@ -31,8 +44,8 @@
 
 .filter-panel {
   padding: 22rpx;
-  border: 1rpx solid #d8d8d8;
-  background: #ffffff;
+  border-radius: 22rpx;
+  background: #f6f6f3;
 }
 
 .admin-search {
@@ -40,7 +53,8 @@
   width: 100%;
   min-height: 76rpx;
   padding: 0 22rpx;
-  background: #eeeeee;
+  border-radius: 14rpx;
+  background: #ffffff;
   color: #111111;
   font-size: 26rpx;
 }
@@ -59,7 +73,8 @@
   box-sizing: border-box;
   min-height: 68rpx;
   padding: 18rpx 16rpx;
-  background: #eeeeee;
+  border-radius: 14rpx;
+  background: #ffffff;
   color: #333333;
   font-size: 23rpx;
   line-height: 1.25;
@@ -68,9 +83,10 @@
 .reset-button {
   min-height: 64rpx;
   margin-top: 16rpx;
-  border: 1rpx solid #765cff;
-  background: #ffffff;
-  color: #765cff;
+  border: 1rpx solid #2f2f2f;
+  border-radius: 999rpx;
+  background: transparent;
+  color: #2f2f2f;
   font-size: 24rpx;
   font-weight: 800;
 }
@@ -96,8 +112,8 @@
   min-width: 52rpx;
   padding: 6rpx 12rpx;
   border-radius: 999rpx;
-  background: #765cff;
-  color: #ffffff;
+  background: #2f2f2f;
+  color: #fff51f;
   font-size: 22rpx;
   font-weight: 800;
   text-align: center;
@@ -105,9 +121,28 @@
 
 .work-card,
 .bag-card {
-  padding: 22rpx 0;
-  border-bottom: 1rpx solid #9f9f9f;
-  background: #ffffff;
+  margin-bottom: 18rpx;
+  padding: 26rpx;
+  border-radius: 22rpx;
+  background: #f6f6f3;
+}
+
+.pill.status-cancelled {
+  background: #ececec;
+  color: #777777;
+}
+
+.pill.status-completed,
+.pill.status-delivered_to_carrier {
+  background: #2f2f2f;
+  color: #fff51f;
+}
+
+.admin-skeleton-card {
+  height: 260rpx;
+  margin-bottom: 18rpx;
+  border-radius: 22rpx;
+  background: #f4f4f1;
 }
 
 .work-top {
@@ -155,8 +190,9 @@
 
 .sensitive-block {
   margin-top: 16rpx;
-  padding: 16rpx;
-  background: #eeeeee;
+  padding: 18rpx;
+  border-radius: 14rpx;
+  background: #ffffff;
 }
 
 .sensitive-label {
@@ -193,10 +229,15 @@
   text-align: center;
 }
 
+.status-button {
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
 .status-button.active {
-  border-color: #765cff;
-  background: #765cff;
-  color: #ffffff;
+  border-color: #2f2f2f;
+  background: #2f2f2f;
+  color: #fff51f;
+  animation: ap-pop 320ms var(--ease-spring);
 }
 
 .bag-meta {
@@ -237,7 +278,7 @@
 
 .audit-status {
   margin-top: 8rpx;
-  color: #765cff;
+  color: #8a7d00;
   font-size: 24rpx;
   font-weight: 800;
 }

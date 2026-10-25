@@ -14,9 +14,14 @@
   text-align: left;
 }
 
+.type-option {
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
 .type-option.active {
   border-color: #fff51f;
   background: #fff51f;
+  animation: ap-pop 320ms var(--ease-spring);
 }
 
 .type-title {

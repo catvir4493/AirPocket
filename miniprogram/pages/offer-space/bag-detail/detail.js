@@ -74,7 +74,7 @@ Page({
   data: {
     bagId: "",
     bag: null,
-    loading: false,
+    loading: true,
   },
 
   onLoad(options) {
@@ -83,6 +83,7 @@ Page({
         title: "缺少 bag 信息",
         icon: "none",
       });
+      this.setData({ loading: false });
       return;
     }
 

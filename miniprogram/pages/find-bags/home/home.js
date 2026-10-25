@@ -52,6 +52,7 @@ Page({
     bags: [],
     filterPanelOpen: false,
     filterPanelClosing: false,
+    scenePaused: false,
     hasActiveFilters: false,
     filters: {
       fromCity: "",
@@ -68,7 +69,14 @@ Page({
   },
 
   onShow() {
+    if (this.data.scenePaused) {
+      this.setData({ scenePaused: false });
+    }
     this.fetchBags();
+  },
+
+  onHide() {
+    this.setData({ scenePaused: true });
   },
 
   onPullDownRefresh() {

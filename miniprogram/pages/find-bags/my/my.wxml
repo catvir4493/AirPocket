@@ -7,7 +7,7 @@
     <view class="my-stat-row">
       <view class="my-stat">
         <view class="my-stat-label">总数量</view>
-        <view class="my-stat-value">{{bindings.length}}</view>
+        <view class="my-stat-value">{{statCount}}</view>
       </view>
       <view class="my-stat">
         <view class="my-stat-label">类型</view>
@@ -34,7 +34,10 @@
     </view>
   </view>
 
-  <view wx:else class="empty-state">{{emptyMessage}}</view>
+  <view wx:else class="empty-state">
+    <image class="empty-art" src="/images/empty-bag-large.png" mode="aspectFit" />
+    <view>{{emptyMessage}}</view>
+  </view>
 
   <ap-tabbar preset="find" current="{{2}}" />
 

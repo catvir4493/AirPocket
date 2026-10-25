@@ -1,22 +1,22 @@
 <view class="page admin-page">
-  <view class="page-title">Admin Desk</view>
+  <view class="page-title fade-up">Admin Desk</view>
   <view class="page-subtitle">客服工作台：处理绑定、查看地址与联系方式、推进订单状态。</view>
 
   <view class="summary-grid">
     <view class="summary-item">
-      <view class="summary-number">{{summary.pendingCount}}</view>
+      <view class="summary-number">{{summaryView.pendingCount}}</view>
       <view class="summary-label">待处理</view>
     </view>
     <view class="summary-item">
-      <view class="summary-number">{{summary.todayNewCount}}</view>
+      <view class="summary-number">{{summaryView.todayNewCount}}</view>
       <view class="summary-label">今日新增</view>
     </view>
     <view class="summary-item">
-      <view class="summary-number">{{summary.bagCount}}</view>
+      <view class="summary-number">{{summaryView.bagCount}}</view>
       <view class="summary-label">Bags</view>
     </view>
     <view class="summary-item">
-      <view class="summary-number">{{summary.bindingCount}}</view>
+      <view class="summary-number">{{summaryView.bindingCount}}</view>
       <view class="summary-label">Bindings</view>
     </view>
   </view>
@@ -34,7 +34,9 @@
     <button class="reset-button" bindtap="resetFilters">重置筛选</button>
   </view>
 
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view wx:if="{{loading}}" class="desk-section">
+    <view wx:for="{{[0, 1]}}" wx:key="*this" class="admin-skeleton-card skeleton-shine"></view>
+  </view>
   <view wx:elif="{{errorMessage}}" class="empty-state">{{errorMessage}}</view>
 
   <block wx:else>
@@ -51,7 +53,7 @@
               <view class="work-code">{{item.bagNo}} · {{item.amountText}}</view>
               <view class="work-route">{{item.departureDate}} · {{item.fromCity}} → {{item.toCity}}</view>
             </view>
-            <view class="pill warning">{{item.statusText}}</view>
+            <view class="pill status-{{item.status}}">{{item.statusText}}</view>
           </view>
 
           <view class="info-grid">

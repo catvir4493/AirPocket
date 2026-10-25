@@ -69,3 +69,61 @@
   color: #9b9b9b;
   font-size: 23rpx;
 }
+
+/* Menu entrance: items slide in one by one, the timeline draws downward after each. */
+.offer-menu-item {
+  animation: ap-slide-in var(--dur-slow) var(--ease-out) backwards;
+}
+
+.offer-menu-item::after {
+  transform-origin: top;
+  animation: ap-draw-line 420ms var(--ease-out) backwards;
+}
+
+.offer-menu-item:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.offer-menu-item:nth-child(2)::after {
+  animation-delay: 260ms;
+}
+
+.offer-menu-item:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.offer-menu-item:nth-child(3)::after {
+  animation-delay: 320ms;
+}
+
+.offer-menu-item:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.offer-menu-item:nth-child(4)::after {
+  animation-delay: 380ms;
+}
+
+.offer-menu-item:nth-child(5) {
+  animation-delay: 300ms;
+}
+
+.offer-menu-item:nth-child(5)::after {
+  animation-delay: 440ms;
+}
+
+.offer-menu-item:nth-child(6) {
+  animation-delay: 360ms;
+}
+
+.offer-menu-item:nth-child(6)::after {
+  animation-delay: 500ms;
+}
+
+.offer-menu-item:nth-child(7) {
+  animation-delay: 420ms;
+}
+
+.offer-menu-item:nth-child(7)::after {
+  animation-delay: 560ms;
+}

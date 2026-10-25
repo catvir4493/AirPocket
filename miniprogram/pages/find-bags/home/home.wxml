@@ -3,7 +3,7 @@
 
   <view class="welcome-card fade-up delay-1">
     <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
-    <view class="welcome-stage">
+    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
       <view class="welcome-watermark">WELCOME AIRPOCKET</view>
       <view class="traveler-scene">
         <view class="traveler traveler-a">
@@ -23,8 +23,8 @@
   </view>
 
   <view class="bag-list-header fade-up delay-2">
-    <view class="bag-list-title">Available Bags · {{bags.length}}</view>
-    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters">筛选</button>
+    <view class="bag-list-title">Available Bags · <block wx:for="{{[bags.length]}}" wx:key="*this"><text class="count-swap">{{item}}</text></block></view>
+    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters">筛选<view wx:if="{{hasActiveFilters}}" class="filter-dot"></view></button>
   </view>
 
   <view wx:if="{{loading}}" class="bag-skeleton-list">
@@ -51,7 +51,10 @@
     </view>
   </block>
 
-  <view wx:else class="empty-state">{{emptyMessage}}</view>
+  <view wx:else class="empty-state">
+    <image class="empty-art" src="/images/empty-bag-large.png" mode="aspectFit" />
+    <view>{{emptyMessage}}</view>
+  </view>
 
   <ap-tabbar preset="find" current="{{1}}" />
 

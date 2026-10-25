@@ -10,8 +10,10 @@ Page({
   data: {
     bagId: "",
     bag: null,
-    loading: false,
+    loading: true,
     submitting: false,
+    bindDone: false,
+    focusedField: "",
     specialItemOptions: [],
     form: {
       requestedWeight: "",
@@ -32,10 +34,25 @@ Page({
         title: "缺少 bag 信息",
         icon: "none",
       });
+      this.setData({ loading: false });
       return;
     }
     this.setData({ bagId: options.id });
     this.fetchBag(options.id);
+  },
+
+  onUnload() {
+    clearTimeout(this.redirectTimer);
+  },
+
+  onFieldFocus(event) {
+    this.setData({ focusedField: event.currentTarget.dataset.focus });
+  },
+
+  onFieldBlur(event) {
+    if (this.data.focusedField === event.currentTarget.dataset.focus) {
+      this.setData({ focusedField: "" });
+    }
   },
 
   async fetchBag(bagId) {
@@ -261,15 +278,13 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "绑定失败");
       }
-      wx.showToast({
-        title: "绑定成功",
-        icon: "success",
-      });
-      setTimeout(() => {
+      this.setData({ bindDone: true });
+      wx.vibrateShort({ type: "light" });
+      this.redirectTimer = setTimeout(() => {
         wx.redirectTo({
           url: "/pages/find-bags/my/my",
         });
-      }, 700);
+      }, 900);
     } catch (error) {
       wx.showToast({
         title: error.message || "绑定失败",

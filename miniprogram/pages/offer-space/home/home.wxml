@@ -3,7 +3,7 @@
 
   <view class="welcome-card fade-up delay-1">
     <image class="welcome-brand-image" src="/images/300分辨率/icon和logo.png" mode="aspectFit" />
-    <view class="welcome-stage">
+    <view class="welcome-stage {{scenePaused ? 'paused' : ''}}">
       <view class="welcome-watermark">WELCOME AIRPOCKET</view>
       <view class="traveler-scene">
         <view class="traveler traveler-a">
@@ -22,8 +22,8 @@
     </view>
   </view>
 
-  <view class="offer-menu fade-up delay-2">
-    <view class="offer-menu-title">Welcome to Airpocket</view>
+  <view class="offer-menu">
+    <view class="offer-menu-title fade-up delay-2">Welcome to Airpocket</view>
 
     <view class="offer-menu-item" hover-class="menu-item-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
       <view class="offer-menu-dot"></view>

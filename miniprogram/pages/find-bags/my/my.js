@@ -1,5 +1,6 @@
 const { formatDateTime, formatWeight, toDate } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
+const { countUp } = require("../../../utils/countUp");
 
 const statusLabels = {
   pending: "等待确认",
@@ -69,6 +70,7 @@ Page({
     bindings: [],
     searchPanelOpen: false,
     searchPanelClosing: false,
+    statCount: 0,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -91,6 +93,7 @@ Page({
 
   onUnload() {
     clearTimeout(this.closeSearchTimer);
+    clearTimeout(this._countUpTimer);
   },
 
   async fetchBindings() {
@@ -132,6 +135,9 @@ Page({
         "searchFilters.bagNo": bagOptions[nextBagIndex].value,
       });
       this.applySearchFilters(bindings);
+      if (!this.hasLoaded) {
+        countUp(this, { statCount: this.data.bindings.length });
+      }
       this.hasLoaded = true;
     } catch (error) {
       wx.showToast({
@@ -170,6 +176,7 @@ Page({
 
     this.setData({
       bindings: visibleBindings,
+      statCount: visibleBindings.length,
       hasSearchFilters,
       emptyMessage: allBindings.length
         ? hasSearchFilters
@@ -181,6 +188,7 @@ Page({
 
   openSearchPanel() {
     clearTimeout(this.closeSearchTimer);
+    clearTimeout(this._countUpTimer);
     this.setData({ searchPanelOpen: true, searchPanelClosing: false });
   },
 
