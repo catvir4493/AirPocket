@@ -319,13 +319,13 @@
   margin-bottom: 20rpx;
   padding: 36rpx 32rpx;
   border-radius: 28rpx;
-  background: #f4f3ec;
+  background: #eef4fa;
 }
 
 .bag-skeleton-line {
   height: 22rpx;
   border-radius: 12rpx;
-  background: #e8e6da;
+  background: #dde8f2;
 }
 
 .bag-skeleton-line.wide {
@@ -345,20 +345,20 @@
   padding: 30rpx 32rpx;
   overflow: hidden;
   border-radius: 28rpx;
-  background-color: #fffef6;
+  background-color: #f7fbff;
   background-image:
-    radial-gradient(ellipse 48% 150% at 6% 50%, rgba(255, 243, 20, 1) 0%, rgba(255, 244, 40, 0.85) 28%, rgba(255, 247, 90, 0.45) 55%, rgba(255, 250, 150, 0.12) 78%, rgba(255, 250, 150, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 34% 115%, rgba(255, 206, 60, 0.35) 0%, rgba(255, 206, 60, 0) 100%);
+    radial-gradient(ellipse 48% 150% at 6% 50%, rgba(105, 175, 232, 1) 0%, rgba(105, 175, 232, 0.85) 28%, rgba(150, 200, 240, 0.45) 55%, rgba(150, 200, 240, 0.12) 78%, rgba(150, 200, 240, 0) 100%),
+    radial-gradient(ellipse 30% 90% at 34% 115%, rgba(90, 160, 230, 0.35) 0%, rgba(90, 160, 230, 0) 100%);
   box-shadow:
-    inset 0 0 0 2rpx rgba(240, 222, 40, 0.45),
-    0 12rpx 28rpx -20rpx rgba(200, 180, 0, 0.5);
+    inset 0 0 0 2rpx rgba(105, 175, 232, 0.45),
+    0 12rpx 28rpx -20rpx rgba(60, 130, 200, 0.5);
   transition: transform 0.15s ease;
 }
 
 .bag-card.reverse {
   background-image:
-    radial-gradient(ellipse 48% 150% at 94% 50%, rgba(255, 243, 20, 1) 0%, rgba(255, 244, 40, 0.85) 28%, rgba(255, 247, 90, 0.45) 55%, rgba(255, 250, 150, 0.12) 78%, rgba(255, 250, 150, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 66% 115%, rgba(255, 206, 60, 0.35) 0%, rgba(255, 206, 60, 0) 100%);
+    radial-gradient(ellipse 48% 150% at 94% 50%, rgba(105, 175, 232, 1) 0%, rgba(105, 175, 232, 0.85) 28%, rgba(150, 200, 240, 0.45) 55%, rgba(150, 200, 240, 0.12) 78%, rgba(150, 200, 240, 0) 100%),
+    radial-gradient(ellipse 30% 90% at 66% 115%, rgba(90, 160, 230, 0.35) 0%, rgba(90, 160, 230, 0) 100%);
 }
 
 .bag-card-hover {
@@ -413,7 +413,7 @@
 .bag-tags {
   min-width: 0;
   overflow: hidden;
-  color: #a39a6a;
+  color: #7f98ad;
   font-size: 18rpx;
   line-height: 1.3;
   text-overflow: ellipsis;
@@ -429,22 +429,22 @@
     background: var(--line-strong);
   }
 
-  /* Dark version of the Available Bags card: the same glow, lit on a dark card.
+  /* Dark version of the Available Bags card: the same sky-blue glow, lit on a dark card.
      The glow side keeps dark text (date, weight); the plain side switches to light text. */
   .bag-card {
     background-color: #1e1e1b;
     background-image:
-      radial-gradient(ellipse 60% 160% at 4% 50%, rgba(255, 240, 20, 0.96) 0%, rgba(255, 234, 30, 0.86) 34%, rgba(240, 200, 30, 0.36) 60%, rgba(200, 160, 20, 0.08) 82%, rgba(200, 160, 20, 0) 100%),
-      radial-gradient(ellipse 30% 90% at 34% 115%, rgba(255, 190, 40, 0.22) 0%, rgba(255, 190, 40, 0) 100%);
+      radial-gradient(ellipse 60% 160% at 4% 50%, rgba(105, 175, 232, 0.96) 0%, rgba(105, 175, 232, 0.86) 34%, rgba(150, 200, 240, 0.36) 60%, rgba(150, 200, 240, 0.08) 82%, rgba(150, 200, 240, 0) 100%),
+      radial-gradient(ellipse 30% 90% at 34% 115%, rgba(90, 160, 230, 0.22) 0%, rgba(90, 160, 230, 0) 100%);
     box-shadow:
-      inset 0 0 0 2rpx rgba(255, 240, 60, 0.16),
+      inset 0 0 0 2rpx rgba(105, 175, 232, 0.16),
       0 16rpx 32rpx -22rpx rgba(0, 0, 0, 0.8);
   }
 
   .bag-card.reverse {
     background-image:
-      radial-gradient(ellipse 60% 160% at 96% 50%, rgba(255, 240, 20, 0.96) 0%, rgba(255, 234, 30, 0.86) 34%, rgba(240, 200, 30, 0.36) 60%, rgba(200, 160, 20, 0.08) 82%, rgba(200, 160, 20, 0) 100%),
-      radial-gradient(ellipse 30% 90% at 66% 115%, rgba(255, 190, 40, 0.22) 0%, rgba(255, 190, 40, 0) 100%);
+      radial-gradient(ellipse 60% 160% at 96% 50%, rgba(105, 175, 232, 0.96) 0%, rgba(105, 175, 232, 0.86) 34%, rgba(150, 200, 240, 0.36) 60%, rgba(150, 200, 240, 0.08) 82%, rgba(150, 200, 240, 0) 100%),
+      radial-gradient(ellipse 30% 90% at 66% 115%, rgba(90, 160, 230, 0.22) 0%, rgba(90, 160, 230, 0) 100%);
   }
 
   .bag-date,
@@ -457,6 +457,6 @@
   }
 
   .bag-tags {
-    color: #9d977a;
+    color: #8aa0b3;
   }
 }
