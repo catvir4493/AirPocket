@@ -434,6 +434,8 @@ button {
 
 .choice-pill {
   display: inline-flex;
+  width: auto;
+  margin: 0;
   align-items: center;
   justify-content: center;
   min-height: 56rpx;
@@ -799,5 +801,158 @@ button {
   }
   to {
     transform: translateY(100%);
+  }
+}
+
+/* ---------- Available Bags card (find list and the release preview) ---------- */
+
+/* A boarding-pass stub (yellow date) plus a ticket body. */
+.bag-card {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  margin-bottom: 20rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 32rpx;
+  background: var(--card);
+  box-shadow: 0 24rpx 44rpx -36rpx rgba(28, 28, 26, 0.5);
+  transition: transform 0.15s ease;
+}
+
+.bag-card-hover {
+  transform: scale(0.98);
+}
+
+.bag-stub {
+  position: relative;
+  display: flex;
+  flex: 0 0 116rpx;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 31rpx 0 0 31rpx;
+  background: var(--yellow);
+  color: #1c1c1a;
+}
+
+/* Perforation between stub and body. */
+.bag-stub::after {
+  content: "";
+  position: absolute;
+  top: 16rpx;
+  right: -2rpx;
+  bottom: 16rpx;
+  border-right: 4rpx dashed var(--card);
+}
+
+.bag-stub-day {
+  font-family: var(--font-num);
+  font-size: 52rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bag-stub-month {
+  margin-top: 6rpx;
+  font-size: 18rpx;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.bag-main {
+  flex: 1;
+  min-width: 0;
+  padding: 26rpx 28rpx 24rpx;
+}
+
+.bag-route {
+  display: flex;
+  align-items: center;
+}
+
+.bag-city {
+  flex: 0 1 auto;
+  max-width: 40%;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 32rpx;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bag-line {
+  position: relative;
+  flex: 1;
+  min-width: 48rpx;
+  height: 30rpx;
+  margin: 0 14rpx;
+}
+
+.bag-line-dash {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top: 2rpx dashed var(--line-strong);
+}
+
+.bag-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  padding: 0 6rpx;
+  background: var(--card);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.bag-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.bag-chips {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 8rpx;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.bag-chip {
+  flex: 0 0 auto;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 19rpx;
+  line-height: 1.4;
+}
+
+.bag-weight {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  font-size: 20rpx;
+  white-space: nowrap;
+}
+
+.bag-weight-num {
+  margin-right: 2rpx;
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 42rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bag-card {
+    box-shadow: 0 24rpx 44rpx -32rpx rgba(0, 0, 0, 0.8);
   }
 }

@@ -17,6 +17,8 @@ const SHAPES = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/>',
   grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>',
+  swap: '<path d="M4 8.5h15l-3.5-3.5M20 15.5H5l3.5 3.5"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
   alert: '<path d="M12 4 3 19.5h18z"/><path d="M12 10v4.5M12 17.2v.2"/>',
   list: '<path d="M9 7h11M9 12h11M9 17h11M4.5 7h.01M4.5 12h.01M4.5 17h.01"/>',
