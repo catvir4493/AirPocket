@@ -138,12 +138,12 @@
     </view>
   </view>
 
-  <view class="sticky-action release-bar">
-    <view class="release-summary">
-      <view class="release-route">{{summary.route}}</view>
-      <view class="release-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
+  <view class="sticky-action action-bar">
+    <view class="action-summary">
+      <view class="action-route">{{summary.route}}</view>
+      <view class="action-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
     </view>
-    <button class="primary-button release-button {{releasedNo ? 'success' : ''}} {{summary.ready ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">{{releasedNo ? '✓ 已发布' : '发布'}}</button>
+    <button class="primary-button action-button {{releasedNo ? 'success' : ''}} {{summary.ready ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">{{releasedNo ? '✓ 已发布' : '发布'}}</button>
   </view>
 </view>
 <ap-toast id="ap-toast" />

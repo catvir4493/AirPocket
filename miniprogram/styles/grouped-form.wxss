@@ -1,0 +1,271 @@
+/* Grouped form used by the release and binding pages: numbered sections,
+   card groups of label/value rows, an amount stepper with quick picks,
+   and a bottom bar with a live summary next to the action button. */
+
+.rl-sec {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 40rpx 4rpx 16rpx;
+  color: var(--ink);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.rl-sec:first-child {
+  margin-top: 8rpx;
+}
+
+.rl-sec-no {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  background: var(--inverse);
+  color: var(--on-inverse);
+  font-family: var(--font-num);
+  font-size: 22rpx;
+}
+
+.rl-sec-note {
+  margin-left: auto;
+  color: var(--ink-3);
+  font-size: 22rpx;
+  font-weight: 400;
+}
+
+.amount-card {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  padding: 28rpx 30rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 36rpx;
+  background: var(--card);
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-base) var(--ease-out);
+}
+
+.amount-card.focused {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 6rpx rgba(255, 245, 31, 0.55);
+}
+
+.amount-label {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: 26rpx;
+}
+
+.amount-hint {
+  margin-top: 6rpx;
+  color: var(--ink-3);
+  font-size: 21rpx;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.stepper-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 36rpx;
+  line-height: 1;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.stepper-btn-hover {
+  transform: scale(0.88);
+}
+
+.stepper-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 150rpx;
+}
+
+.stepper-input {
+  width: 100rpx;
+  height: 76rpx;
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 64rpx;
+  font-weight: 700;
+  line-height: 76rpx;
+  text-align: right;
+}
+
+.stepper-unit {
+  margin-left: 4rpx;
+  color: var(--ink-3);
+  font-size: 22rpx;
+}
+
+.quick-row {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.quick-chip {
+  flex: 1;
+  padding: 12rpx 0;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink-2);
+  font-family: var(--font-num);
+  font-size: 24rpx;
+  text-align: center;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.quick-chip.active {
+  background: var(--yellow);
+  color: #1c1c1a;
+  font-weight: 700;
+  animation: ap-pop 320ms var(--ease-spring);
+}
+
+.rl-group {
+  margin-top: 20rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--line);
+  border-radius: 36rpx;
+  background: var(--card);
+}
+
+.rl-sec + .rl-group {
+  margin-top: 0;
+}
+
+.rl-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  min-height: 96rpx;
+  padding: 0 32rpx;
+  border-top: 1rpx solid var(--line);
+  box-sizing: border-box;
+}
+
+.rl-row:first-child {
+  border-top: 0;
+}
+
+.rl-row.top {
+  align-items: flex-start;
+  padding-top: 26rpx;
+  padding-bottom: 26rpx;
+}
+
+.rl-label {
+  flex: 0 0 128rpx;
+  color: var(--ink-2);
+  font-size: 26rpx;
+  line-height: 44rpx;
+  transition: color var(--dur-fast) ease;
+}
+
+.rl-row.focused .rl-label {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rl-input {
+  flex: 1;
+  min-width: 0;
+  height: 44rpx;
+  color: var(--ink);
+  font-size: 27rpx;
+  line-height: 44rpx;
+}
+
+.rl-textarea {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  min-height: 44rpx;
+  color: var(--ink);
+  font-size: 27rpx;
+  line-height: 44rpx;
+}
+
+.lock-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  margin-top: 8rpx;
+  padding: 2rpx 12rpx 2rpx 8rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink-3);
+  font-size: 18rpx;
+  line-height: 30rpx;
+}
+
+.item-chips {
+  padding: 28rpx 32rpx 24rpx;
+}
+
+.pill-check {
+  margin-right: 6rpx;
+  font-size: 20rpx;
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.action-summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.action-route {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 28rpx;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail {
+  margin-top: 4rpx;
+  overflow: hidden;
+  color: var(--ink-3);
+  font-size: 21rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail.ready {
+  color: var(--green);
+}
+
+.action-bar .action-button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 200rpx;
+  margin: 0;
+  padding: 0 44rpx;
+  transition: opacity var(--dur-base) ease;
+}
+
+.action-button.dim {
+  opacity: 0.4;
+}

@@ -1,3 +1,5 @@
+@import "../../../styles/grouped-form.wxss";
+
 /* Shared by all detail pages: boarding pass on top, info list / form below. */
 .detail-page {
   padding-top: 24rpx;
@@ -36,4 +38,20 @@
 .pass-skeleton-line.short {
   width: 60%;
   margin-top: 24rpx;
+}
+
+.detail-form .rl-sec:first-child {
+  margin-top: 44rpx;
+}
+
+.case-fixed {
+  width: auto;
+}
+
+.item-chips .rl-label {
+  margin-bottom: 14rpx;
+}
+
+.item-chips {
+  border-top: 1rpx solid var(--line);
 }

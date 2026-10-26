@@ -9,6 +9,39 @@ const {
 const { showToast } = require("../../../utils/toast");
 const { bagStatus } = require("../../../utils/status");
 
+const trimNumber = (value) => `${Math.round(value * 10) / 10}`;
+
+// Quick picks for loose weight: small round amounts under the limit, then "all".
+const buildQuickWeights = (max) => {
+  const picks = [1, 2, 5, 10].filter((value) => value < max).slice(-3);
+  return max > 0 ? picks.map((value) => ({ value, label: `${value}kg` })).concat({ value: max, label: `全部 ${trimNumber(max)}kg` }) : [];
+};
+
+// Route line and missing-field count shown next to the bind button.
+const buildSummary = (bag, form) => {
+  if (!bag) {
+    return { route: "", detail: "", ready: false };
+  }
+  const weight = bag.isFullCase ? 23 : Number(form.requestedWeight) || 0;
+  const missing = [
+    weight > 0,
+    form.itemDescription,
+    form.senderWechat,
+    form.pickupAddress,
+    form.receiverName,
+    form.receiverPhone,
+    form.deliveryAddress,
+  ].filter((value) => value === false || !`${value || ""}`.trim()).length;
+  return {
+    route: `${bag.fromCity || "-"} → ${bag.toCity || "-"}`,
+    detail: [
+      bag.isFullCase ? "整箱 1 箱 · 23kg" : `占用 ${weight ? trimNumber(weight) : 0}kg`,
+      missing ? `还差 ${missing} 项` : "可以绑定了",
+    ].join(" · "),
+    ready: missing === 0,
+  };
+};
+
 const specialLabel = (value) =>
   (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
 
@@ -21,6 +54,8 @@ Page({
     bindDone: false,
     focusedField: "",
     specialItemOptions: [],
+    quickWeights: [],
+    summary: buildSummary(null),
     form: {
       requestedWeight: "",
       requestedSpecialItems: [],
@@ -109,7 +144,9 @@ Page({
           createdAtText: formatDateTime(bag.createdAt),
           updatedAtText: formatDateTime(bag.updatedAt),
         },
+        quickWeights: isFullCase ? [] : buildQuickWeights(remainingWeight),
       });
+      this.refreshSummary();
     } catch (error) {
       showToast({
         title: error.message || "加载失败",
@@ -120,7 +157,33 @@ Page({
     }
   },
 
+  refreshSummary() {
+    this.setData({ summary: buildSummary(this.data.bag, this.data.form) });
+  },
+
   onRequestedWeightInput(event) {
+    const value = this.applyRequestedWeight(event);
+    this.refreshSummary();
+    return value;
+  },
+
+  stepWeight(event) {
+    const { bag, form } = this.data;
+    if (!bag) {
+      return;
+    }
+    const max = Number(bag.remainingWeight || 0);
+    const next = Math.min(max, Math.max(0, (Number(form.requestedWeight) || 0) + Number(event.currentTarget.dataset.delta)));
+    this.setData({ "form.requestedWeight": next ? trimNumber(next) : "" });
+    this.refreshSummary();
+  },
+
+  pickQuickWeight(event) {
+    this.setData({ "form.requestedWeight": trimNumber(Number(event.currentTarget.dataset.value)) });
+    this.refreshSummary();
+  },
+
+  applyRequestedWeight(event) {
     const { bag } = this.data;
     const rawValue = `${event.detail.value || ""}`;
 
@@ -170,6 +233,7 @@ Page({
     this.setData({
       [`form.${field}`]: event.detail.value,
     });
+    this.refreshSummary();
   },
 
   toggleSpecialItem(event) {
