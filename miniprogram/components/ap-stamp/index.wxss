@@ -1,0 +1,109 @@
+.ap-stamp-layer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 254, 250, 0.86);
+  animation: ap-stamp-veil 220ms ease backwards;
+}
+
+.ap-stamp {
+  padding: 10rpx;
+  border: 8rpx solid #1c1c1a;
+  border-radius: 28rpx;
+  background: var(--yellow);
+  color: #1c1c1a;
+  transform: rotate(-9deg);
+  animation: ap-stamp-hit 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  box-shadow: 0 30rpx 60rpx -30rpx rgba(0, 0, 0, 0.45);
+}
+
+.ap-stamp-inner {
+  min-width: 300rpx;
+  padding: 22rpx 40rpx 24rpx;
+  border: 3rpx dashed rgba(28, 28, 26, 0.55);
+  border-radius: 18rpx;
+  text-align: center;
+}
+
+.ap-stamp-brand {
+  font-family: var(--font-num);
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  opacity: 0.6;
+}
+
+.ap-stamp-text {
+  margin-top: 6rpx;
+  font-size: 64rpx;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+}
+
+.ap-stamp-sub {
+  margin-top: 6rpx;
+  font-family: var(--font-num);
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+/* Ink ring that spreads out when the stamp lands. */
+.ap-stamp-ring {
+  position: absolute;
+  width: 360rpx;
+  height: 360rpx;
+  border: 6rpx solid var(--yellow);
+  border-radius: 50%;
+  opacity: 0;
+  animation: ap-stamp-ring 620ms ease-out 300ms;
+}
+
+@keyframes ap-stamp-veil {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .ap-stamp-layer {
+    background: rgba(20, 20, 18, 0.86);
+  }
+}
+
+@keyframes ap-stamp-hit {
+  0% {
+    opacity: 0;
+    transform: rotate(-24deg) scale(2.6);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(-8deg) scale(0.9);
+  }
+  75% {
+    transform: rotate(-10deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-9deg) scale(1);
+  }
+}
+
+@keyframes ap-stamp-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}

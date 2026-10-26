@@ -6,8 +6,12 @@
       <view wx:else class="ap-navbar-home"><ap-icon name="home" size="{{32}}" stroke="{{2}}" /></view>
     </view>
     <view class="ap-navbar-title" style="left: {{sideSpace}}px; right: {{sideSpace}}px;">
-      <view wx:if="{{loading}}" class="ap-navbar-spinner"></view>
       <text class="ap-navbar-title-text">{{title}}</text>
     </view>
+  </view>
+  <!-- Refresh indicator: a small plane flying along a dashed route under the bar. -->
+  <view wx:if="{{loading}}" class="ap-navbar-flight">
+    <view class="ap-navbar-flight-dash"></view>
+    <view class="ap-navbar-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink" /></view>
   </view>
 </view>

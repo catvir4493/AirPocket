@@ -4,69 +4,31 @@ const {
   buildSpecialItemOptions,
   formatSpecialItems,
   normalizeSpecialItems,
-  toggleSpecialItem,
 } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
 const { bagStatus } = require("../../../utils/status");
-
-const trimNumber = (value) => `${Math.round(value * 10) / 10}`;
-
-// Quick picks for loose weight: small round amounts under the limit, then "all".
-const buildQuickWeights = (max) => {
-  const picks = [1, 2, 5, 10].filter((value) => value < max).slice(-3);
-  return max > 0 ? picks.map((value) => ({ value, label: `${value}kg` })).concat({ value: max, label: `全部 ${trimNumber(max)}kg` }) : [];
-};
-
-// Route line and missing-field count shown next to the bind button.
-const buildSummary = (bag, form) => {
-  if (!bag) {
-    return { route: "", detail: "", ready: false };
-  }
-  const weight = bag.isFullCase ? 23 : Number(form.requestedWeight) || 0;
-  const missing = [
-    weight > 0,
-    form.itemDescription,
-    form.senderWechat,
-    form.pickupAddress,
-    form.receiverName,
-    form.receiverPhone,
-    form.deliveryAddress,
-  ].filter((value) => value === false || !`${value || ""}`.trim()).length;
-  return {
-    route: `${bag.fromCity || "-"} → ${bag.toCity || "-"}`,
-    detail: [
-      bag.isFullCase ? "整箱 1 箱 · 23kg" : `占用 ${weight ? trimNumber(weight) : 0}kg`,
-      missing ? `还差 ${missing} 项` : "可以绑定了",
-    ].join(" · "),
-    ready: missing === 0,
-  };
-};
+const {
+  bindFormMethods,
+  buildQuickWeights,
+  createBindFormData,
+  validateBindForm,
+} = require("../../../utils/bindForm");
 
 const specialLabel = (value) =>
   (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
 
 Page({
+  ...bindFormMethods,
+
+  readyText: "可以绑定了",
+
   data: {
+    ...createBindFormData(),
     bagId: "",
     bag: null,
     loading: true,
     submitting: false,
     bindDone: false,
-    focusedField: "",
-    specialItemOptions: [],
-    quickWeights: [],
-    summary: buildSummary(null),
-    form: {
-      requestedWeight: "",
-      requestedSpecialItems: [],
-      senderWechat: "",
-      pickupAddress: "",
-      receiverName: "",
-      receiverPhone: "",
-      deliveryAddress: "",
-      itemDescription: "",
-      senderNote: "",
-    },
   },
 
   onLoad(options) {
@@ -84,16 +46,6 @@ Page({
 
   onUnload() {
     clearTimeout(this.redirectTimer);
-  },
-
-  onFieldFocus(event) {
-    this.setData({ focusedField: event.currentTarget.dataset.focus });
-  },
-
-  onFieldBlur(event) {
-    if (this.data.focusedField === event.currentTarget.dataset.focus) {
-      this.setData({ focusedField: "" });
-    }
   },
 
   async fetchBag(bagId) {
@@ -144,6 +96,15 @@ Page({
           createdAtText: formatDateTime(bag.createdAt),
           updatedAtText: formatDateTime(bag.updatedAt),
         },
+        formInfo: {
+          isFullCase,
+          fromCity: bag.fromCity,
+          toCity: bag.toCity,
+          maxWeight: remainingWeight,
+          maxText: formatWeight(remainingWeight),
+          casesText: `当前剩余 ${remainingCases} 件`,
+          availableSpecialItems,
+        },
         quickWeights: isFullCase ? [] : buildQuickWeights(remainingWeight),
       });
       this.refreshSummary();
@@ -157,100 +118,6 @@ Page({
     }
   },
 
-  refreshSummary() {
-    this.setData({ summary: buildSummary(this.data.bag, this.data.form) });
-  },
-
-  onRequestedWeightInput(event) {
-    const value = this.applyRequestedWeight(event);
-    this.refreshSummary();
-    return value;
-  },
-
-  stepWeight(event) {
-    const { bag, form } = this.data;
-    if (!bag) {
-      return;
-    }
-    const max = Number(bag.remainingWeight || 0);
-    const next = Math.min(max, Math.max(0, (Number(form.requestedWeight) || 0) + Number(event.currentTarget.dataset.delta)));
-    this.setData({ "form.requestedWeight": next ? trimNumber(next) : "" });
-    this.refreshSummary();
-  },
-
-  pickQuickWeight(event) {
-    this.setData({ "form.requestedWeight": trimNumber(Number(event.currentTarget.dataset.value)) });
-    this.refreshSummary();
-  },
-
-  applyRequestedWeight(event) {
-    const { bag } = this.data;
-    const rawValue = `${event.detail.value || ""}`;
-
-    if (!rawValue) {
-      this.setData({
-        "form.requestedWeight": "",
-      });
-      return "";
-    }
-
-    if (!bag) {
-      this.setData({
-        "form.requestedWeight": rawValue,
-      });
-      return rawValue;
-    }
-
-    const requestedWeight = Number(rawValue);
-    const maxWeight = Number(bag.remainingWeight || 0);
-
-    if (!Number.isFinite(requestedWeight)) {
-      this.setData({
-        "form.requestedWeight": "",
-      });
-      return "";
-    }
-
-    if (requestedWeight > maxWeight) {
-      this.setData({
-        "form.requestedWeight": `${maxWeight}`,
-      });
-      showToast({
-        title: `最多可绑定 ${formatWeight(maxWeight)}`,
-        icon: "none",
-      });
-      return `${maxWeight}`;
-    }
-
-    this.setData({
-      "form.requestedWeight": rawValue,
-    });
-    return rawValue;
-  },
-
-  onFieldInput(event) {
-    const { field } = event.currentTarget.dataset;
-    this.setData({
-      [`form.${field}`]: event.detail.value,
-    });
-    this.refreshSummary();
-  },
-
-  toggleSpecialItem(event) {
-    const { bag, form } = this.data;
-    const { value } = event.currentTarget.dataset;
-    const availableSpecialItems = bag ? bag.availableSpecialItems : [];
-    const requestedSpecialItems = toggleSpecialItem(
-      form.requestedSpecialItems,
-      value,
-      availableSpecialItems
-    );
-    this.setData({
-      "form.requestedSpecialItems": requestedSpecialItems,
-      specialItemOptions: buildSpecialItemOptions(requestedSpecialItems, availableSpecialItems),
-    });
-  },
-
   async submitBinding() {
     const { bagId, bag, form, submitting } = this.data;
     if (submitting || !bag) {
@@ -262,6 +129,15 @@ Page({
       form.requestedSpecialItems,
       bag.availableSpecialItems
     );
+    const errorMessage = validateBindForm(this.data.formInfo, form);
+    if (errorMessage) {
+      showToast({
+        title: errorMessage,
+        icon: "none",
+      });
+      return;
+    }
+
     if (bag.isFullCase && Number(bag.remainingCases || 0) <= 0) {
       showToast({
         title: "整箱已无剩余数量",
@@ -269,65 +145,9 @@ Page({
       });
       return;
     }
-    if (!Number.isFinite(requestedWeight) || requestedWeight <= 0) {
-      showToast({
-        title: "请输入大于 0 的重量",
-        icon: "none",
-      });
-      return;
-    }
-
     if (!bag.isFullCase && requestedWeight > Number(bag.remainingWeight)) {
       showToast({
         title: `最多可绑定 ${bag.remainingWeightText}`,
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.itemDescription.trim()) {
-      showToast({
-        title: "请填写物品描述",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.senderWechat.trim()) {
-      showToast({
-        title: "请填写微信号",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.pickupAddress.trim()) {
-      showToast({
-        title: "请填写取货地址",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.receiverName.trim()) {
-      showToast({
-        title: "请填写收件人姓名",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.receiverPhone.trim()) {
-      showToast({
-        title: "请填写收件人电话",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.deliveryAddress.trim()) {
-      showToast({
-        title: "请填写目的地快递地址",
         icon: "none",
       });
       return;
@@ -360,7 +180,7 @@ Page({
         wx.redirectTo({
           url: "/pages/find-bags/my/my",
         });
-      }, 900);
+      }, 1300);
     } catch (error) {
       showToast({
         title: error.message || "绑定失败",

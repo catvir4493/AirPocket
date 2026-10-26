@@ -1,7 +1,39 @@
 const { formatDateTime, formatWeight, toDate } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
-const { bindingStatus } = require("../../../utils/status");
+const { BINDING_FLOW, bindingStatus } = require("../../../utils/status");
+
+// Progress timeline: steps before the current status are done, the current one pulses.
+// Only submit, lock and the latest update carry real times.
+const buildTimeline = (binding) => {
+  const cancelled = binding.status === "cancelled";
+  const currentIndex = cancelled ? -1 : Math.max(0, BINDING_FLOW.findIndex((step) => step.status === binding.status));
+  const steps = BINDING_FLOW.map((step, index) => {
+    let time = "";
+    if (index === 0) {
+      time = formatDateTime(binding.createdAt);
+    } else if (step.status === "locked" && binding.lockedAt) {
+      time = formatDateTime(binding.lockedAt);
+    } else if (index === currentIndex && binding.updatedAt) {
+      time = formatDateTime(binding.updatedAt);
+    }
+    return {
+      ...step,
+      state: index < currentIndex ? "done" : index === currentIndex ? "current" : "todo",
+      time: index <= currentIndex || (cancelled && index === 0) ? time : "",
+    };
+  });
+  if (cancelled) {
+    steps[0].state = "done";
+    return steps.slice(0, 1).concat({
+      status: "cancelled",
+      label: "已取消",
+      state: "cancelled",
+      time: formatDateTime(binding.updatedAt),
+    });
+  }
+  return steps;
+};
 
 const getEditState = (binding) => {
   const lockDeadlineAt = toDate(binding.lockDeadlineAt);
@@ -39,6 +71,7 @@ Page({
     binding: null,
     loading: true,
     cancelling: false,
+    tearing: false,
   },
 
   onLoad(options) {
@@ -53,6 +86,10 @@ Page({
 
     this.setData({ bindingId: options.id });
     this.fetchBinding(options.id);
+  },
+
+  onUnload() {
+    clearTimeout(this.tearTimer);
   },
 
   onPullDownRefresh() {
@@ -99,6 +136,7 @@ Page({
         lockedAtText: formatDateTime(source.lockedAt),
         statusText: status.text,
         statusTone: status.tone,
+        timeline: buildTimeline(source),
       };
 
       this.setData({ binding });
@@ -154,11 +192,13 @@ Page({
           if (!result.success) {
             throw new Error(result.errMsg || "取消失败");
           }
-          showToast({
-            title: "已取消",
-            icon: "success",
-          });
-          this.fetchBinding(binding._id);
+          wx.hideLoading();
+          wx.vibrateShort({ type: "medium" });
+          this.setData({ tearing: true });
+          this.tearTimer = setTimeout(() => {
+            this.setData({ tearing: false });
+            this.fetchBinding(binding._id);
+          }, 1000);
         } catch (error) {
           showToast({
             title: error.message || "取消失败",

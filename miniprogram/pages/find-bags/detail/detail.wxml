@@ -1,3 +1,5 @@
+<import src="bind-form.wxml" />
+
 <view class="page no-bottom-nav detail-page {{bag ? 'has-sticky-action' : ''}}">
   <view wx:if="{{loading}}" class="pass-skeleton">
     <view class="pass-skeleton-card skeleton-shine"></view>
@@ -22,83 +24,7 @@
     />
 
     <view class="form detail-form">
-      <!-- 1 What you are sending -->
-      <view class="rl-sec"><text class="rl-sec-no">1</text><text>要带的东西</text><text class="rl-sec-note">必填</text></view>
-      <view wx:if="{{!bag.isFullCase}}">
-        <view class="amount-card {{focusedField === 'requestedWeight' ? 'focused' : ''}}">
-          <view class="amount-label">
-            <view>想占用重量</view>
-            <view class="amount-hint">最多 {{bag.remainingWeightText}}</view>
-          </view>
-          <view class="stepper">
-            <view class="stepper-btn" hover-class="stepper-btn-hover" data-delta="-1" bindtap="stepWeight">−</view>
-            <view class="stepper-value">
-              <input class="stepper-input" type="digit" value="{{form.requestedWeight}}" bindinput="onRequestedWeightInput" data-focus="requestedWeight" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="0" placeholder-class="placeholder" />
-              <text class="stepper-unit">kg</text>
-            </view>
-            <view class="stepper-btn" hover-class="stepper-btn-hover" data-delta="1" bindtap="stepWeight">+</view>
-          </view>
-        </view>
-        <view wx:if="{{quickWeights.length}}" class="quick-row">
-          <view wx:for="{{quickWeights}}" wx:key="value" class="quick-chip {{form.requestedWeight == item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="pickQuickWeight">{{item.label}}</view>
-        </view>
-      </view>
-      <view wx:else class="amount-card">
-        <view class="amount-label">
-          <view>整箱</view>
-          <view class="amount-hint">当前剩余 {{bag.remainingCasesText}}</view>
-        </view>
-        <view class="stepper-value case-fixed"><text class="stepper-input">1</text><text class="stepper-unit">箱 · 23kg</text></view>
-      </view>
-
-      <view class="rl-group">
-        <view class="rl-row top {{focusedField === 'itemDescription' ? 'focused' : ''}}">
-          <text class="rl-label">物品描述</text>
-          <textarea class="rl-textarea" auto-height value="{{form.itemDescription}}" data-field="itemDescription" bindinput="onFieldInput" data-focus="itemDescription" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="例如 文件、衣服、伴手礼" placeholder-class="placeholder" />
-        </view>
-        <view class="item-chips">
-          <view class="rl-label">特殊物品</view>
-          <view wx:if="{{specialItemOptions.length}}" class="choice-grid">
-            <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem"><text wx:if="{{item.selected}}" class="pill-check">✓</text>{{item.label}}</button>
-          </view>
-          <view wx:else class="fixed-value">这个行李额不接受特殊物品</view>
-          <view wx:if="{{specialItemOptions.length}}" class="field-hint">有电脑、手机、相机等就勾上，只能选带货者接受的这几种。</view>
-        </view>
-      </view>
-
-      <!-- 2 Contact and pickup -->
-      <view class="rl-sec"><text class="rl-sec-no">2</text><text>联系与取货</text><text class="rl-sec-note">仅平台可见</text></view>
-      <view class="rl-group">
-        <view class="rl-row {{focusedField === 'senderWechat' ? 'focused' : ''}}">
-          <text class="rl-label">微信号</text>
-          <input class="rl-input" value="{{form.senderWechat}}" data-field="senderWechat" bindinput="onFieldInput" data-focus="senderWechat" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台客服通过微信联系你" placeholder-class="placeholder" />
-        </view>
-        <view class="rl-row top {{focusedField === 'pickupAddress' ? 'focused' : ''}}">
-          <view class="rl-label">取货地址<view class="lock-tag"><ap-icon name="lock" size="{{20}}" stroke="{{2.2}}" color="ink-3" /><text>仅后台</text></view></view>
-          <textarea class="rl-textarea" auto-height value="{{form.pickupAddress}}" data-field="pickupAddress" bindinput="onFieldInput" data-focus="pickupAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台上门或约点取货的地址" placeholder-class="placeholder" />
-        </view>
-      </view>
-
-      <!-- 3 Receiver at the destination -->
-      <view class="rl-sec"><text class="rl-sec-no">3</text><text>收件信息</text><text class="rl-sec-note">到 {{bag.toCity}} 后寄出</text></view>
-      <view class="rl-group">
-        <view class="rl-row {{focusedField === 'receiverName' ? 'focused' : ''}}">
-          <text class="rl-label">收件人</text>
-          <input class="rl-input" value="{{form.receiverName}}" data-field="receiverName" bindinput="onFieldInput" data-focus="receiverName" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="快递收件人姓名" placeholder-class="placeholder" />
-        </view>
-        <view class="rl-row {{focusedField === 'receiverPhone' ? 'focused' : ''}}">
-          <text class="rl-label">电话</text>
-          <input class="rl-input" type="number" value="{{form.receiverPhone}}" data-field="receiverPhone" bindinput="onFieldInput" data-focus="receiverPhone" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="快递联系电话" placeholder-class="placeholder" />
-        </view>
-        <view class="rl-row top {{focusedField === 'deliveryAddress' ? 'focused' : ''}}">
-          <view class="rl-label">快递地址<view class="lock-tag"><ap-icon name="lock" size="{{20}}" stroke="{{2.2}}" color="ink-3" /><text>仅后台</text></view></view>
-          <textarea class="rl-textarea" auto-height value="{{form.deliveryAddress}}" data-field="deliveryAddress" bindinput="onFieldInput" data-focus="deliveryAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="平台到达后发快递用的地址" placeholder-class="placeholder" />
-        </view>
-        <view class="rl-row top {{focusedField === 'senderNote' ? 'focused' : ''}}">
-          <text class="rl-label">备注</text>
-          <textarea class="rl-textarea" auto-height value="{{form.senderNote}}" data-field="senderNote" bindinput="onFieldInput" data-focus="senderNote" bindfocus="onFieldFocus" bindblur="onFieldBlur" placeholder="选填，给带货者的补充说明" placeholder-class="placeholder" />
-        </view>
-      </view>
+      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll}}" />
     </view>
 
     <view class="sticky-action action-bar">
@@ -112,4 +38,5 @@
 
   <view wx:else class="empty-state">没有找到这个行李额。</view>
 </view>
+<ap-stamp show="{{bindDone ? true : false}}" text="已绑定" sub="{{bag ? '#' + bag.bagNo : ''}}" />
 <ap-toast id="ap-toast" />

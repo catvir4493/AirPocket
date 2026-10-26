@@ -1,78 +1,166 @@
-.rule-card {
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 18rpx;
-  padding: 24rpx 26rpx;
-  border: 1rpx solid var(--line);
-  border-radius: var(--r-l);
-  background: var(--card);
+@import "../../styles/grouped-form.wxss";
+
+/* ---------- Risk list ---------- */
+
+.risk-row {
+  display: flex;
+  gap: 22rpx;
+  padding: 26rpx 30rpx;
+  border-top: 1rpx solid var(--line);
 }
 
-.warning-card {
-  position: relative;
-  padding-left: 46rpx;
+.risk-row:first-child {
+  border-top: 0;
 }
 
-.warning-card::before {
-  content: "";
-  position: absolute;
-  top: 34rpx;
-  left: 24rpx;
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background: var(--ink);
-  box-shadow: 0 0 0 6rpx var(--yellow);
+.risk-icon {
+  display: flex;
+  flex: 0 0 64rpx;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background: var(--fill);
 }
 
-.rule-title {
+.risk-icon.hot {
+  background: var(--yellow);
+}
+
+.risk-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.risk-title {
   color: var(--ink);
   font-size: 27rpx;
   font-weight: 700;
   line-height: 1.35;
 }
 
-.rule-copy {
-  margin-top: 10rpx;
+.risk-copy {
+  margin-top: 8rpx;
   color: var(--ink-2);
-  font-size: 24rpx;
-  line-height: 1.55;
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+/* ---------- Statement: collapsed to a few lines, tap to expand ---------- */
+
+.statement {
+  position: relative;
+  padding: 28rpx 30rpx 22rpx;
+  border: 1rpx solid var(--line);
+  border-left: 8rpx solid var(--yellow);
+  border-radius: 36rpx;
+  background: var(--card);
 }
 
 .statement-copy {
-  margin-top: 0;
+  max-height: 198rpx;
+  overflow: hidden;
   color: var(--ink-2);
+  font-size: 24rpx;
+  line-height: 1.65;
   text-align: justify;
+  transition: max-height 480ms var(--ease-out);
 }
 
-.source-item + .source-item {
-  margin-top: 18rpx;
-  padding-top: 18rpx;
+.statement.open .statement-copy {
+  max-height: 2400rpx;
+}
+
+.statement-fade {
+  position: absolute;
+  right: 30rpx;
+  bottom: 70rpx;
+  left: 30rpx;
+  height: 90rpx;
+  background: linear-gradient(rgba(255, 255, 255, 0), var(--card));
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+.statement.open .statement-fade {
+  opacity: 0;
+}
+
+.statement-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 14rpx;
+  color: var(--ink);
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.statement-caret {
+  font-size: 18rpx;
+  transition: transform 300ms var(--ease-out);
+}
+
+.statement.open .statement-caret {
+  transform: rotate(180deg);
+}
+
+/* ---------- Sources ---------- */
+
+.source-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 30rpx;
   border-top: 1rpx solid var(--line);
+  transition: background var(--dur-fast) ease;
+}
+
+.source-row:first-child {
+  border-top: 0;
+}
+
+.source-row-press {
+  background: var(--fill);
+}
+
+.source-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .source-title {
   color: var(--ink);
-  font-size: 24rpx;
-  font-weight: 700;
+  font-size: 25rpx;
+  font-weight: 600;
   line-height: 1.45;
 }
 
 .source-url {
-  margin-top: 8rpx;
+  margin-top: 6rpx;
+  overflow: hidden;
   color: var(--ink-3);
   font-size: 20rpx;
-  line-height: 1.45;
-  word-break: break-all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.source-action {
-  margin-top: 8rpx;
+.source-copy {
+  flex: 0 0 auto;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
   color: var(--ink);
-  font-size: 21rpx;
-  font-weight: 700;
+  font-size: 22rpx;
+  font-weight: 600;
 }
 
-.primary-button {
-  margin-top: 28rpx;
+.prohibited-done {
+  margin-top: 44rpx;
+}
+
+@media (prefers-color-scheme: dark) {
+  .statement-fade {
+    background: linear-gradient(rgba(30, 30, 27, 0), var(--card));
+  }
 }

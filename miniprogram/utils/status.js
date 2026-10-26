@@ -17,6 +17,17 @@ const BAG_STATUS = {
   expired: { text: "已过期", tone: "off" },
 };
 
+// The order a binding moves through, with the short labels used on the progress timeline.
+const BINDING_FLOW = [
+  { status: "pending", label: "已提交" },
+  { status: "locked", label: "已锁单" },
+  { status: "contacted", label: "平台已联系你" },
+  { status: "picked_up", label: "已取货" },
+  { status: "packed", label: "已打包" },
+  { status: "delivered_to_carrier", label: "已交给带货者" },
+  { status: "completed", label: "已送达完成" },
+];
+
 const pick = (map, status) => map[status] || { text: status || "-", tone: "progress" };
 
 const bindingStatus = (status) => pick(BINDING_STATUS, status);
@@ -26,6 +37,7 @@ const bagStatus = (status) => pick(BAG_STATUS, status);
 const isBindingOngoing = (status) => status !== "completed" && status !== "cancelled";
 
 module.exports = {
+  BINDING_FLOW,
   BINDING_STATUS,
   BAG_STATUS,
   bindingStatus,

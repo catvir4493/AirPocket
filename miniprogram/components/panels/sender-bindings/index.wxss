@@ -59,6 +59,39 @@
   margin-left: auto;
 }
 
+/* Status filter: a sliding black thumb behind three equal-width labels. */
+.my-seg-track {
+  position: relative;
+  display: flex;
+  padding: 6rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+}
+
+.my-seg-thumb {
+  position: absolute;
+  top: 6rpx;
+  bottom: 6rpx;
+  left: 6rpx;
+  width: 124rpx;
+  border-radius: 999rpx;
+  background: var(--inverse);
+  transition: transform 380ms var(--ease-spring);
+}
+
+.my-seg-track .my-segment {
+  position: relative;
+  justify-content: center;
+  width: 124rpx;
+  padding: 12rpx 0;
+  background: transparent;
+  transition: color 240ms ease;
+}
+
+.my-seg-track .my-segment.active {
+  background: transparent;
+}
+
 .my-segment-search.filtered {
   background: var(--yellow);
   color: #1c1c1a;

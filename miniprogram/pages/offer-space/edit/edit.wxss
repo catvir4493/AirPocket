@@ -1,1 +1,12 @@
 @import "../release/release.wxss";
+
+.edit-skeleton-card {
+  height: 300rpx;
+  margin-top: 30rpx;
+  border-radius: 36rpx;
+  background: var(--fill);
+}
+
+.edit-skeleton-card.short {
+  height: 180rpx;
+}

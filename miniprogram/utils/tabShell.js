@@ -50,12 +50,14 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
   onPullDownRefresh() {
     const panel = this.getPanel(this.data.activeTab);
     this.setData({ refreshing: true });
-    Promise.resolve(panel && panel.refresh ? panel.refresh() : null)
+    // Keep the plane in the air for at least one pass, even on a fast refresh.
+    const minFlight = new Promise((resolve) => setTimeout(resolve, 1100));
+    const work = Promise.resolve(panel && panel.refresh ? panel.refresh() : null)
       .catch(() => {})
-      .then(() => {
-        this.setData({ refreshing: false });
-        wx.stopPullDownRefresh();
-      });
+      .then(() => wx.stopPullDownRefresh());
+    Promise.all([work, minFlight]).then(() => {
+      this.setData({ refreshing: false });
+    });
   },
 
   getPanel(index) {

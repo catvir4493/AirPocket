@@ -3,9 +3,14 @@ const {
   buildSpecialItemOptions,
   formatSpecialItems,
   normalizeSpecialItems,
-  toggleSpecialItem,
 } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
+const {
+  bindFormMethods,
+  buildQuickWeights,
+  createBindFormData,
+  validateBindForm,
+} = require("../../../utils/bindForm");
 
 const isEditable = (binding) => {
   const lockDeadlineAt = toDate(binding.lockDeadlineAt);
@@ -17,23 +22,17 @@ const isEditable = (binding) => {
 };
 
 Page({
+  ...bindFormMethods,
+
+  readyText: "可以保存了",
+
   data: {
+    ...createBindFormData(),
     bindingId: "",
     binding: null,
     loading: false,
     submitting: false,
-    specialItemOptions: [],
-    form: {
-      requestedWeight: "",
-      requestedSpecialItems: [],
-      senderWechat: "",
-      pickupAddress: "",
-      receiverName: "",
-      receiverPhone: "",
-      deliveryAddress: "",
-      itemDescription: "",
-      senderNote: "",
-    },
+    saved: false,
   },
 
   onLoad(options) {
@@ -47,6 +46,10 @@ Page({
 
     this.setData({ bindingId: options.id });
     this.fetchBinding(options.id);
+  },
+
+  onUnload() {
+    clearTimeout(this.redirectTimer);
   },
 
   async fetchBinding(bindingId) {
@@ -101,6 +104,16 @@ Page({
           requestedWeightText: formatWeight(binding.requestedWeight),
           lockDeadlineText: formatDateTime(binding.lockDeadlineAt),
         },
+        formInfo: {
+          isFullCase,
+          fromCity: binding.fromCity,
+          toCity: binding.toCity,
+          maxWeight: 0,
+          maxText: "",
+          casesText: "固定 1 个整箱",
+          availableSpecialItems,
+        },
+        quickWeights: isFullCase ? [] : buildQuickWeights(0),
         form: {
           requestedWeight: isFullCase ? "23" : `${binding.requestedWeight || ""}`,
           requestedSpecialItems,
@@ -113,6 +126,7 @@ Page({
           senderNote: binding.senderNote || "",
         },
       });
+      this.refreshSummary();
     } catch (error) {
       showToast({
         title: error.message || "加载失败",
@@ -123,62 +137,13 @@ Page({
     }
   },
 
-  onFieldInput(event) {
-    const { field } = event.currentTarget.dataset;
-    this.setData({
-      [`form.${field}`]: event.detail.value,
-    });
-  },
-
-  toggleSpecialItem(event) {
-    const { binding, form } = this.data;
-    const { value } = event.currentTarget.dataset;
-    const availableSpecialItems = binding ? binding.availableSpecialItems : [];
-    const requestedSpecialItems = toggleSpecialItem(
-      form.requestedSpecialItems,
-      value,
-      availableSpecialItems
-    );
-    this.setData({
-      "form.requestedSpecialItems": requestedSpecialItems,
-      specialItemOptions: buildSpecialItemOptions(requestedSpecialItems, availableSpecialItems),
-    });
-  },
-
-  validateForm() {
-    const { binding, form } = this.data;
-    const requestedWeight = binding && binding.isFullCase ? 23 : Number(form.requestedWeight);
-    if (!Number.isFinite(requestedWeight) || requestedWeight <= 0) {
-      return "请输入大于 0 的重量";
-    }
-    if (!form.itemDescription.trim()) {
-      return "请填写物品描述";
-    }
-    if (!form.senderWechat.trim()) {
-      return "请填写微信号";
-    }
-    if (!form.pickupAddress.trim()) {
-      return "请填写取货地址";
-    }
-    if (!form.receiverName.trim()) {
-      return "请填写收件人姓名";
-    }
-    if (!form.receiverPhone.trim()) {
-      return "请填写收件人电话";
-    }
-    if (!form.deliveryAddress.trim()) {
-      return "请填写目的地快递地址";
-    }
-    return "";
-  },
-
   async submitBinding() {
     const { binding, bindingId, form, submitting } = this.data;
     if (submitting || !binding) {
       return;
     }
 
-    const errorMessage = this.validateForm();
+    const errorMessage = validateBindForm(this.data.formInfo, form);
     if (errorMessage) {
       showToast({
         title: errorMessage,
@@ -214,15 +179,13 @@ Page({
         throw new Error(result.errMsg || "更新失败");
       }
 
-      showToast({
-        title: "已更新",
-        icon: "success",
-      });
-      setTimeout(() => {
+      this.setData({ saved: true });
+      wx.vibrateShort({ type: "light" });
+      this.redirectTimer = setTimeout(() => {
         wx.redirectTo({
           url: "/pages/find-bags/my/my",
         });
-      }, 700);
+      }, 1300);
     } catch (error) {
       showToast({
         title: error.message || "更新失败",

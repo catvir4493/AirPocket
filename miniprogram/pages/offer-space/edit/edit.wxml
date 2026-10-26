@@ -1,97 +1,26 @@
-<view class="page no-bottom-nav edit-page">
-  <view class="eyebrow page-eyebrow">Edit</view>
-  <view class="page-title">编辑行李额</view>
-  <view class="page-subtitle">只允许编辑未被绑定过的 bag。</view>
+<import src="../release/bag-form.wxml" />
 
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+<view class="page no-bottom-nav edit-page has-sticky-action">
+  <view class="eyebrow page-eyebrow fade-up">Edit</view>
+  <view class="page-title fade-up">编辑行李额</view>
+  <view class="page-subtitle fade-up delay-1">只有还没被绑定过的行李额可以修改。</view>
 
-  <view wx:else class="form">
-    <view class="field">
-      <view class="field-label">行李额类型</view>
-      <view class="type-selector">
-        <button class="type-option {{form.spaceType === 'loose' ? 'active' : ''}}" data-type="loose" bindtap="selectSpaceType">
-          <view class="type-title">散件</view>
-          <view class="type-copy">按可用重量发布</view>
-        </button>
-        <button class="type-option {{form.spaceType === 'fullCase' ? 'active' : ''}}" data-type="fullCase" bindtap="selectSpaceType">
-          <view class="type-title">整箱</view>
-          <view class="type-copy">每箱默认 23kg</view>
-        </button>
-      </view>
+  <view wx:if="{{loading}}" class="edit-skeleton">
+    <view class="edit-skeleton-card skeleton-shine"></view>
+    <view class="edit-skeleton-card short skeleton-shine"></view>
+  </view>
+
+  <view wx:else class="form fade-up delay-2">
+    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll}}" />
+  </view>
+
+  <view wx:if="{{!loading}}" class="sticky-action action-bar">
+    <view class="action-summary">
+      <view class="action-route">{{summary.route}}</view>
+      <view class="action-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
     </view>
-
-    <view class="field">
-      <view class="field-label">出发城市</view>
-      <input class="input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="Budapest" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">到达城市</view>
-      <input class="input" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="Shanghai" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">出发日期</view>
-      <picker mode="date" value="{{form.departureDate}}" start="{{minDate}}" bindchange="onDateChange">
-        <view class="picker-value {{form.departureDate ? '' : 'placeholder'}}">{{form.departureDate || '选择日期'}}</view>
-      </picker>
-    </view>
-
-    <view class="field">
-      <view class="field-label">航班号</view>
-      <input class="input" value="{{form.flightNo}}" data-field="flightNo" bindinput="onFieldInput" placeholder="例如 MF97" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">微信号</view>
-      <input class="input" value="{{form.carrierWechat}}" data-field="carrierWechat" bindinput="onFieldInput" placeholder="平台客服将通过微信联系你" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">收货地址</view>
-      <textarea class="textarea" value="{{form.carrierReceiveAddress}}" data-field="carrierReceiveAddress" bindinput="onFieldInput" placeholder="平台统一打包后送达给你的地址，仅平台后台可见" />
-    </view>
-
-    <view wx:if="{{form.spaceType === 'loose'}}" class="field">
-      <view class="field-label">可用重量 kg</view>
-      <input class="input" type="digit" value="{{form.totalWeight}}" data-field="totalWeight" bindinput="onFieldInput" placeholder="例如 10" />
-    </view>
-
-    <view wx:else class="field">
-      <view class="field-label">整箱数量</view>
-      <input class="input" type="number" value="{{form.caseCount}}" data-field="caseCount" bindinput="onFieldInput" placeholder="例如 1" />
-      <view class="field-hint">每个整箱默认 23 kg</view>
-    </view>
-
-    <view class="field">
-      <view class="field-label">可用体积</view>
-      <input class="input" value="{{form.availableVolume}}" data-field="availableVolume" bindinput="onFieldInput" placeholder="例如 小箱一角、约 20L" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">可接受特殊物品</view>
-      <view class="choice-grid">
-        <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
-      </view>
-      <view class="field-hint">勾选你愿意帮需要的人携带的特殊物品，不选表示不接受特殊物品。</view>
-    </view>
-
-    <view class="field">
-      <view class="field-label">可接受物品</view>
-      <input class="input" value="{{form.allowedItemsText}}" data-field="allowedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 文件, 衣服" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">不接受物品</view>
-      <input class="input" value="{{form.restrictedItemsText}}" data-field="restrictedItemsText" bindinput="onFieldInput" placeholder="用逗号分隔，例如 液体, 食品" />
-    </view>
-
-    <view class="field">
-      <view class="field-label">备注</view>
-      <textarea class="textarea" value="{{form.note}}" data-field="note" bindinput="onFieldInput" placeholder="补充时间、交接地点或其他要求" />
-    </view>
-
-    <button class="primary-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitBag">保存修改</button>
+    <button class="primary-button action-button {{saved ? 'success' : ''}} {{summary.ready || saved ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || saved}}" bindtap="submitBag">{{saved ? '✓ 已保存' : '保存'}}</button>
   </view>
 </view>
+<ap-stamp show="{{saved ? true : false}}" text="已保存" />
 <ap-toast id="ap-toast" />

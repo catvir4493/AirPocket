@@ -29,6 +29,7 @@
     "ap-navbar": "/components/ap-navbar/index",
     "ap-icon": "/components/ap-icon/index",
     "ap-toast": "/components/ap-toast/index",
+    "ap-stamp": "/components/ap-stamp/index",
     "ap-pass": "/components/ap-pass/index",
     "ap-art": "/components/ap-art/index"
   },

@@ -91,6 +91,7 @@
 
 .stepper-value {
   display: flex;
+  overflow: hidden;
   align-items: baseline;
   justify-content: center;
   width: 150rpx;
@@ -105,6 +106,39 @@
   font-weight: 700;
   line-height: 76rpx;
   text-align: right;
+}
+
+/* The number rolls in from below on +, from above on −. */
+.stepper-value.roll-up .stepper-input,
+.stepper-value.roll-up .stepper-unit {
+  animation: gf-roll-up 260ms var(--ease-out);
+}
+
+.stepper-value.roll-down .stepper-input,
+.stepper-value.roll-down .stepper-unit {
+  animation: gf-roll-down 260ms var(--ease-out);
+}
+
+@keyframes gf-roll-up {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gf-roll-down {
+  from {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .stepper-unit {

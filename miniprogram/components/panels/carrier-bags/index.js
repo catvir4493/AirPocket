@@ -60,6 +60,7 @@ Component({
     statWeight: 0,
     segments: SEGMENTS,
     segment: "all",
+    segmentIndex: 0,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -200,11 +201,11 @@ Component({
     },
 
     selectSegment(event) {
-      const { value } = event.currentTarget.dataset;
+      const { value, index } = event.currentTarget.dataset;
       if (value === this.data.segment) {
         return;
       }
-      this.setData({ segment: value }, () => this.applySearchFilters());
+      this.setData({ segment: value, segmentIndex: Number(index) || 0 }, () => this.applySearchFilters());
     },
 
     openSearchPanel() {

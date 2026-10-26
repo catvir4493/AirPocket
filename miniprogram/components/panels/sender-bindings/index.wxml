@@ -15,7 +15,10 @@
   </view>
 
   <view class="my-segments fade-up delay-2">
-    <view wx:for="{{segments}}" wx:key="value" class="my-segment {{segment === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectSegment">{{item.label}}</view>
+    <view class="my-seg-track">
+      <view class="my-seg-thumb" style="transform: translateX({{segmentIndex * 100}}%);"></view>
+      <view wx:for="{{segments}}" wx:key="value" class="my-segment {{segment === item.value ? 'active' : ''}}" data-value="{{item.value}}" data-index="{{index}}" bindtap="selectSegment">{{item.label}}</view>
+    </view>
     <view class="my-segment my-segment-search {{hasSearchFilters ? 'filtered' : ''}}" bindtap="openSearchPanel">
       <ap-icon name="search" size="{{24}}" stroke="{{2.2}}" color="{{hasSearchFilters ? '#1c1c1a' : 'ink-2'}}" />
       <text>搜索</text>
