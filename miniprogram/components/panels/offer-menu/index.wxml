@@ -3,7 +3,7 @@
     <view class="offer-hero-watermark">OFFER</view>
     <view class="eyebrow offer-hero-eyebrow">我有空余行李额</view>
     <view class="offer-hero-title">顺路帮人带一点</view>
-    <view class="offer-hero-desc">填好航班和可用重量，寄东西的人就能在「找行李额」里看到你。</view>
+    <view class="offer-hero-desc">填好航班和可用重量，需要的人就能在「找行李额」里看到你。</view>
     <button class="offer-hero-cta" hover-class="button-hover" bindtap="goReleaseBag">
       <text>发布行李额</text>
       <ap-icon name="arrow" size="{{28}}" stroke="{{2.4}}" color="#1c1c1a" />

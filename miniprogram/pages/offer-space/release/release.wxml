@@ -1,7 +1,7 @@
 <view class="page no-bottom-nav release-page has-sticky-action">
   <view class="eyebrow page-eyebrow fade-up">Offer Space</view>
   <view class="page-title fade-up">发布行李额</view>
-  <view class="page-subtitle fade-up delay-1">发布后，寄东西的人会在「找行李额」里看到这条记录。</view>
+  <view class="page-subtitle fade-up delay-1">发布后，需要的人会在「找行李额」里看到这条记录。</view>
 
   <view class="form fade-up delay-2">
     <!-- 1 Trip: a boarding-pass ticket -->
@@ -47,7 +47,7 @@
     <view class="amount-card {{focusedField === 'amount' ? 'focused' : ''}}">
       <view class="amount-label">
         <view>{{form.spaceType === 'loose' ? '可用重量' : '整箱数量'}}</view>
-        <view class="amount-hint">{{form.spaceType === 'loose' ? '寄件人按 kg 预订' : caseWeightText}}</view>
+        <view class="amount-hint">{{form.spaceType === 'loose' ? '需要的人按 kg 预订' : caseWeightText}}</view>
       </view>
       <view class="stepper">
         <view class="stepper-btn" hover-class="stepper-btn-hover" data-delta="-1" bindtap="stepAmount">−</view>
@@ -113,7 +113,7 @@
     </view>
 
     <!-- Live preview: the card senders will see in Find Bags -->
-    <view class="eyebrow preview-title">寄件人看到的样子</view>
+    <view class="eyebrow preview-title">需要的人看到的样子</view>
     <view class="bag-card preview-card">
       <view class="bag-stub">
         <text class="bag-stub-day">{{preview.day}}</text>

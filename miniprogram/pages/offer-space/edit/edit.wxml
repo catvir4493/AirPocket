@@ -73,7 +73,7 @@
       <view class="choice-grid">
         <button wx:for="{{specialItemOptions}}" wx:key="value" class="choice-pill {{item.selected ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleSpecialItem">{{item.label}}</button>
       </view>
-      <view class="field-hint">勾选你愿意帮寄货者携带的特殊物品，不选表示不接受特殊物品。</view>
+      <view class="field-hint">勾选你愿意帮需要的人携带的特殊物品，不选表示不接受特殊物品。</view>
     </view>
 
     <view class="field">
