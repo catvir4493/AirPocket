@@ -1,0 +1,127 @@
+<view class="find-panel">
+  <view class="route-overview fade-up delay-1">
+    <view class="ro-head">
+      <text class="eyebrow ro-eyebrow">{{overview.hasRoute ? '最热路线' : 'AirPocket'}}</text>
+      <view class="ro-live"><view class="ro-live-dot"></view>实时</view>
+    </view>
+    <view class="ro-route">
+      <text class="ro-city">{{overview.from}}</text>
+      <view class="ro-line">
+        <view class="ro-line-dash"></view>
+        <view class="ro-plane"><ap-icon name="plane" size="{{34}}" color="#fff51f" stroke="{{1.6}}" /></view>
+      </view>
+      <text class="ro-city right">{{overview.to}}</text>
+    </view>
+    <view class="ro-grid">
+      <view class="ro-cell">
+        <view class="eyebrow ro-label">Available</view>
+        <view class="ro-value"><text class="num">{{overview.count}}</text><text class="ro-unit">个</text></view>
+      </view>
+      <view class="ro-cell">
+        <view class="eyebrow ro-label">Next</view>
+        <view class="ro-value"><text class="num">{{overview.next}}</text></view>
+      </view>
+      <view class="ro-cell">
+        <view class="eyebrow ro-label">Max</view>
+        <view class="ro-value"><text class="num">{{overview.max}}</text><text class="ro-unit">kg</text></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bag-list-header fade-up delay-2">
+    <view class="bag-list-title">可用行李额 · <block wx:for="{{[bags.length]}}" wx:key="*this"><text class="count-swap">{{item}}</text></block></view>
+    <button class="filter-entry {{hasActiveFilters ? 'active' : ''}}" bindtap="openFilters"><ap-icon name="filter" size="{{26}}" stroke="{{2.2}}" color="{{hasActiveFilters ? '#1c1c1a' : 'ink-2'}}" /><text>筛选</text><view wx:if="{{hasActiveFilters}}" class="filter-dot"></view></button>
+  </view>
+
+  <view wx:if="{{loading}}" class="bag-skeleton-list">
+    <view wx:for="{{[0, 1, 2]}}" wx:key="*this" class="bag-skeleton skeleton-shine">
+      <view class="bag-skeleton-line wide"></view>
+      <view class="bag-skeleton-line short"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <block wx:elif="{{bags.length}}">
+    <block wx:for="{{bags}}" wx:key="_id">
+      <view wx:if="{{item.groupHead}}" class="bag-group-head" style="top: {{navTotal}}px;">{{item.groupHead}}</view>
+      <view class="bag-card list-enter {{fresh[item._id] ? 'fresh' : ''}} {{liftId === item._id ? 'lifting' : ''}}" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms" hover-class="bag-card-hover" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openDetail">
+        <view class="bag-stub">
+          <text class="bag-stub-day">{{item.stubDay}}</text>
+          <text class="bag-stub-month">{{item.stubMonth}}</text>
+        </view>
+        <view class="bag-main">
+          <view class="bag-route">
+            <text class="bag-city">{{item.fromCity || '-'}}</text>
+            <view class="bag-line">
+              <view class="bag-line-dash"></view>
+              <view class="bag-plane"><ap-icon name="plane" size="{{26}}" color="ink" stroke="{{1.8}}" /></view>
+            </view>
+            <text class="bag-city right">{{item.toCity || '-'}}</text>
+          </view>
+          <view class="bag-foot">
+            <view class="bag-chips">
+              <text wx:for="{{item.listChips}}" wx:for-item="chip" wx:key="*this" class="bag-chip">{{chip}}</text>
+            </view>
+            <view class="bag-weight"><text class="bag-weight-num">{{item.listWeightValue}}</text><text class="bag-weight-unit">kg</text></view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:else class="empty-state">
+    <view class="empty-art"><ap-art name="suitcase" width="{{240}}" height="{{180}}" /></view>
+    <view>{{emptyMessage}}</view>
+  </view>
+
+  <view wx:if="{{filterPanelOpen}}" class="filter-drawer {{filterPanelClosing ? 'closing' : ''}}">
+    <view class="filter-mask sheet-mask-anim" bindtap="closeFilters"></view>
+    <view class="filter-sheet sheet-panel-anim">
+      <view class="sheet-grab"></view>
+      <view class="filter-sheet-header">
+        <view class="filter-sheet-title">筛选</view>
+        <button class="filter-sheet-close" bindtap="closeFilters">关闭</button>
+      </view>
+
+      <view class="filter-panel">
+        <view class="filter-row">
+          <view class="filter-field">
+            <view class="filter-label">出发地</view>
+            <input class="filter-input" value="{{filters.fromCity}}" data-field="fromCity" bindinput="onFilterInput" placeholder="出发地" />
+          </view>
+          <view class="filter-field">
+            <view class="filter-label">目的地</view>
+            <input class="filter-input" value="{{filters.toCity}}" data-field="toCity" bindinput="onFilterInput" placeholder="目的地" />
+          </view>
+        </view>
+
+        <view class="filter-row">
+          <view class="filter-field">
+            <view class="filter-label">日期</view>
+            <picker mode="date" value="{{filters.departureDate}}" bindchange="onFilterDateChange">
+              <view class="filter-picker {{filters.departureDate ? '' : 'placeholder'}}">{{filters.departureDate || '选择日期'}}</view>
+            </picker>
+          </view>
+          <view class="filter-field">
+            <view class="filter-label">排序</view>
+            <picker mode="selector" range="{{sortOptions}}" range-key="label" value="{{sortIndex}}" bindchange="onSortChange">
+              <view class="filter-picker">{{currentSortLabel}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="filter-type-row">
+          <button wx:for="{{spaceTypeOptions}}" wx:key="value" class="filter-type {{filters.spaceType === item.value ? 'active' : ''}}" data-type="{{item.value}}" bindtap="selectSpaceType">{{item.label}}</button>
+        </view>
+
+        <button class="clear-filter" bindtap="clearFilters">清空筛选</button>
+      </view>
+    </view>
+  </view>
+</view>

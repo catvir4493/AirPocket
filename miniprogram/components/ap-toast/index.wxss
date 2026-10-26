@@ -1,0 +1,54 @@
+.ap-toast-wrap {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ap-toast {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  max-width: 600rpx;
+  padding: 20rpx 30rpx;
+  border: 1rpx solid var(--solid-line, transparent);
+  border-radius: 999rpx;
+  background: var(--solid, #1c1c1a);
+  box-shadow: 0 20rpx 40rpx -20rpx rgba(0, 0, 0, 0.5);
+  animation: ap-toast-in 320ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+.ap-toast.leaving {
+  animation: ap-toast-out 220ms var(--ease-in, cubic-bezier(0.4, 0, 1, 1)) both;
+}
+
+.ap-toast-text {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 25rpx;
+  font-weight: 500;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes ap-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-24rpx) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ap-toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(-16rpx) scale(0.98);
+  }
+}

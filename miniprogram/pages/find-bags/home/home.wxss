@@ -1,337 +1,41 @@
-.welcome-card {
-  overflow: hidden;
-  margin: 4rpx 0 24rpx;
-  border-bottom: 1rpx solid #eeeeee;
-  background: #ffffff;
-}
-
-.welcome-brand-image {
-  display: block;
-  width: 100%;
-  height: 224rpx;
-}
-
-.welcome-stage {
+/* Shared by the Find Bags / Offer Space tab pages (custom navigation bar). */
+.tab-shell {
   position: relative;
-  height: 300rpx;
-  margin-top: 8rpx;
+  padding-top: 8rpx;
 }
 
-.welcome-watermark {
-  position: absolute;
-  top: 40rpx;
-  left: 0;
-  width: 430rpx;
-  color: #eeeeee;
-  font-size: 58rpx;
-  font-weight: 900;
-  line-height: 0.95;
+.large-title {
+  margin: 4rpx 0 28rpx;
 }
 
-.traveler-scene {
-  position: absolute;
-  right: 36rpx;
-  bottom: 10rpx;
-  width: 280rpx;
-  height: 230rpx;
+.large-title .page-title {
+  margin: 6rpx 0 0;
 }
 
-.traveler {
-  position: absolute;
-  bottom: 42rpx;
-  width: 62rpx;
-  height: 156rpx;
+.title-swap {
+  animation: ap-fade-up var(--dur-base) var(--ease-out) backwards;
 }
 
-.traveler-a {
-  left: 42rpx;
+/* A switched-to panel slides in from the side of the tab it comes from.
+   "backwards" fill only, so no transform is left behind once it lands
+   (a leftover transform would break the panels' fixed-position sheets). */
+.tab-in-fwd {
+  animation: ap-tab-in-fwd 320ms var(--ease-out) backwards;
 }
 
-.traveler-b {
-  right: 38rpx;
+.tab-in-back {
+  animation: ap-tab-in-back 320ms var(--ease-out) backwards;
 }
 
-.head {
-  width: 34rpx;
-  height: 34rpx;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: #f4b28c;
-}
-
-.body {
-  width: 50rpx;
-  height: 78rpx;
-  margin: 4rpx auto 0;
-  border-radius: 20rpx 20rpx 8rpx 8rpx;
-  background: #ef606d;
-}
-
-.traveler-b .body {
-  background: #44a7a5;
-}
-
-.leg-row {
-  display: flex;
-  justify-content: center;
-  gap: 8rpx;
-  margin-top: 4rpx;
-}
-
-.leg-row view {
-  width: 12rpx;
-  height: 48rpx;
-  border-radius: 999rpx;
-  background: #333333;
-}
-
-.scene-case {
-  position: absolute;
-  bottom: 0;
-  width: 52rpx;
-  height: 88rpx;
-  border-radius: 8rpx;
-  background: #f0b33d;
-}
-
-.case-a {
-  left: 0;
-}
-
-.case-b {
-  right: 2rpx;
-  background: #80c9c3;
-}
-
-.bag-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18rpx;
-  margin: 18rpx -24rpx 16rpx 0;
-}
-
-.bag-list-title {
-  min-width: 0;
-  color: #333333;
-  font-size: 26rpx;
-  font-weight: 800;
-}
-
-.filter-entry {
-  flex: 0 0 auto;
-  min-width: 88rpx;
-  min-height: 40rpx;
-  color: #555555;
-  font-size: 22rpx;
-  font-weight: 700;
-  line-height: 40rpx;
-  text-align: right;
-}
-
-.filter-entry.active {
-  color: #2f2f2f;
-}
-
-.filter-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 30;
-}
-
-.filter-mask {
+/* Hidden panels stay rendered but take no space. Unlike display: none,
+   this does not restart their entry animations every time they come back. */
+.tab-panel-hidden {
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.28);
-}
-
-.filter-sheet {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  max-height: 58vh;
-  padding: 30rpx 28rpx 46rpx;
-  border-radius: 34rpx 34rpx 0 0;
-  background: #ffffff;
-}
-
-.filter-sheet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22rpx;
-}
-
-.filter-sheet-title {
-  color: #303030;
-  font-size: 31rpx;
-  font-weight: 800;
-}
-
-.filter-sheet-close {
-  min-width: 86rpx;
-  min-height: 46rpx;
-  padding: 0 18rpx;
-  border-radius: 999rpx;
-  background: #f0f0f0;
-  color: #777777;
-  font-size: 21rpx;
-  font-weight: 700;
-  line-height: 46rpx;
-}
-
-.filter-panel {
-  box-sizing: border-box;
-}
-
-.filter-row {
-  display: flex;
-  gap: 14rpx;
-  margin-bottom: 14rpx;
-}
-
-.filter-field {
-  flex: 1;
-  min-width: 0;
-}
-
-.filter-label {
-  margin: 0 0 6rpx 4rpx;
-  color: #8b8b8b;
-  font-size: 20rpx;
-  font-weight: 700;
-}
-
-.filter-input,
-.filter-picker {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 58rpx;
-  padding: 14rpx 16rpx;
-  border: 0;
-  border-radius: 8rpx;
-  background: #f0f0f0;
-  color: #333333;
-  font-size: 23rpx;
-  line-height: 1.35;
-}
-
-.filter-type-row {
-  display: flex;
-  gap: 10rpx;
-  margin-bottom: 14rpx;
-}
-
-.filter-type {
-  flex: 1;
-  min-height: 46rpx;
-  border-radius: 999rpx;
-  background: #f0f0f0;
-  color: #777777;
-  font-size: 21rpx;
-  font-weight: 700;
-}
-
-.filter-type.active {
-  background: #2f2f2f;
-  color: #fff51f;
-}
-
-.clear-filter {
-  width: 100%;
-  min-height: 48rpx;
-  border-radius: 999rpx;
-  background: #f0f0f0;
-  color: #777777;
-  font-size: 22rpx;
-  font-weight: 700;
-}
-
-.bag-card {
-  position: relative;
-  box-sizing: border-box;
-  min-height: 156rpx;
-  margin-bottom: 20rpx;
-  padding: 30rpx 32rpx;
+  height: 0;
   overflow: hidden;
-  border-radius: 28rpx;
-  background-color: #fffef6;
-  background-image:
-    radial-gradient(ellipse 48% 150% at 6% 50%, rgba(255, 243, 20, 1) 0%, rgba(255, 244, 40, 0.85) 28%, rgba(255, 247, 90, 0.45) 55%, rgba(255, 250, 150, 0.12) 78%, rgba(255, 250, 150, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 34% 115%, rgba(255, 206, 60, 0.35) 0%, rgba(255, 206, 60, 0) 100%);
-  box-shadow:
-    inset 0 0 0 2rpx rgba(240, 222, 40, 0.45),
-    0 12rpx 28rpx -20rpx rgba(200, 180, 0, 0.5);
-  transition: transform 0.15s ease;
-}
-
-.bag-card.reverse {
-  background-image:
-    radial-gradient(ellipse 48% 150% at 94% 50%, rgba(255, 243, 20, 1) 0%, rgba(255, 244, 40, 0.85) 28%, rgba(255, 247, 90, 0.45) 55%, rgba(255, 250, 150, 0.12) 78%, rgba(255, 250, 150, 0) 100%),
-    radial-gradient(ellipse 30% 90% at 66% 115%, rgba(255, 206, 60, 0.35) 0%, rgba(255, 206, 60, 0) 100%);
-}
-
-.bag-card-hover {
-  transform: scale(0.98);
-}
-
-.bag-card-inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 96rpx;
-}
-
-.bag-card-top,
-.bag-card-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20rpx;
-}
-
-.bag-date {
-  flex: 0 0 auto;
-  color: #2b2b2b;
-  font-size: 40rpx;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.bag-route {
-  min-width: 0;
-  overflow: hidden;
-  color: #111111;
-  font-size: 22rpx;
-  font-weight: 600;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bag-weight {
-  flex: 0 0 auto;
-  color: #2d2d2d;
-  font-size: 22rpx;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-.bag-tags {
-  min-width: 0;
-  overflow: hidden;
-  color: #a39a6a;
-  font-size: 18rpx;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
 }

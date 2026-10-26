@@ -1,88 +1,141 @@
+<ap-navbar title="我的绑定" collapsed="{{navCollapsed}}" loading="{{refreshing}}" compact />
 <view class="page no-bottom-nav detail-page">
-  <view class="detail-page-title">My Bag Detail</view>
-
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view class="nav-sentinel"></view>
+  <view wx:if="{{loading}}" class="pass-skeleton">
+    <view class="pass-skeleton-card skeleton-shine"></view>
+    <view class="pass-skeleton-line skeleton-shine"></view>
+    <view class="pass-skeleton-line short skeleton-shine"></view>
+  </view>
 
   <block wx:elif="{{binding}}">
-    <view class="detail-code">#{{binding.bagNo}}</view>
+    <!-- On cancel the pass is drawn twice and split at the perforation; the lower half tears away. -->
+    <view class="pass-wrap {{tearing ? 'tearing' : ''}}">
+      <view class="pass-half top">
+        <ap-pass
+          code="{{binding.bagNo}}"
+          status-text="{{binding.statusText}}"
+          status-tone="{{binding.statusTone}}"
+          from-city="{{binding.fromCity}}"
+          to-city="{{binding.toCity}}"
+          date="{{binding.departureDate}}"
+          flight-no="{{binding.flightNo}}"
+          metric-label="{{binding.isFullCase ? 'Cases' : 'Booked'}}"
+          metric-value="{{binding.isFullCase ? binding.requestedCases : binding.requestedWeight}}"
+          metric-unit="{{binding.isFullCase ? '件' : 'kg'}}"
+          chips="{{binding.passChips}}"
+        />
+      </view>
+      <view wx:if="{{tearing}}" class="pass-half bottom">
+        <ap-pass
+          code="{{binding.bagNo}}"
+          status-text="{{binding.statusText}}"
+          status-tone="{{binding.statusTone}}"
+          from-city="{{binding.fromCity}}"
+          to-city="{{binding.toCity}}"
+          date="{{binding.departureDate}}"
+          flight-no="{{binding.flightNo}}"
+          metric-label="{{binding.isFullCase ? 'Cases' : 'Booked'}}"
+          metric-value="{{binding.isFullCase ? binding.requestedCases : binding.requestedWeight}}"
+          metric-unit="{{binding.isFullCase ? '件' : 'kg'}}"
+          chips="{{binding.passChips}}"
+        />
+      </view>
+    </view>
 
-    <view class="detail-sheet">
-      <view class="detail-row">
-        <view class="detail-label">袋子编号</view>
-        <view class="detail-value">{{binding.bagNo}}</view>
+    <view class="lock-banner {{binding.canEdit ? 'editable' : ''}} fade-up delay-1">
+      <ap-icon name="{{binding.canEdit ? 'info' : 'shield'}}" size="{{32}}" />
+      <text>{{binding.lockText}}</text>
+    </view>
+
+    <view class="detail-section fade-up delay-1">
+      <view class="section-title">进度<text class="eyebrow">Status</text></view>
+      <view class="timeline">
+        <view wx:for="{{binding.timeline}}" wx:key="status" class="tl-step {{item.state}}" style="animation-delay: {{200 + index * 70}}ms">
+          <view class="tl-rail">
+            <view class="tl-dot"><text wx:if="{{item.state === 'done'}}" class="tl-check">✓</text></view>
+            <view wx:if="{{index < binding.timeline.length - 1}}" class="tl-line" style="animation-delay: {{320 + index * 70}}ms"></view>
+          </view>
+          <view class="tl-body">
+            <view class="tl-label">{{item.label}}</view>
+            <view wx:if="{{item.time}}" class="tl-time num">{{item.time}}</view>
+          </view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">日期</view>
-        <view class="detail-value">{{binding.departureDate}}</view>
+    </view>
+
+    <view class="detail-section fade-up delay-2">
+      <view class="section-title">物品信息<text class="eyebrow">Item</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">物品</view>
+          <view class="info-value">{{binding.itemDescription || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">特殊物品</view>
+          <view class="info-value">{{binding.requestedSpecialItemsText}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">提交时间</view>
+          <view class="info-value num">{{binding.createdAtText || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">可编辑至</view>
+          <view class="info-value num">{{binding.lockDeadlineText || '-'}}</view>
+        </view>
+        <view wx:if="{{binding.senderNote}}" class="info-note">{{binding.senderNote}}</view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">出发地</view>
-        <view class="detail-value">{{binding.fromCity}}</view>
+    </view>
+
+    <view class="detail-section fade-up delay-2">
+      <view class="section-title">联系与取货<text class="eyebrow">Pickup</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">微信号</view>
+          <view class="info-value">{{binding.senderWechat || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">取货地址</view>
+          <view class="info-value">{{binding.pickupAddress || '-'}}</view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">目的地</view>
-        <view class="detail-value">{{binding.toCity}}</view>
+    </view>
+
+    <view class="detail-section fade-up delay-3">
+      <view class="section-title">收件信息<text class="eyebrow">Receiver</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">收件人</view>
+          <view class="info-value">{{binding.receiverName || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">电话</view>
+          <view class="info-value num">{{binding.receiverPhone || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">快递地址</view>
+          <view class="info-value">{{binding.deliveryAddress || '-'}}</view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">类型</view>
-        <view class="detail-value">{{binding.spaceTypeText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">{{binding.isFullCase ? '绑定箱数' : '绑定重量'}}</view>
-        <view class="detail-value">{{binding.isFullCase ? binding.requestedCasesText : binding.requestedWeightText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">状态</view>
-        <view class="detail-value">{{binding.statusText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">锁单</view>
-        <view class="detail-value">{{binding.lockText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">提交时间</view>
-        <view class="detail-value">{{binding.createdAtText || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">可编辑至</view>
-        <view class="detail-value">{{binding.lockDeadlineText || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">物品</view>
-        <view class="detail-value">{{binding.itemDescription || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">特殊物品</view>
-        <view class="detail-value">{{binding.requestedSpecialItemsText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">微信号</view>
-        <view class="detail-value">{{binding.senderWechat || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">取货地址</view>
-        <view class="detail-value">{{binding.pickupAddress || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">收件人</view>
-        <view class="detail-value">{{binding.receiverName || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">电话</view>
-        <view class="detail-value">{{binding.receiverPhone || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">快递地址</view>
-        <view class="detail-value">{{binding.deliveryAddress || '-'}}</view>
-      </view>
-      <view wx:if="{{binding.senderNote}}" class="detail-note">{{binding.senderNote}}</view>
     </view>
 
     <view wx:if="{{binding.canEdit}}" class="detail-actions">
-      <button class="primary-button" bindtap="goEditBinding">Edit / 编辑</button>
-      <button class="secondary-button cancel-button" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="cancelBinding">Cancel / 取消</button>
+      <button class="primary-button" bindtap="goEditBinding">编辑绑定信息</button>
+      <button class="danger-button" disabled="{{cancelling}}" bindtap="cancelBinding">
+        <view wx:if="{{cancelling}}" class="btn-flight">
+          <view class="btn-flight-dash"></view>
+          <view class="btn-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink-3" /></view>
+        </view>
+        <block wx:else>取消绑定</block>
+      </button>
     </view>
   </block>
 
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
   <view wx:else class="empty-state">没有找到这条绑定。</view>
 </view>
+<ap-toast id="ap-toast" custom-nav />

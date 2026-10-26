@@ -1,4 +1,5 @@
 {
-  "navigationBarTitleText": "Bag Detail",
-  "enablePullDownRefresh": true
+  "navigationBarTitleText": "我的发布",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom"
 }

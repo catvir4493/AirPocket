@@ -1,48 +1,36 @@
 const {
   buildSpecialItemOptions,
   normalizeSpecialItems,
-  toggleSpecialItem,
 } = require("../../../utils/specialItems");
-
-const today = () => {
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${date.getFullYear()}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
-};
+const { showToast } = require("../../../utils/toast");
+const { bagFormMethods, createBagFormData, validateBagForm } = require("../../../utils/bagForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
 
 const listToText = (value) => (Array.isArray(value) ? value.join(", ") : "");
 
-const isPastDate = (value, minDate) => value && value < minDate;
-
 Page({
+  ...bagFormMethods,
+
+  readyText: "可以保存了",
+
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    ...createBagFormData("可以保存了"),
     bagId: "",
     loading: false,
     submitting: false,
-    minDate: today(),
-    specialItemOptions: buildSpecialItemOptions([]),
-    form: {
-      spaceType: "loose",
-      fromCity: "",
-      toCity: "",
-      departureDate: "",
-      flightNo: "",
-      carrierWechat: "",
-      carrierReceiveAddress: "",
-      totalWeight: "",
-      caseCount: "1",
-      availableVolume: "",
-      specialItemOptions: [],
-      allowedItemsText: "",
-      restrictedItemsText: "",
-      note: "",
-    },
+    saved: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".large-title");
   },
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
@@ -50,6 +38,12 @@ Page({
     }
     this.setData({ bagId: options.id });
     this.fetchBag(options.id);
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+    clearTimeout(this.redirectTimer);
+    clearFieldError(this);
   },
 
   async fetchBag(bagId) {
@@ -67,9 +61,8 @@ Page({
       const bag = result.data;
       const spaceType = bag.spaceType === "fullCase" ? "fullCase" : "loose";
       const specialItemOptions = normalizeSpecialItems(bag.specialItemOptions);
-      this.setData({
-        specialItemOptions: buildSpecialItemOptions(specialItemOptions),
-        form: {
+      this.updateForm(
+        {
           spaceType,
           fromCity: bag.fromCity || "",
           toCity: bag.toCity || "",
@@ -85,86 +78,18 @@ Page({
           restrictedItemsText: listToText(bag.restrictedItems),
           note: bag.note || "",
         },
-      });
+        { specialItemOptions: buildSpecialItemOptions(specialItemOptions) }
+      );
+      // Loading the saved values is not an edit: no preview flashes.
+      this.setData({ pulse: { date: 0, route: 0, chips: 0, weight: 0 } });
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
     } finally {
       this.setData({ loading: false });
     }
-  },
-
-  onFieldInput(event) {
-    const { field } = event.currentTarget.dataset;
-    this.setData({
-      [`form.${field}`]: event.detail.value,
-    });
-  },
-
-  selectSpaceType(event) {
-    const { type } = event.currentTarget.dataset;
-    this.setData({
-      "form.spaceType": type,
-      "form.totalWeight": type === "fullCase" ? "" : this.data.form.totalWeight,
-      "form.caseCount": type === "fullCase" ? this.data.form.caseCount || "1" : "1",
-    });
-  },
-
-  onDateChange(event) {
-    this.setData({
-      "form.departureDate": event.detail.value,
-    });
-  },
-
-  toggleSpecialItem(event) {
-    const { value } = event.currentTarget.dataset;
-    const specialItemOptions = toggleSpecialItem(this.data.form.specialItemOptions, value);
-    this.setData({
-      "form.specialItemOptions": specialItemOptions,
-      specialItemOptions: buildSpecialItemOptions(specialItemOptions),
-    });
-  },
-
-  validateForm() {
-    const { form, minDate } = this.data;
-    const required = [
-      ["fromCity", "请填写出发城市"],
-      ["toCity", "请填写到达城市"],
-      ["carrierWechat", "请填写微信号"],
-      ["carrierReceiveAddress", "请填写收货地址"],
-      ["departureDate", "请选择出发日期"],
-    ];
-
-    for (let i = 0; i < required.length; i += 1) {
-      const [field, message] = required[i];
-      if (!`${form[field]}`.trim()) {
-        return message;
-      }
-    }
-
-    if (isPastDate(form.departureDate, minDate)) {
-      return "出发日期不能早于今天";
-    }
-
-    if (form.spaceType === "fullCase") {
-      const caseCount = Number(form.caseCount);
-      if (!Number.isInteger(caseCount) || caseCount <= 0) {
-        return "整箱数量必须是大于 0 的整数";
-      }
-      return "";
-    }
-
-    if (!`${form.totalWeight}`.trim()) {
-      return "请填写可用重量";
-    }
-
-    const totalWeight = Number(form.totalWeight);
-    if (!Number.isFinite(totalWeight) || totalWeight <= 0) {
-      return "可用重量必须大于 0";
-    }
-    return "";
   },
 
   confirmMultipleCases(caseCount) {
@@ -193,12 +118,11 @@ Page({
       return;
     }
 
-    const errorMessage = this.validateForm();
-    if (errorMessage) {
-      wx.showToast({
-        title: errorMessage,
-        icon: "none",
-      });
+    this.commitTagDrafts();
+
+    const invalid = validateBagForm(this.data.form, this.data.minDate);
+    if (invalid) {
+      showFieldError(this, invalid);
       return;
     }
 
@@ -226,17 +150,15 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
-        title: "已更新",
-        icon: "success",
-      });
-      setTimeout(() => {
+      this.setData({ saved: true });
+      wx.vibrateShort({ type: "light" });
+      this.redirectTimer = setTimeout(() => {
         wx.redirectTo({
           url: "/pages/offer-space/my/my",
         });
-      }, 700);
+      }, 1300);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });

@@ -1,11 +1,92 @@
-.edit-summary {
-  box-sizing: border-box;
-  margin-bottom: 28rpx;
-  padding: 26rpx;
-  border-radius: 8rpx;
-  background: #f1f1f1;
+@import "../detail/detail.wxss";
+
+/* Compact ticket summarising the binding being edited. */
+.edit-ticket {
+  margin-top: 8rpx;
+  padding: 26rpx 30rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 36rpx;
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
-.primary-button {
-  margin-top: 26rpx;
+.edit-ticket-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit-ticket-code {
+  color: var(--ink-3);
+  font-family: var(--font-num);
+  font-size: 24rpx;
+  letter-spacing: 0.04em;
+}
+
+.edit-ticket-route {
+  display: flex;
+  align-items: center;
+  margin-top: 14rpx;
+}
+
+.edit-ticket-city {
+  flex: 0 1 auto;
+  max-width: 40%;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 38rpx;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.edit-ticket-line {
+  position: relative;
+  flex: 1;
+  height: 30rpx;
+  margin: 0 16rpx;
+}
+
+.edit-ticket-dash {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top: 2rpx dashed var(--line-strong);
+}
+
+.edit-ticket-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  padding: 0 6rpx;
+  background: var(--card);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.edit-ticket-meta {
+  display: flex;
+  gap: 40rpx;
+  margin-top: 20rpx;
+  padding-top: 18rpx;
+  border-top: 2rpx dashed var(--line-strong);
+}
+
+.edit-ticket-value {
+  margin-top: 4rpx;
+  color: var(--ink);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.edit-skeleton-card {
+  height: 260rpx;
+  margin-top: 30rpx;
+  border-radius: 36rpx;
+  background: var(--fill);
+}
+
+.edit-skeleton-card.short {
+  height: 180rpx;
 }

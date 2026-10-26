@@ -1,0 +1,296 @@
+const { countUp } = require("../../../utils/countUp");
+const { bagStatus } = require("../../../utils/status");
+const { dayParts } = require("../../../utils/date");
+const { showToast } = require("../../../utils/toast");
+const { tap } = require("../../../utils/haptic");
+const { liftAndOpen } = require("../../../utils/liftOpen");
+
+const defaultEmptyMessage = "还没有发布记录。回到「发布」页，把你空着的行李额发出来。";
+const noSearchResultMessage = "没有符合条件的发布记录。";
+
+const SEGMENTS = [
+  { value: "all", label: "全部" },
+  { value: "active", label: "可绑定" },
+  { value: "ended", label: "已结束" },
+];
+
+const matchesSegment = (bag, segment) => {
+  if (segment === "active") {
+    return bag.status === "active";
+  }
+  if (segment === "ended") {
+    return bag.status !== "active";
+  }
+  return true;
+};
+
+const toNumber = (value) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+};
+const defaultBagOption = { label: "全部编号", value: "" };
+
+const includesText = (source, keyword) =>
+  !keyword || `${source || ""}`.toLowerCase().includes(keyword.toLowerCase());
+
+const buildBagOptions = (items) => {
+  const seen = {};
+  const options = [defaultBagOption];
+  (items || []).forEach((item) => {
+    const bagNo = `${item.bagNo || ""}`.trim();
+    if (bagNo && !seen[bagNo]) {
+      seen[bagNo] = true;
+      options.push({ label: bagNo, value: bagNo });
+    }
+  });
+  return options;
+};
+
+Component({
+  options: {
+    styleIsolation: "apply-shared",
+  },
+
+  data: {
+    loading: true,
+    loadError: "",
+    allBags: [],
+    bags: [],
+    searchPanelOpen: false,
+    searchPanelClosing: false,
+    statActive: 0,
+    statBindings: 0,
+    statWeight: 0,
+    segments: SEGMENTS,
+    segment: "all",
+    segmentIndex: 0,
+    listKey: 0,
+    hasSearchFilters: false,
+    bagOptions: [defaultBagOption],
+    bagIndex: 0,
+    searchFilters: {
+      departureDate: "",
+      fromCity: "",
+      toCity: "",
+      bagNo: "",
+    },
+    emptyMessage: defaultEmptyMessage,
+    liftId: "",
+  },
+
+  lifetimes: {
+    detached() {
+      this.cleanup();
+    },
+  },
+
+  methods: {
+    onPanelShow() {
+      this.fetchBags();
+    },
+
+    refresh() {
+      return this.fetchBags();
+    },
+
+    cleanup() {
+      clearTimeout(this.closeSearchTimer);
+      clearTimeout(this._countUpTimer);
+    },
+
+    async fetchBags() {
+      // After the first load, refresh silently so the list does not flash on return.
+      if (!this.hasLoaded) {
+        this.setData({ loading: true });
+      }
+      try {
+        const resp = await wx.cloud.callFunction({
+          name: "getMyCarrierBags",
+        });
+        const result = resp.result || {};
+        if (!result.success) {
+          throw new Error(result.errMsg || "加载失败");
+        }
+
+        const bags = (result.data || []).map((bag) => {
+          const isFullCase = bag.spaceType === "fullCase";
+          const status = bagStatus(bag.status);
+          const remainingCases = Number.isFinite(Number(bag.remainingCases))
+            ? Number(bag.remainingCases)
+            : Math.floor(toNumber(bag.remainingWeight) / 23);
+          return {
+            ...bag,
+            isFullCase,
+            statusText: status.text,
+            statusTone: status.tone,
+            day: dayParts(bag.departureDate),
+            routeText: `${bag.fromCity || "-"} → ${bag.toCity || "-"}`,
+            metricValue: isFullCase ? remainingCases : toNumber(bag.remainingWeight),
+            metricUnit: isFullCase ? "件" : "kg",
+            bindingCount: toNumber(bag.bindingCount),
+          };
+        });
+
+        const bagOptions = buildBagOptions(bags);
+        const nextBagIndex = Math.max(
+          0,
+          bagOptions.findIndex((item) => item.value === this.data.searchFilters.bagNo)
+        );
+        this.setData({
+          allBags: bags,
+          bagOptions,
+          bagIndex: nextBagIndex,
+          "searchFilters.bagNo": bagOptions[nextBagIndex].value,
+        });
+        this.applySearchFilters(bags);
+        const stats = {
+          statActive: bags.filter((bag) => bag.status === "active").length,
+          statBindings: bags.reduce((sum, bag) => sum + bag.bindingCount, 0),
+          statWeight: bags.reduce((sum, bag) => sum + toNumber(bag.totalWeight), 0),
+        };
+        countUp(this, stats);
+        this.hasLoaded = true;
+      } catch (error) {
+        // Nothing on screen yet: show the retry state. Otherwise keep the list and just say so.
+        if (!this.hasLoaded) {
+          this.setData({ loadError: error.message || "加载失败" });
+        } else {
+          showToast({
+            title: error.message || "加载失败",
+            icon: "none",
+          });
+        }
+      } finally {
+        this.setData({ loading: false });
+      }
+    },
+
+    retryLoad() {
+      this.setData({ loadError: "", loading: true });
+      this.fetchBags();
+    },
+
+    getVisibleBags(allBags, filters) {
+      const departureDate = `${filters.departureDate || ""}`.trim();
+      const fromCity = `${filters.fromCity || ""}`.trim();
+      const toCity = `${filters.toCity || ""}`.trim();
+      const bagNo = `${filters.bagNo || ""}`.trim();
+
+      return (allBags || []).filter((bag) => {
+        const matchesDate = !departureDate || bag.departureDate === departureDate;
+        const matchesFromCity = includesText(bag.fromCity, fromCity);
+        const matchesToCity = includesText(bag.toCity, toCity);
+        const matchesBagNo = !bagNo || bag.bagNo === bagNo;
+        return (
+          matchesSegment(bag, this.data.segment) &&
+          matchesDate &&
+          matchesFromCity &&
+          matchesToCity &&
+          matchesBagNo
+        );
+      });
+    },
+
+    applySearchFilters(nextAllBags) {
+      const allBags = nextAllBags || this.data.allBags;
+      const visibleBags = this.getVisibleBags(allBags, this.data.searchFilters);
+      const hasSearchFilters = Boolean(
+        this.data.searchFilters.departureDate ||
+          this.data.searchFilters.fromCity ||
+          this.data.searchFilters.toCity ||
+          this.data.searchFilters.bagNo
+      );
+
+      this.setData({
+        bags: visibleBags,
+        hasSearchFilters,
+        emptyMessage:
+          allBags.length && (hasSearchFilters || this.data.segment !== "all")
+            ? noSearchResultMessage
+            : defaultEmptyMessage,
+      });
+    },
+
+    selectSegment(event) {
+      const { value, index } = event.currentTarget.dataset;
+      if (value === this.data.segment) {
+        return;
+      }
+      tap();
+      this.setData(
+        { segment: value, segmentIndex: Number(index) || 0, listKey: this.data.listKey + 1 },
+        () => this.applySearchFilters()
+      );
+    },
+
+    openSearchPanel() {
+      clearTimeout(this.closeSearchTimer);
+      this.setData({ searchPanelOpen: true, searchPanelClosing: false });
+    },
+
+    closeSearchPanel() {
+      if (!this.data.searchPanelOpen || this.data.searchPanelClosing) {
+        return;
+      }
+      this.setData({ searchPanelClosing: true });
+      this.closeSearchTimer = setTimeout(() => {
+        this.setData({ searchPanelOpen: false, searchPanelClosing: false });
+      }, 240);
+    },
+
+    onSearchInput(event) {
+      const { field } = event.currentTarget.dataset;
+      this.setData(
+        {
+          [`searchFilters.${field}`]: event.detail.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    onSearchDateChange(event) {
+      this.setData(
+        {
+          "searchFilters.departureDate": event.detail.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    onSearchBagChange(event) {
+      const bagIndex = Number(event.detail.value || 0);
+      const bagOption = this.data.bagOptions[bagIndex] || defaultBagOption;
+      this.setData(
+        {
+          bagIndex,
+          "searchFilters.bagNo": bagOption.value,
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    clearSearchFilters() {
+      this.setData(
+        {
+          bagIndex: 0,
+          searchFilters: {
+            departureDate: "",
+            fromCity: "",
+            toCity: "",
+            bagNo: "",
+          },
+        },
+        () => this.applySearchFilters()
+      );
+    },
+
+    openBagDetail(event) {
+      const { id } = event.currentTarget.dataset;
+      if (!id) {
+        return;
+      }
+
+      liftAndOpen(this, id, `/pages/offer-space/bag-detail/detail?id=${id}`);
+    },
+  },
+});

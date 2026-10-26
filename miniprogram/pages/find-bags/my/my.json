@@ -1,4 +1,9 @@
 {
   "navigationBarTitleText": "My Bags",
-  "enablePullDownRefresh": true
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "find-list-panel": "/components/panels/find-list/index",
+    "sender-bindings-panel": "/components/panels/sender-bindings/index"
+  }
 }

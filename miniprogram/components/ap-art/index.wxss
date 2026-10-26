@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+
+.ap-art {
+  margin: 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}

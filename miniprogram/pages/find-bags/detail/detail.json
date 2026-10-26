@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "Bag Detail"
+  "navigationBarTitleText": "行李额详情",
+  "navigationStyle": "custom"
 }

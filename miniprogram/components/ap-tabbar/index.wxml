@@ -1,0 +1,16 @@
+<view class="ap-tabbar">
+  <view class="ap-tabbar-indicator" style="width: calc((100% - 16rpx) / {{items.length || 1}}); transform: translateX({{activeIndex * 100}}%);"></view>
+  <view
+    wx:for="{{items}}"
+    wx:key="text"
+    class="ap-tabbar-item {{index === activeIndex ? 'active' : ''}}"
+    hover-class="ap-tabbar-item-press"
+    hover-start-time="20"
+    hover-stay-time="90"
+    data-index="{{index}}"
+    bindtap="onTap"
+  >
+    <ap-icon name="{{item.icon}}" color="{{index === activeIndex ? iconActiveColor : iconColor}}" size="{{36}}" stroke="{{2}}" />
+    <text class="ap-tabbar-text">{{item.text}}</text>
+  </view>
+</view>

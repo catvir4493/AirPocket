@@ -1,109 +1,25 @@
-const {
-  buildSpecialItemOptions,
-  normalizeSpecialItems,
-  toggleSpecialItem,
-} = require("../../../utils/specialItems");
-
-const today = () => {
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${date.getFullYear()}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
-};
-
-const isPastDate = (value, minDate) => value && value < minDate;
+const { normalizeSpecialItems } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
+const { bagFormMethods, createBagFormData, validateBagForm } = require("../../../utils/bagForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { drawShareCard } = require("../../../utils/shareCard");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
 
 Page({
+  ...bagFormMethods,
+
+  readyText: "可以发布了",
+
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    ...createBagFormData("可以发布了"),
     submitting: false,
-    minDate: today(),
-    specialItemOptions: buildSpecialItemOptions([]),
-    form: {
-      spaceType: "loose",
-      fromCity: "",
-      toCity: "",
-      departureDate: "",
-      flightNo: "",
-      carrierWechat: "",
-      carrierReceiveAddress: "",
-      totalWeight: "",
-      caseCount: "1",
-      availableVolume: "",
-      specialItemOptions: [],
-      allowedItemsText: "",
-      restrictedItemsText: "",
-      note: "",
-    },
-  },
-
-  onFieldInput(event) {
-    const { field } = event.currentTarget.dataset;
-    this.setData({
-      [`form.${field}`]: event.detail.value,
-    });
-  },
-
-  selectSpaceType(event) {
-    const { type } = event.currentTarget.dataset;
-    this.setData({
-      "form.spaceType": type,
-      "form.totalWeight": type === "fullCase" ? "" : this.data.form.totalWeight,
-      "form.caseCount": type === "fullCase" ? this.data.form.caseCount || "1" : "1",
-    });
-  },
-
-  onDateChange(event) {
-    this.setData({
-      "form.departureDate": event.detail.value,
-    });
-  },
-
-  toggleSpecialItem(event) {
-    const { value } = event.currentTarget.dataset;
-    const specialItemOptions = toggleSpecialItem(this.data.form.specialItemOptions, value);
-    this.setData({
-      "form.specialItemOptions": specialItemOptions,
-      specialItemOptions: buildSpecialItemOptions(specialItemOptions),
-    });
-  },
-
-  validateForm() {
-    const { form } = this.data;
-    const required = [
-      ["fromCity", "请填写出发城市"],
-      ["toCity", "请填写到达城市"],
-      ["carrierWechat", "请填写微信号"],
-      ["carrierReceiveAddress", "请填写收货地址"],
-      ["departureDate", "请选择出发日期"],
-    ];
-    for (let i = 0; i < required.length; i += 1) {
-      const [field, message] = required[i];
-      if (!`${form[field]}`.trim()) {
-        return message;
-      }
-    }
-
-    if (isPastDate(form.departureDate, this.data.minDate)) {
-      return "出发日期不能早于今天";
-    }
-
-    if (form.spaceType === "fullCase") {
-      const caseCount = Number(form.caseCount);
-      if (!Number.isInteger(caseCount) || caseCount <= 0) {
-        return "整箱数量必须是大于 0 的整数";
-      }
-      return "";
-    }
-
-    if (!`${form.totalWeight}`.trim()) {
-      return "请填写可用重量";
-    }
-
-    const totalWeight = Number(form.totalWeight);
-    if (!Number.isFinite(totalWeight) || totalWeight <= 0) {
-      return "可用重量必须大于 0";
-    }
-    return "";
+    releasedNo: "",
+    releasedId: "",
+    // After publishing: the stamp lands, then the "done" sheet with share / my releases.
+    stampShow: false,
+    doneSheet: false,
   },
 
   confirmOverSingleBagWeight(totalWeight) {
@@ -148,17 +64,50 @@ Page({
     });
   },
 
+  onReady() {
+    watchNavTitle(this, ".large-title");
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+    clearTimeout(this.redirectTimer);
+    clearFieldError(this);
+  },
+
+  goMyReleases() {
+    wx.redirectTo({
+      url: "/pages/offer-space/my/my",
+    });
+  },
+
+  // Sharing after publishing opens the new bag's page; before that, the app's home.
+  onShareAppMessage() {
+    const { releasedId, preview, dateText } = this.data;
+    if (!releasedId) {
+      return { title: "AirPocket · 顺路帮带，行李空间共享", path: "/pages/index/index" };
+    }
+    const share = {
+      title: `${preview.from} → ${preview.to} ${dateText}，还有 ${preview.weight}kg 行李额`,
+      path: `/pages/find-bags/detail/detail?id=${releasedId}`,
+    };
+    return {
+      ...share,
+      promise: (this.sharePromise || Promise.resolve("")).then((imageUrl) =>
+        imageUrl ? { ...share, imageUrl } : share
+      ),
+    };
+  },
+
   async submitBag() {
     if (this.data.submitting) {
       return;
     }
 
-    const errorMessage = this.validateForm();
-    if (errorMessage) {
-      wx.showToast({
-        title: errorMessage,
-        icon: "none",
-      });
+    this.commitTagDrafts();
+
+    const invalid = validateBagForm(this.data.form, this.data.minDate);
+    if (invalid) {
+      showFieldError(this, invalid);
       return;
     }
 
@@ -190,17 +139,27 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "发布失败");
       }
-      wx.showToast({
-        title: `${result.data.bagNo} 已发布`,
-        icon: "success",
+      this.setData({
+        releasedNo: result.data.bagNo || "Bag",
+        releasedId: result.data._id || "",
+        stampShow: true,
       });
-      setTimeout(() => {
-        wx.redirectTo({
-          url: "/pages/offer-space/my/my",
-        });
-      }, 800);
+      wx.vibrateShort({ type: "light" });
+      // Draw the share image while the stamp is on screen.
+      const { preview } = this.data;
+      this.sharePromise = drawShareCard(this, "#share-canvas", {
+        day: preview.day,
+        month: preview.month,
+        from: preview.from,
+        to: preview.to,
+        weight: preview.weight,
+        chip: preview.chips[0],
+      });
+      this.redirectTimer = setTimeout(() => {
+        this.setData({ stampShow: false, doneSheet: true });
+      }, 1100);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "发布失败",
         icon: "none",
       });

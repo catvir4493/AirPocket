@@ -1,78 +1,57 @@
-.detail-code {
-  position: relative;
-  margin: 54rpx 0 34rpx;
-  padding-left: 44rpx;
-  color: #222222;
-  font-size: 30rpx;
-  font-weight: 900;
-  line-height: 1.2;
-}
+@import "../../../styles/grouped-form.wxss";
 
-.detail-code::before {
-  content: "";
-  position: absolute;
-  top: 14rpx;
-  left: 8rpx;
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background: #222222;
-}
-
-.detail-sheet {
-  margin-top: 18rpx;
-}
-
-.detail-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 58rpx;
-  margin-bottom: 18rpx;
-  padding-left: 44rpx;
-}
-
-.detail-row::before {
-  content: "";
-  position: absolute;
-  top: 23rpx;
-  left: 8rpx;
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background: #222222;
-}
-
-.detail-label {
-  flex: 0 0 162rpx;
-  color: #787878;
-  font-size: 24rpx;
-  line-height: 1.35;
-}
-
-.detail-value {
-  flex: 1;
-  min-width: 0;
-  min-height: 38rpx;
-  padding: 8rpx 18rpx;
-  background: #efefef;
-  color: #666666;
-  font-size: 24rpx;
-  line-height: 1.35;
-  word-break: break-word;
-}
-
-.detail-note {
-  margin: 20rpx 0 30rpx 44rpx;
-  color: #777777;
-  font-size: 24rpx;
-  line-height: 1.55;
+/* Shared by all detail pages: boarding pass on top, info list / form below. */
+.detail-page {
+  padding-top: 24rpx;
 }
 
 .detail-form {
-  margin-top: 36rpx;
+  margin-top: 12rpx;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) 200ms backwards;
 }
 
-.primary-button {
-  margin-top: 22rpx;
+.detail-section {
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) backwards;
+}
+
+.detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 36rpx;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) 360ms backwards;
+}
+
+.pass-skeleton-card {
+  height: 400rpx;
+  border-radius: 40rpx;
+  background: var(--fill);
+}
+
+.pass-skeleton-line {
+  height: 30rpx;
+  margin-top: 44rpx;
+  border-radius: 12rpx;
+  background: var(--fill);
+}
+
+.pass-skeleton-line.short {
+  width: 60%;
+  margin-top: 24rpx;
+}
+
+.detail-form .rl-sec:first-child {
+  margin-top: 44rpx;
+}
+
+.case-fixed {
+  width: auto;
+}
+
+.item-chips .rl-label {
+  margin-bottom: 14rpx;
+}
+
+.item-chips {
+  border-top: 1rpx solid var(--line);
 }

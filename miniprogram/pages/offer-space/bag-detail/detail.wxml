@@ -1,116 +1,129 @@
+<ap-navbar title="我的发布" collapsed="{{navCollapsed}}" loading="{{refreshing}}" compact />
 <view class="page no-bottom-nav detail-page">
-  <view class="detail-page-title">Bag Detail</view>
-
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
+  <view class="nav-sentinel"></view>
+  <view wx:if="{{loading}}" class="pass-skeleton">
+    <view class="pass-skeleton-card skeleton-shine"></view>
+    <view class="pass-skeleton-line skeleton-shine"></view>
+    <view class="pass-skeleton-line short skeleton-shine"></view>
+  </view>
 
   <block wx:elif="{{bag}}">
-    <view class="detail-code">#{{bag.bagNo}}</view>
+    <ap-pass
+      code="{{bag.bagNo}}"
+      status-text="{{bag.statusText}}"
+      status-tone="{{bag.statusTone}}"
+      from-city="{{bag.fromCity}}"
+      to-city="{{bag.toCity}}"
+      date="{{bag.departureDate}}"
+      flight-no="{{bag.flightNo}}"
+      metric-label="{{bag.isFullCase ? 'Cases' : 'Left'}}"
+      metric-value="{{bag.isFullCase ? bag.remainingCases : bag.remainingWeight}}"
+      metric-unit="{{bag.isFullCase ? '件' : 'kg'}}"
+      chips="{{bag.passChips}}"
+      note="{{bag.note}}"
+    />
 
-    <view class="detail-sheet">
-      <view class="detail-row">
-        <view class="detail-label">袋子编号</view>
-        <view class="detail-value">{{bag.bagNo}}</view>
+    <view wx:if="{{bag.capacity.total}}" class="cap-card fade-up delay-1">
+      <view class="cap-card-head">
+        <text>装载情况</text>
+        <text class="eyebrow">Load · {{bag.capacity.segments.length}} 单</text>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">日期</view>
-        <view class="detail-value">{{bag.departureDate}}</view>
+      <ap-capacity total="{{bag.capacity.total}}" segments="{{bag.capacity.segments}}" />
+    </view>
+
+    <view class="detail-section fade-up delay-1">
+      <view class="section-title">行李额<text class="eyebrow">Space</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">类型</view>
+          <view class="info-value">{{bag.spaceTypeText}}</view>
+        </view>
+        <view wx:if="{{bag.isFullCase}}" class="info-row">
+          <view class="info-label">整箱数量</view>
+          <view class="info-value num">{{bag.caseCountText}}</view>
+        </view>
+        <view wx:else class="info-row">
+          <view class="info-label">总重量</view>
+          <view class="info-value num">{{bag.totalWeightText}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">已绑定</view>
+          <view class="info-value num">{{bag.boundWeightText}} · {{bag.bindingCount || 0}} 单</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">可用体积</view>
+          <view class="info-value">{{bag.availableVolume || '-'}}</view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">出发地</view>
-        <view class="detail-value">{{bag.fromCity}}</view>
+    </view>
+
+    <view class="detail-section fade-up delay-2">
+      <view class="section-title">可带物品<text class="eyebrow">Rules</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">特殊物品</view>
+          <view class="info-value">{{bag.specialItemOptionsText}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">可接受</view>
+          <view class="info-value">{{bag.allowedItemsText}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">不接受</view>
+          <view class="info-value">{{bag.restrictedItemsText}}</view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">目的地</view>
-        <view class="detail-value">{{bag.toCity}}</view>
+    </view>
+
+    <view class="detail-section fade-up delay-3">
+      <view class="section-title">联系方式<text class="eyebrow">Contact</text></view>
+      <view class="info-list">
+        <view class="info-row">
+          <view class="info-label">微信号</view>
+          <view class="info-value">{{bag.carrierWechat || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">收货地址</view>
+          <view class="info-value">{{bag.carrierReceiveAddress || '-'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">发布时间</view>
+          <view class="info-value num">{{bag.createdAtText || '-'}}</view>
+        </view>
       </view>
-      <view class="detail-row">
-        <view class="detail-label">航班号</view>
-        <view class="detail-value">{{bag.flightNo || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">类型</view>
-        <view class="detail-value">{{bag.spaceTypeText}}</view>
-      </view>
-      <view wx:if="{{bag.isFullCase}}" class="detail-row">
-        <view class="detail-label">整箱数量</view>
-        <view class="detail-value">{{bag.caseCountText}}</view>
-      </view>
-      <view wx:if="{{bag.isFullCase}}" class="detail-row">
-        <view class="detail-label">剩余整箱</view>
-        <view class="detail-value">{{bag.remainingCasesText}}</view>
-      </view>
-      <view wx:else class="detail-row">
-        <view class="detail-label">总重量</view>
-        <view class="detail-value">{{bag.totalWeightText}}</view>
-      </view>
-      <view wx:if="{{bag.isLoose}}" class="detail-row">
-        <view class="detail-label">剩余重量</view>
-        <view class="detail-value">{{bag.remainingWeightText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">已绑定</view>
-        <view class="detail-value">{{bag.boundWeightText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">绑定数量</view>
-        <view class="detail-value">{{bag.bindingCount || 0}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">状态</view>
-        <view class="detail-value">{{bag.statusText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">微信号</view>
-        <view class="detail-value">{{bag.carrierWechat || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">收货地址</view>
-        <view class="detail-value">{{bag.carrierReceiveAddress || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">可用体积</view>
-        <view class="detail-value">{{bag.availableVolume || '-'}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">特殊物品</view>
-        <view class="detail-value">{{bag.specialItemOptionsText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">可接受</view>
-        <view class="detail-value">{{bag.allowedItemsText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">不接受</view>
-        <view class="detail-value">{{bag.restrictedItemsText}}</view>
-      </view>
-      <view class="detail-row">
-        <view class="detail-label">发布时间</view>
-        <view class="detail-value">{{bag.createdAtText || '-'}}</view>
-      </view>
-      <view wx:if="{{bag.note}}" class="detail-note">{{bag.note}}</view>
     </view>
 
     <view class="detail-actions">
-      <button wx:if="{{bag.canEdit}}" class="primary-button" bindtap="editBag">Edit Bag / 编辑</button>
+      <button wx:if="{{bag.canEdit}}" class="primary-button" bindtap="editBag">编辑行李额</button>
       <button wx:else class="secondary-button" disabled>已有绑定，不能编辑</button>
     </view>
 
     <view class="binding-section">
-      <view class="section-title">Bindings</view>
+      <view class="section-title">绑定记录<text class="eyebrow">Bindings · {{bag.bindings.length}}</text></view>
       <view wx:if="{{bag.bindings.length}}">
-        <view wx:for="{{bag.bindings}}" wx:key="_id" class="binding-item">
+        <view wx:for="{{bag.bindings}}" wx:key="_id" class="binding-item list-enter" style="animation-delay: {{index < 6 ? 120 + index * 35 : 0}}ms">
           <view class="binding-top">
-            <view class="binding-title">{{item.spaceType === 'fullCase' ? item.requestedCasesText : item.requestedWeightText}}</view>
-            <view class="binding-status">{{item.spaceTypeText}} · {{item.statusText}}</view>
+            <view class="binding-title"><text class="num">{{item.spaceType === 'fullCase' ? item.requestedCases : item.requestedWeight}}</text><text class="binding-unit">{{item.spaceType === 'fullCase' ? '件' : 'kg'}}</text></view>
+            <view class="tag tag-{{item.statusTone}}">{{item.statusText}}</view>
           </view>
           <view class="binding-copy">{{item.itemDescription || '-'}}</view>
-          <view class="binding-copy">特殊物品：{{item.requestedSpecialItemsText}}</view>
-          <view class="binding-copy">{{item.createdAtText || '-'}}</view>
+          <view class="binding-meta">
+            <text>{{item.spaceTypeText}}</text>
+            <text wx:if="{{item.requestedSpecialItemsText !== '无'}}">· {{item.requestedSpecialItemsText}}</text>
+            <text class="binding-time num">{{item.createdAtText || '-'}}</text>
+          </view>
         </view>
       </view>
       <view wx:else class="empty-state tight-empty">暂无绑定记录。</view>
     </view>
   </block>
 
-  <view wx:else class="empty-state">没有找到这条 bag。</view>
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
+  <view wx:else class="empty-state">没有找到这条行李额。</view>
 </view>
+<ap-toast id="ap-toast" custom-nav />

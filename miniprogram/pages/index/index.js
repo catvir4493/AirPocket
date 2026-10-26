@@ -1,16 +1,75 @@
+const { showToast } = require("../../utils/toast");
+const { dayParts } = require("../../utils/date");
+const { liftAndOpen } = require("../../utils/liftOpen");
+
 Page({
   data: {
     isAdmin: false,
+    summaryReady: false,
+    availableCount: 0,
+    nearestDate: "",
+    // The next few departures, shown as small tickets under the Find Bags entry.
+    upcoming: [],
+    liftId: "",
   },
 
   onShow() {
     this.checkAdminAccess();
+    this.loadSummary();
+  },
+
+  // Live numbers for the Find Bags entry card, from the same list Find Bags shows.
+  loadSummary() {
+    if (!wx.cloud) {
+      return;
+    }
+    wx.cloud.callFunction({
+      name: "getBags",
+      success: (res) => {
+        const result = res.result || {};
+        if (!result.success) {
+          return;
+        }
+        const today = new Date();
+        const todayKey = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}-${`${today.getDate()}`.padStart(2, "0")}`;
+        const bags = result.data || [];
+        const soon = bags
+          .filter((bag) => bag.departureDate && `${bag.departureDate}` >= todayKey)
+          .sort((a, b) => `${a.departureDate}`.localeCompare(`${b.departureDate}`));
+        const upcoming = soon.slice(0, 3).map((bag) => {
+          const day = dayParts(bag.departureDate);
+          const isFullCase = bag.spaceType === "fullCase";
+          const weight = isFullCase
+            ? Number(bag.remainingCases || 0) * 23
+            : Number(bag.remainingWeight || 0);
+          return {
+            id: bag._id,
+            from: bag.fromCity || "-",
+            to: bag.toCity || "-",
+            date: day.short,
+            weekday: day.weekday,
+            weight: Number.isFinite(weight) ? Math.round(weight * 10) / 10 : "-",
+          };
+        });
+        this.setData({
+          summaryReady: true,
+          availableCount: bags.length,
+          nearestDate: soon.length ? dayParts(soon[0].departureDate).short : "",
+          upcoming,
+        });
+      },
+    });
   },
 
   goFindBags() {
     wx.navigateTo({
       url: "/pages/find-bags/home/home",
     });
+  },
+
+  openUpcoming(event) {
+    const { id } = event.currentTarget.dataset;
+    liftAndOpen(this, id, `/pages/find-bags/detail/detail?id=${id}`);
   },
 
   goOfferSpace() {
@@ -51,7 +110,7 @@ Page({
 
   requestAdminAccess() {
     if (!wx.cloud) {
-      wx.showToast({
+      showToast({
         title: "云能力不可用",
         icon: "none",
       });
@@ -78,20 +137,20 @@ Page({
             const result = res.result || {};
             wx.hideLoading();
             if (!result.success) {
-              wx.showToast({
+              showToast({
                 title: result.errMsg || "提交失败",
                 icon: "none",
               });
               return;
             }
-            wx.showToast({
+            showToast({
               title: "已提交申请",
               icon: "success",
             });
           },
           fail: (error) => {
             wx.hideLoading();
-            wx.showToast({
+            showToast({
               title: error.errMsg || "提交失败",
               icon: "none",
             });

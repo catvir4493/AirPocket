@@ -1,72 +1,170 @@
-.rule-card {
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 18rpx;
-  padding: 24rpx 26rpx;
-  border-radius: 8rpx;
-  background: #f1f1f1;
+@import "../../styles/grouped-form.wxss";
+
+/* ---------- Risk list ---------- */
+
+.risk-row {
+  display: flex;
+  gap: 22rpx;
+  padding: 26rpx 30rpx;
+  border-top: 1rpx solid var(--line);
 }
 
-.statement-card {
-  background: #f6f6f6;
+.risk-row:first-child {
+  border-top: 0;
 }
 
-.warning-card {
-  border-left: 8rpx solid #fff51f;
+.risk-icon {
+  display: flex;
+  flex: 0 0 64rpx;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background: var(--fill);
 }
 
-.rule-title {
-  color: #242424;
+.risk-icon.hot {
+  background: var(--yellow);
+}
+
+.risk-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.risk-title {
+  color: var(--ink);
   font-size: 27rpx;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.35;
 }
 
-.rule-copy {
-  margin-top: 10rpx;
-  color: #666666;
-  font-size: 24rpx;
-  line-height: 1.55;
+.risk-copy {
+  margin-top: 8rpx;
+  color: var(--ink-2);
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+/* ---------- Statement: collapsed to a few lines, tap to expand ---------- */
+
+.statement {
+  position: relative;
+  padding: 28rpx 30rpx 22rpx;
+  border: 1rpx solid var(--line);
+  border-left: 8rpx solid var(--yellow);
+  border-radius: 36rpx;
+  background: var(--card);
 }
 
 .statement-copy {
-  margin-top: 0;
-  color: #4a4a4a;
+  height: 198rpx;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 24rpx;
+  line-height: 1.65;
   text-align: justify;
+  transition: height 420ms var(--ease-swift);
 }
 
-.source-card {
-  background: #eeeeee;
+.statement-fade {
+  position: absolute;
+  right: 30rpx;
+  bottom: 70rpx;
+  left: 30rpx;
+  height: 90rpx;
+  background: linear-gradient(rgba(255, 255, 255, 0), var(--card));
+  pointer-events: none;
+  transition: opacity 240ms ease;
 }
 
-.source-item + .source-item {
-  margin-top: 18rpx;
-  padding-top: 18rpx;
-  border-top: 1rpx solid #d8d8d8;
+.statement.open .statement-fade {
+  opacity: 0;
+}
+
+.statement-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 14rpx;
+  color: var(--ink);
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.statement-caret {
+  font-size: 18rpx;
+  transition: transform 300ms var(--ease-out);
+}
+
+.statement.open .statement-caret {
+  transform: rotate(180deg);
+}
+
+/* ---------- Sources ---------- */
+
+.source-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 30rpx;
+  border-top: 1rpx solid var(--line);
+  transition: background var(--dur-fast) ease;
+}
+
+.source-row:first-child {
+  border-top: 0;
+}
+
+.source-row-press {
+  background: var(--fill);
+  transition-duration: 60ms;
+}
+
+.source-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .source-title {
-  color: #333333;
-  font-size: 24rpx;
-  font-weight: 800;
+  color: var(--ink);
+  font-size: 25rpx;
+  font-weight: 600;
   line-height: 1.45;
 }
 
 .source-url {
-  margin-top: 8rpx;
-  color: #777777;
+  margin-top: 6rpx;
+  overflow: hidden;
+  color: var(--ink-3);
   font-size: 20rpx;
-  line-height: 1.45;
-  word-break: break-all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.source-action {
-  margin-top: 8rpx;
-  color: #2f2f2f;
-  font-size: 21rpx;
-  font-weight: 800;
+.source-copy {
+  flex: 0 0 auto;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 22rpx;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.primary-button {
-  margin-top: 28rpx;
+.source-copy.copied {
+  background: var(--yellow);
+  color: #1c1c1a;
+  animation: ap-pop 320ms var(--ease-spring);
+}
+
+.prohibited-done {
+  margin-top: 44rpx;
+}
+
+@media (prefers-color-scheme: dark) {
+  .statement-fade {
+    background: linear-gradient(rgba(30, 30, 27, 0), var(--card));
+  }
 }

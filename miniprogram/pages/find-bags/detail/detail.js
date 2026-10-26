@@ -1,41 +1,62 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const {
+  SPECIAL_ITEM_OPTIONS,
   buildSpecialItemOptions,
   formatSpecialItems,
   normalizeSpecialItems,
-  toggleSpecialItem,
 } = require("../../../utils/specialItems");
+const { showToast } = require("../../../utils/toast");
+const { bagStatus } = require("../../../utils/status");
+const {
+  bindFormMethods,
+  buildQuickWeights,
+  createBindFormData,
+  validateBindForm,
+} = require("../../../utils/bindForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
+
+const specialLabel = (value) =>
+  (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
 
 Page({
+  ...bindFormMethods,
+
+  readyText: "可以绑定了",
+
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    loadError: "",
+    ...createBindFormData(),
     bagId: "",
     bag: null,
-    loading: false,
+    loading: true,
     submitting: false,
-    specialItemOptions: [],
-    form: {
-      requestedWeight: "",
-      requestedSpecialItems: [],
-      senderWechat: "",
-      pickupAddress: "",
-      receiverName: "",
-      receiverPhone: "",
-      deliveryAddress: "",
-      itemDescription: "",
-      senderNote: "",
-    },
+    bindDone: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".nav-sentinel");
   },
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
+      this.setData({ loading: false });
       return;
     }
     this.setData({ bagId: options.id });
     this.fetchBag(options.id);
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+    clearTimeout(this.redirectTimer);
+    clearFieldError(this);
   },
 
   async fetchBag(bagId) {
@@ -61,6 +82,7 @@ Page({
         ? Number(bag.caseCount)
         : remainingCases || (isFullCase ? 1 : 0);
       const availableSpecialItems = normalizeSpecialItems(bag.specialItemOptions);
+      const status = bagStatus(bag.status || "active");
       this.setData({
         specialItemOptions: buildSpecialItemOptions([], availableSpecialItems),
         "form.requestedSpecialItems": [],
@@ -77,85 +99,49 @@ Page({
           remainingCasesText: `${remainingCases} 件`,
           specialItemOptionsText: formatSpecialItems(availableSpecialItems),
           availableSpecialItems,
+          statusText: status.text,
+          statusTone: status.tone,
+          passChips: [isFullCase ? "整箱 · 每箱 23kg" : "散件"].concat(
+            availableSpecialItems.map((value) => `可带${specialLabel(value)}`)
+          ),
           createdAtText: formatDateTime(bag.createdAt),
           updatedAtText: formatDateTime(bag.updatedAt),
         },
+        formInfo: {
+          isFullCase,
+          fromCity: bag.fromCity,
+          toCity: bag.toCity,
+          maxWeight: remainingWeight,
+          maxText: formatWeight(remainingWeight),
+          casesText: `当前剩余 ${remainingCases} 件`,
+          availableSpecialItems,
+          // Capacity bar: everything on the bag, and what others have already booked.
+          capTotal: isFullCase ? caseCount * 23 : Number(bag.totalWeight) || 0,
+          capTaken: isFullCase
+            ? Math.max(0, caseCount - remainingCases) * 23
+            : Math.max(0, (Number(bag.totalWeight) || 0) - remainingWeight),
+        },
+        quickWeights: isFullCase ? [] : buildQuickWeights(remainingWeight),
       });
+      this.refreshSummary();
     } catch (error) {
-      wx.showToast({
-        title: error.message || "加载失败",
-        icon: "none",
-      });
+      // Nothing on screen yet: show the retry state. Otherwise keep the page and just say so.
+      if (!this.data.bag) {
+        this.setData({ loadError: error.message || "加载失败" });
+      } else {
+        showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      }
     } finally {
       this.setData({ loading: false });
     }
   },
 
-  onRequestedWeightInput(event) {
-    const { bag } = this.data;
-    const rawValue = `${event.detail.value || ""}`;
-
-    if (!rawValue) {
-      this.setData({
-        "form.requestedWeight": "",
-      });
-      return "";
-    }
-
-    if (!bag) {
-      this.setData({
-        "form.requestedWeight": rawValue,
-      });
-      return rawValue;
-    }
-
-    const requestedWeight = Number(rawValue);
-    const maxWeight = Number(bag.remainingWeight || 0);
-
-    if (!Number.isFinite(requestedWeight)) {
-      this.setData({
-        "form.requestedWeight": "",
-      });
-      return "";
-    }
-
-    if (requestedWeight > maxWeight) {
-      this.setData({
-        "form.requestedWeight": `${maxWeight}`,
-      });
-      wx.showToast({
-        title: `最多可绑定 ${formatWeight(maxWeight)}`,
-        icon: "none",
-      });
-      return `${maxWeight}`;
-    }
-
-    this.setData({
-      "form.requestedWeight": rawValue,
-    });
-    return rawValue;
-  },
-
-  onFieldInput(event) {
-    const { field } = event.currentTarget.dataset;
-    this.setData({
-      [`form.${field}`]: event.detail.value,
-    });
-  },
-
-  toggleSpecialItem(event) {
-    const { bag, form } = this.data;
-    const { value } = event.currentTarget.dataset;
-    const availableSpecialItems = bag ? bag.availableSpecialItems : [];
-    const requestedSpecialItems = toggleSpecialItem(
-      form.requestedSpecialItems,
-      value,
-      availableSpecialItems
-    );
-    this.setData({
-      "form.requestedSpecialItems": requestedSpecialItems,
-      specialItemOptions: buildSpecialItemOptions(requestedSpecialItems, availableSpecialItems),
-    });
+  retryLoad() {
+    this.setData({ loadError: "", loading: true });
+    this.fetchBag(this.data.bagId);
   },
 
   async submitBinding() {
@@ -169,72 +155,22 @@ Page({
       form.requestedSpecialItems,
       bag.availableSpecialItems
     );
+    const invalid = validateBindForm(this.data.formInfo, form);
+    if (invalid) {
+      showFieldError(this, invalid);
+      return;
+    }
+
     if (bag.isFullCase && Number(bag.remainingCases || 0) <= 0) {
-      wx.showToast({
+      showToast({
         title: "整箱已无剩余数量",
         icon: "none",
       });
       return;
     }
-    if (!Number.isFinite(requestedWeight) || requestedWeight <= 0) {
-      wx.showToast({
-        title: "请输入大于 0 的重量",
-        icon: "none",
-      });
-      return;
-    }
-
     if (!bag.isFullCase && requestedWeight > Number(bag.remainingWeight)) {
-      wx.showToast({
+      showToast({
         title: `最多可绑定 ${bag.remainingWeightText}`,
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.itemDescription.trim()) {
-      wx.showToast({
-        title: "请填写物品描述",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.senderWechat.trim()) {
-      wx.showToast({
-        title: "请填写微信号",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.pickupAddress.trim()) {
-      wx.showToast({
-        title: "请填写取货地址",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.receiverName.trim()) {
-      wx.showToast({
-        title: "请填写收件人姓名",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.receiverPhone.trim()) {
-      wx.showToast({
-        title: "请填写收件人电话",
-        icon: "none",
-      });
-      return;
-    }
-
-    if (!form.deliveryAddress.trim()) {
-      wx.showToast({
-        title: "请填写目的地快递地址",
         icon: "none",
       });
       return;
@@ -261,17 +197,15 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "绑定失败");
       }
-      wx.showToast({
-        title: "绑定成功",
-        icon: "success",
-      });
-      setTimeout(() => {
+      this.setData({ bindDone: true });
+      wx.vibrateShort({ type: "light" });
+      this.redirectTimer = setTimeout(() => {
         wx.redirectTo({
           url: "/pages/find-bags/my/my",
         });
-      }, 700);
+      }, 1300);
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "绑定失败",
         icon: "none",
       });

@@ -1,3 +1,5 @@
 {
-  "navigationBarTitleText": "My Bag Detail"
+  "navigationBarTitleText": "我的绑定",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true
 }

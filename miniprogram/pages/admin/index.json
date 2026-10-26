@@ -1,4 +1,5 @@
 {
-  "navigationBarTitleText": "Admin",
-  "enablePullDownRefresh": true
+  "navigationBarTitleText": "后台",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom"
 }

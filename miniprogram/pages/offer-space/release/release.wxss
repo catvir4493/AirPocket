@@ -1,41 +1,434 @@
-.type-selector {
+@import "../../../styles/grouped-form.wxss";
+
+/* ---------- 1 Trip ticket ---------- */
+
+.trip-ticket {
+  position: relative;
+  border: 1rpx solid var(--line);
+  border-radius: 36rpx;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.trip-top {
   display: flex;
-  gap: 16rpx;
+  align-items: flex-end;
+  padding: 30rpx 32rpx 26rpx;
 }
 
-.type-option {
-  box-sizing: border-box;
+.trip-city {
   flex: 1;
-  min-height: 116rpx;
-  padding: 22rpx;
-  border: 1rpx solid #e0e0e0;
-  border-radius: 8rpx;
-  background: #f5f5f5;
-  text-align: left;
+  min-width: 0;
 }
 
-.type-option.active {
-  border-color: #fff51f;
-  background: #fff51f;
+.trip-city.right {
+  text-align: right;
 }
 
-.type-title {
-  color: #242424;
-  font-size: 27rpx;
-  font-weight: 900;
+.trip-key {
+  color: var(--ink-3);
+  font-size: 19rpx;
+  font-weight: 700;
+  letter-spacing: 0.16em;
 }
 
-.type-copy {
+.trip-input {
+  height: 60rpx;
+  margin-top: 6rpx;
+  color: var(--ink);
+  font-size: 42rpx;
+  font-weight: 700;
+  line-height: 60rpx;
+  border-bottom: 4rpx solid transparent;
+  transition: border-color var(--dur-fast) ease;
+}
+
+.trip-input.right {
+  text-align: right;
+}
+
+.trip-city.focused .trip-input {
+  border-bottom-color: var(--yellow);
+}
+
+.trip-ph {
+  color: var(--placeholder);
+  font-weight: 500;
+}
+
+.trip-swap {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 68rpx;
+  height: 68rpx;
+  margin: 0 16rpx;
+  border-radius: 50%;
+  background: var(--fill);
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.trip-swap-hover {
+  transform: scale(0.9);
+  transition-duration: var(--dur-press);
+}
+
+.trip-swap-icon {
+  display: flex;
+  transition: transform 420ms var(--ease-spring);
+}
+
+/* After a swap each city slides in from the other side of the ticket. */
+.swap-in-from {
+  animation: rl-swap-from 380ms var(--ease-out) backwards;
+}
+
+.swap-in-to {
+  animation: rl-swap-to 380ms var(--ease-out) backwards;
+}
+
+@keyframes rl-swap-from {
+  from {
+    opacity: 0;
+    transform: translateX(160rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rl-swap-to {
+  from {
+    opacity: 0;
+    transform: translateX(-160rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Perforation with two punched notches. */
+.trip-perf {
+  position: relative;
+  margin: 0 32rpx;
+  border-top: 3rpx dashed var(--line-strong);
+}
+
+.trip-perf::before,
+.trip-perf::after {
+  content: "";
+  position: absolute;
+  top: -18rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.trip-perf::before {
+  left: -50rpx;
+}
+
+.trip-perf::after {
+  right: -50rpx;
+}
+
+.trip-bottom {
+  display: flex;
+}
+
+.trip-cell {
+  flex: 1;
+  min-width: 0;
+  padding: 22rpx 32rpx 26rpx;
+}
+
+.trip-cell + .trip-cell {
+  border-left: 1rpx solid var(--line);
+}
+
+.trip-value,
+.trip-value-input {
+  height: 48rpx;
   margin-top: 8rpx;
-  color: #777777;
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 32rpx;
+  font-weight: 700;
+  line-height: 48rpx;
+}
+
+.trip-value.trip-ph,
+.trip-value-input .trip-ph {
+  color: var(--placeholder);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 28rpx;
+}
+
+/* ---------- 2 Space ---------- */
+
+.space-seg {
+  display: flex;
+  padding: 8rpx;
+  border-radius: 28rpx;
+  background: var(--fill);
+}
+
+.space-seg-item {
+  flex: 1;
+  padding: 16rpx 0;
+  border-radius: 22rpx;
+  text-align: center;
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+
+.space-seg-title {
+  color: var(--ink-2);
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.space-seg-copy {
+  margin-top: 2rpx;
+  color: var(--ink-3);
+  font-size: 20rpx;
+}
+
+.space-seg-item.active {
+  background: var(--inverse);
+  animation: ap-pop 320ms var(--ease-spring);
+}
+
+.space-seg-item.active .space-seg-title {
+  color: var(--on-inverse);
+}
+
+.space-seg-item.active .space-seg-copy {
+  color: var(--on-inverse);
+  opacity: 0.6;
+}
+
+.tag-box {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10rpx;
+  min-width: 0;
+}
+
+.tag-chip {
+  display: flex;
+  align-items: center;
+  padding: 0 14rpx 0 20rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 23rpx;
+  line-height: 44rpx;
+  animation: ap-scale-in 260ms var(--ease-spring) backwards;
+}
+
+.tag-chip.no {
+  background: rgba(179, 38, 30, 0.1);
+  color: var(--red);
+}
+
+.tag-x {
+  margin-left: 6rpx;
+  opacity: 0.5;
+  font-size: 24rpx;
+}
+
+.tag-input {
+  flex: 1;
+  min-width: 160rpx;
+  height: 44rpx;
+  color: var(--ink);
+  font-size: 25rpx;
+  line-height: 44rpx;
+}
+
+/* ---------- Preview ---------- */
+
+.preview-title {
+  margin: 44rpx 4rpx 16rpx;
+}
+
+.preview-card {
+  margin-bottom: 0;
+}
+
+/* Live preview: the part that just changed flashes. */
+.preview-card .pv-pop {
+  animation: ap-pop 380ms var(--ease-spring);
+}
+
+.preview-card .pv-glow {
+  border-radius: 12rpx;
+  animation: rl-pv-glow 720ms ease-out;
+}
+
+@keyframes rl-pv-glow {
+  from {
+    background-color: var(--yellow-soft);
+    box-shadow: 0 0 0 8rpx var(--yellow-soft);
+  }
+  to {
+    background-color: rgba(255, 245, 31, 0);
+    box-shadow: 0 0 0 8rpx rgba(255, 245, 31, 0);
+  }
+}
+
+/* ---------- Published: done sheet ---------- */
+
+.done-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+}
+
+.done-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.done-sheet {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  padding: 30rpx 32rpx calc(36rpx + env(safe-area-inset-bottom));
+  border-radius: 40rpx 40rpx 0 0;
+  background: var(--paper);
+}
+
+.done-head {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+}
+
+.done-check {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: #1c1c1a;
+  font-size: 36rpx;
+  font-weight: 700;
+  animation: ap-pop 420ms var(--ease-spring) 200ms;
+}
+
+.done-title {
+  color: var(--ink);
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.done-title .num {
+  color: var(--ink);
+  font-family: var(--font-num);
+}
+
+.done-copy {
+  margin-top: 4rpx;
+  color: var(--ink-3);
+  font-size: 24rpx;
+}
+
+.done-ticket {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin: 30rpx 0 32rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--line);
+  border-radius: 28rpx;
+  background: var(--card);
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) 160ms backwards;
+}
+
+.done-stub {
+  display: flex;
+  flex: 0 0 104rpx;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: 18rpx 0;
+  background: #fff51f;
+  color: #1c1c1a;
+}
+
+.done-day {
+  font-family: var(--font-num);
+  font-size: 40rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.done-month {
+  font-size: 19rpx;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.done-route {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 28rpx;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.done-weight {
+  padding-right: 28rpx;
+  color: var(--ink);
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.done-weight .num {
+  color: var(--ink);
+  font-family: var(--font-num);
+}
+
+.done-unit {
+  margin-left: 4rpx;
+  color: var(--ink-3);
   font-size: 22rpx;
-  line-height: 1.4;
 }
 
-.type-option.active .type-copy {
-  color: #666600;
+.done-mine {
+  margin-top: 16rpx;
 }
 
-.primary-button {
-  margin-top: 26rpx;
+/* Drawn off screen; only its image is used. */
+.share-canvas {
+  position: fixed;
+  top: 0;
+  left: -2000px;
+  width: 500px;
+  height: 400px;
 }

@@ -1,0 +1,318 @@
+/* My Bags (sender + carrier): stats strip, segmented filter, luggage-tag tickets. */
+.my-stats {
+  display: flex;
+  padding: 26rpx 8rpx;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
+}
+
+.my-stat {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.my-stat + .my-stat {
+  border-left: 1rpx solid var(--line);
+}
+
+.my-stat-value {
+  color: var(--ink);
+  font-size: 50rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.my-stat-label {
+  margin-top: 6rpx;
+  color: var(--ink-3);
+  font-size: 21rpx;
+}
+
+.my-segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 24rpx 0 20rpx;
+}
+
+.my-segment {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 23rpx;
+  line-height: 1.2;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.my-segment.active {
+  background: var(--inverse);
+  color: var(--on-inverse);
+}
+
+.my-segment-search {
+  margin-left: auto;
+}
+
+/* Status filter: a sliding black thumb behind three equal-width labels. */
+.my-seg-track {
+  position: relative;
+  display: flex;
+  padding: 6rpx;
+  border-radius: 999rpx;
+  background: var(--fill);
+}
+
+.my-seg-thumb {
+  position: absolute;
+  top: 6rpx;
+  bottom: 6rpx;
+  left: 6rpx;
+  width: 124rpx;
+  border-radius: 999rpx;
+  background: var(--inverse);
+  transition: transform 380ms var(--ease-spring);
+}
+
+.my-seg-track .my-segment {
+  position: relative;
+  justify-content: center;
+  width: 124rpx;
+  padding: 12rpx 0;
+  background: transparent;
+  transition: color 240ms ease;
+}
+
+.my-seg-track .my-segment.active {
+  background: transparent;
+}
+
+.my-segment-search.filtered {
+  background: var(--yellow);
+  color: #1c1c1a;
+}
+
+.my-skeleton-ticket {
+  height: 124rpx;
+  margin-bottom: 16rpx;
+  border-radius: var(--r-l);
+  background: var(--fill);
+}
+
+.ticket {
+  display: flex;
+  align-items: stretch;
+  min-height: 124rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
+  transition: transform 240ms var(--ease-spring), box-shadow 240ms ease;
+}
+
+.ticket.lifting {
+  transform: translateY(-8rpx) scale(1.015);
+  box-shadow: var(--shadow);
+  transition: transform 110ms var(--ease-out), box-shadow 110ms ease;
+}
+
+.ticket-press {
+  transform: scale(0.98);
+  box-shadow: var(--shadow);
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) ease;
+}
+
+.ticket-stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex: 0 0 104rpx;
+  border-right: 3rpx dashed var(--line-strong);
+}
+
+.ticket-day {
+  color: var(--ink);
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ticket-month {
+  margin-top: 6rpx;
+  color: var(--ink-3);
+  font-size: 17rpx;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.ticket-main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 20rpx 22rpx;
+}
+
+.ticket-route {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 27rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 10rpx;
+}
+
+.ticket-metric {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  flex: 0 0 auto;
+  padding: 0 26rpx 0 8rpx;
+  color: var(--ink);
+}
+
+.ticket-metric .num {
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.ticket-unit {
+  color: var(--ink-3);
+  font-size: 19rpx;
+}
+
+.ticket-metric.stacked {
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.ticket-sub {
+  display: block;
+  color: var(--ink-3);
+  font-size: 19rpx;
+  text-align: right;
+}
+
+.my-search-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+}
+
+.my-search-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.my-search-sheet {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  max-height: 58vh;
+  padding: 30rpx 28rpx 46rpx;
+  border-radius: 40rpx 40rpx 0 0;
+  background: var(--paper);
+}
+
+.my-search-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22rpx;
+}
+
+.my-search-sheet-title {
+  color: var(--ink);
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.my-search-close {
+  flex: 1;
+  min-width: 72rpx;
+  min-height: 40rpx;
+  color: var(--ink-3);
+  font-size: 21rpx;
+  font-weight: 700;
+  line-height: 40rpx;
+  text-align: right;
+}
+
+.my-search-row {
+  display: flex;
+  gap: 14rpx;
+  margin-bottom: 14rpx;
+}
+
+.my-search-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.my-search-label {
+  margin: 0 0 6rpx 4rpx;
+  color: var(--ink-3);
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.my-search-input,
+.my-search-picker {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 76rpx;
+  padding: 20rpx 20rpx;
+  border: 0;
+  border-radius: var(--r-s);
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 23rpx;
+  line-height: 1.35;
+}
+
+.my-search-picker.placeholder {
+  color: var(--placeholder);
+}
+
+.my-clear-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48rpx;
+  min-height: 80rpx;
+  margin-top: 10rpx;
+  border-radius: var(--r-m);
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 80rpx;
+}

@@ -1,11 +1,196 @@
 @import "../detail/detail.wxss";
 
-.detail-actions {
-  margin-top: 28rpx;
+.lock-banner {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: var(--r-m);
+  background: var(--fill);
+  color: var(--ink-2);
+  font-size: 24rpx;
+  line-height: 1.45;
 }
 
-.cancel-button {
-  margin-top: 18rpx;
-  border-color: #a83232;
-  color: #a83232;
+.lock-banner.editable {
+  background: var(--yellow-soft);
+  color: var(--ink);
+}
+
+/* ---------- Progress timeline ---------- */
+
+.timeline {
+  padding: 28rpx 30rpx 8rpx;
+  border: 1rpx solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--card);
+}
+
+.tl-step {
+  display: flex;
+  gap: 22rpx;
+  animation: ap-fade-up var(--dur-slow) var(--ease-out) backwards;
+}
+
+.tl-rail {
+  display: flex;
+  flex: 0 0 34rpx;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tl-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30rpx;
+  height: 30rpx;
+  box-sizing: border-box;
+  border: 3rpx solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.tl-line {
+  flex: 1;
+  width: 4rpx;
+  min-height: 34rpx;
+  margin: 6rpx 0;
+  border-radius: 4rpx;
+  background: var(--line);
+}
+
+.tl-step.done .tl-dot {
+  border-color: var(--inverse);
+  background: var(--inverse);
+}
+
+.tl-check {
+  color: var(--on-inverse);
+  font-size: 18rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* The line below a finished step fills top to bottom. */
+.tl-step.done .tl-line {
+  background: var(--inverse);
+  transform-origin: top;
+  animation: tl-fill 420ms var(--ease-out) backwards;
+}
+
+.tl-step.current .tl-dot {
+  border: 0;
+  background: var(--yellow);
+  box-shadow: 0 0 0 0 rgba(255, 245, 31, 0.6);
+  animation: tl-pulse 1.8s ease-in-out infinite;
+}
+
+.tl-step.cancelled .tl-dot {
+  border-color: var(--ink-3);
+  background: var(--fill);
+}
+
+.tl-body {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 26rpx;
+}
+
+.tl-label {
+  color: var(--ink-3);
+  font-size: 26rpx;
+  line-height: 30rpx;
+}
+
+.tl-step.done .tl-label {
+  color: var(--ink-2);
+}
+
+.tl-step.current .tl-label,
+.tl-step.cancelled .tl-label {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.tl-time {
+  margin-top: 6rpx;
+  color: var(--ink-3);
+  font-size: 21rpx;
+}
+
+@keyframes tl-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes tl-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 245, 31, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 12rpx rgba(255, 245, 31, 0);
+  }
+}
+
+/* ---------- Tear-off when a binding is cancelled ---------- */
+
+.pass-wrap {
+  position: relative;
+}
+
+/* Zigzag cut along the pass perforation (about 54% down). */
+.pass-wrap.tearing .pass-half.top {
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 54%, 95% 55.5%, 90% 52.5%, 85% 55.5%, 80% 52.5%, 75% 55.5%, 70% 52.5%, 65% 55.5%, 60% 52.5%, 55% 55.5%, 50% 52.5%, 45% 55.5%, 40% 52.5%, 35% 55.5%, 30% 52.5%, 25% 55.5%, 20% 52.5%, 15% 55.5%, 10% 52.5%, 5% 55.5%, 0 54%);
+  clip-path: polygon(0 0, 100% 0, 100% 54%, 95% 55.5%, 90% 52.5%, 85% 55.5%, 80% 52.5%, 75% 55.5%, 70% 52.5%, 65% 55.5%, 60% 52.5%, 55% 55.5%, 50% 52.5%, 45% 55.5%, 40% 52.5%, 35% 55.5%, 30% 52.5%, 25% 55.5%, 20% 52.5%, 15% 55.5%, 10% 52.5%, 5% 55.5%, 0 54%);
+  animation: tear-hold 1000ms ease;
+}
+
+.pass-half.bottom {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  -webkit-clip-path: polygon(0 54%, 5% 55.5%, 10% 52.5%, 15% 55.5%, 20% 52.5%, 25% 55.5%, 30% 52.5%, 35% 55.5%, 40% 52.5%, 45% 55.5%, 50% 52.5%, 55% 55.5%, 60% 52.5%, 65% 55.5%, 70% 52.5%, 75% 55.5%, 80% 52.5%, 85% 55.5%, 90% 52.5%, 95% 55.5%, 100% 54%, 100% 100%, 0 100%);
+  clip-path: polygon(0 54%, 5% 55.5%, 10% 52.5%, 15% 55.5%, 20% 52.5%, 25% 55.5%, 30% 52.5%, 35% 55.5%, 40% 52.5%, 45% 55.5%, 50% 52.5%, 55% 55.5%, 60% 52.5%, 65% 55.5%, 70% 52.5%, 75% 55.5%, 80% 52.5%, 85% 55.5%, 90% 52.5%, 95% 55.5%, 100% 54%, 100% 100%, 0 100%);
+  transform-origin: 8% 55%;
+  animation: tear-away 900ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards;
+}
+
+@keyframes tear-hold {
+  0%,
+  20% {
+    transform: translateX(0);
+  }
+  8% {
+    transform: translateX(-6rpx);
+  }
+  14% {
+    transform: translateX(6rpx);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tear-away {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+  12% {
+    transform: translate(-6rpx, 0) rotate(0);
+  }
+  22% {
+    transform: translate(6rpx, 6rpx) rotate(-2deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(40rpx, 520rpx) rotate(-14deg);
+  }
 }

@@ -1,0 +1,108 @@
+const PRESETS = {
+  landing: [
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "找行李额", icon: "search", url: "/pages/find-bags/home/home", type: "navigateTo" },
+    { text: "发布", icon: "suitcase", url: "/pages/offer-space/home/home", type: "navigateTo" },
+  ],
+  find: [
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "找行李额", icon: "search", url: "/pages/find-bags/home/home", type: "redirectTo" },
+    { text: "我的绑定", icon: "list", url: "/pages/find-bags/my/my", type: "redirectTo" },
+  ],
+  offer: [
+    { text: "首页", icon: "home", url: "/pages/index/index", type: "reLaunch" },
+    { text: "发布", icon: "suitcase", url: "/pages/offer-space/home/home", type: "redirectTo" },
+    { text: "我的发布", icon: "list", url: "/pages/offer-space/my/my", type: "redirectTo" },
+  ],
+};
+
+const ICON_COLOR = "#8f8d85";
+const ICON_ACTIVE_COLOR = "#1c1c1a";
+
+// Let the indicator start sliding before the page is replaced.
+const SWITCH_DELAY = 160;
+
+Component({
+  properties: {
+    preset: {
+      type: String,
+      value: "find",
+    },
+    current: {
+      type: Number,
+      value: 0,
+    },
+    // Tabs inside the same page: emit "change" instead of navigating.
+    inline: {
+      type: Boolean,
+      value: false,
+    },
+  },
+
+  data: {
+    items: [],
+    activeIndex: 0,
+    iconColor: ICON_COLOR,
+    iconActiveColor: ICON_ACTIVE_COLOR,
+  },
+
+  observers: {
+    "preset, current"(preset, current) {
+      this.syncItems(preset, current);
+    },
+  },
+
+  lifetimes: {
+    attached() {
+      this.syncItems(this.data.preset, this.data.current);
+    },
+    detached() {
+      clearTimeout(this.switchTimer);
+    },
+  },
+
+  pageLifetimes: {
+    show() {
+      // Coming back via navigateBack: put the indicator back on this page's tab.
+      this.switching = false;
+      if (this.data.activeIndex !== this.data.current) {
+        this.setData({ activeIndex: this.data.current });
+      }
+    },
+  },
+
+  methods: {
+    syncItems(preset, current) {
+      this.setData({
+        items: PRESETS[preset] || [],
+        activeIndex: current,
+      });
+    },
+
+    onTap(event) {
+      const index = Number(event.currentTarget.dataset.index);
+      const item = this.data.items[index];
+      if (!item || index === this.data.current || this.switching) {
+        return;
+      }
+
+      if (this.data.inline && item.type === "redirectTo") {
+        this.setData({ activeIndex: index });
+        this.triggerEvent("change", { index });
+        return;
+      }
+
+      this.switching = true;
+      this.setData({ activeIndex: index });
+      this.switchTimer = setTimeout(() => {
+        wx[item.type]({
+          url: item.url,
+          fail: () => {
+            this.switching = false;
+            this.setData({ activeIndex: this.data.current });
+          },
+        });
+      }, SWITCH_DELAY);
+    },
+  },
+});

@@ -1,81 +1,22 @@
-<view class="page my-page">
-  <view class="page-title">My Bags</view>
+<ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" intercept-back="{{activeTab === 2}}" bind:back="onNavBack" />
 
-  <view class="my-hero">
-    <image class="my-hero-logo" src="/images/300分辨率/黄色logo.png" mode="aspectFit" />
-    <view class="my-search {{hasSearchFilters ? 'active' : ''}}" bindtap="openSearchPanel">Search</view>
-    <view class="my-stat-row">
-      <view class="my-stat">
-        <view class="my-stat-label">总数量</view>
-        <view class="my-stat-value">{{bindings.length}}</view>
+<view class="page tab-shell">
+  <view class="large-title">
+    <block wx:for="{{[activeTab]}}" wx:key="*this">
+      <view class="title-swap large-title-inner {{tabDir ? 'tab-in-' + tabDir : ''}} {{navCollapsed ? 'shrunk' : ''}}">
+        <view class="eyebrow">{{eyebrows[item]}}</view>
+        <view class="page-title">{{titles[item]}}</view>
       </view>
-      <view class="my-stat">
-        <view class="my-stat-label">类型</view>
-        <view class="my-stat-value small">绑定</view>
-      </view>
-    </view>
+    </block>
   </view>
 
-  <view wx:if="{{loading}}" class="empty-state">加载中...</view>
-
-  <view wx:elif="{{bindings.length}}" class="my-list">
-    <view class="my-table-head">
-      <view>日期</view>
-      <view>地点</view>
-      <view>重量</view>
-    </view>
-    <view wx:for="{{bindings}}" wx:key="_id" class="my-table-row" data-id="{{item._id}}" bindtap="openBindingDetail">
-      <view>{{item.listDateText}}</view>
-      <view class="my-table-route">{{item.listRouteText}}</view>
-      <view>{{item.isFullCase ? item.requestedCasesText : item.requestedWeightText}}</view>
-    </view>
+  <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? 'tab-in-' + tabDir : 'tab-panel-hidden'}}">
+    <find-list-panel id="panel-1" />
+  </view>
+  <view wx:if="{{visited[2]}}" class="tab-panel {{activeTab === 2 ? 'tab-in-' + tabDir : 'tab-panel-hidden'}}">
+    <sender-bindings-panel id="panel-2" />
   </view>
 
-  <view wx:else class="empty-state">{{emptyMessage}}</view>
-
-  <view class="bottom-nav">
-    <button class="bottom-nav-item" bindtap="goAppHome">Home</button>
-    <button class="bottom-nav-item" bindtap="goFindBags">Find Bags</button>
-    <button class="bottom-nav-item active">My Bags</button>
-  </view>
-
-  <view wx:if="{{searchPanelOpen}}" class="my-search-drawer">
-    <view class="my-search-mask" bindtap="closeSearchPanel"></view>
-    <view class="my-search-sheet">
-      <view class="my-search-sheet-header">
-        <view class="my-search-sheet-title">搜索我的袋子</view>
-        <button class="my-search-close" bindtap="closeSearchPanel">关闭</button>
-      </view>
-
-      <view class="my-search-panel">
-        <view class="my-search-row">
-          <view class="my-search-field">
-            <view class="my-search-label">日期</view>
-            <picker mode="date" value="{{searchFilters.departureDate}}" bindchange="onSearchDateChange">
-              <view class="my-search-picker {{searchFilters.departureDate ? '' : 'placeholder'}}">{{searchFilters.departureDate || '选择日期'}}</view>
-            </picker>
-          </view>
-          <view class="my-search-field">
-            <view class="my-search-label">袋子编号</view>
-            <picker mode="selector" range="{{bagOptions}}" range-key="label" value="{{bagIndex}}" bindchange="onSearchBagChange">
-              <view class="my-search-picker {{searchFilters.bagNo ? '' : 'placeholder'}}">{{searchFilters.bagNo || '全部编号'}}</view>
-            </picker>
-          </view>
-        </view>
-
-        <view class="my-search-row">
-          <view class="my-search-field">
-            <view class="my-search-label">出发地</view>
-            <input class="my-search-input" value="{{searchFilters.fromCity}}" data-field="fromCity" bindinput="onSearchInput" placeholder="输入出发地" />
-          </view>
-          <view class="my-search-field">
-            <view class="my-search-label">目的地</view>
-            <input class="my-search-input" value="{{searchFilters.toCity}}" data-field="toCity" bindinput="onSearchInput" placeholder="输入目的地" />
-          </view>
-        </view>
-
-        <button class="my-clear-search" bindtap="clearSearchFilters">清空搜索</button>
-      </view>
-    </view>
-  </view>
+  <ap-tabbar preset="find" current="{{activeTab}}" inline bind:change="onTabChange" />
 </view>
+<ap-toast id="ap-toast" custom-nav />

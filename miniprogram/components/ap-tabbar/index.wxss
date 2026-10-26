@@ -1,0 +1,61 @@
+.ap-tabbar {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  left: 32rpx;
+  z-index: 20;
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: 104rpx;
+  padding: 8rpx;
+  border: 1rpx solid var(--solid-line, transparent);
+  border-radius: 44rpx;
+  background: var(--solid, #1c1c1a);
+  box-shadow: 0 24rpx 48rpx -24rpx rgba(0, 0, 0, 0.5);
+}
+
+.ap-tabbar-indicator {
+  position: absolute;
+  top: 8rpx;
+  bottom: 8rpx;
+  left: 8rpx;
+  border-radius: 36rpx;
+  background: #fff51f;
+  transition: transform 380ms var(--ease-spring, cubic-bezier(0.34, 1.32, 0.64, 1));
+}
+
+.ap-tabbar-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+  min-width: 0;
+  border-radius: 36rpx;
+  color: #8f8d85;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 220ms ease, transform 240ms var(--ease-spring, cubic-bezier(0.34, 1.32, 0.64, 1));
+}
+
+.ap-tabbar-text {
+  font-size: 19rpx;
+  font-weight: 500;
+}
+
+.ap-tabbar-item.active {
+  color: #1c1c1a;
+}
+
+.ap-tabbar-item.active .ap-tabbar-text {
+  font-weight: 600;
+}
+
+.ap-tabbar-item-press {
+  transform: scale(0.94);
+  transition: color 220ms ease, transform 90ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+}

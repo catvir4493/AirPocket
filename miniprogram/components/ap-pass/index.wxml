@@ -1,0 +1,45 @@
+<view class="pass">
+  <view class="pass-top">
+    <view class="pass-head">
+      <text class="pass-code">#{{code}}</text>
+      <view wx:if="{{statusText}}" class="tag tag-{{statusTone}}">{{statusText}}</view>
+    </view>
+    <view class="pass-route">
+      <view class="pass-city">
+        <view class="pass-city-name {{cityClass}}">{{fromCity || '-'}}</view>
+        <view class="pass-city-sub">出发</view>
+      </view>
+      <view class="pass-flight">
+        <view class="pass-flight-line"></view>
+        <view class="pass-plane"><ap-icon name="plane" size="{{36}}" stroke="{{1.6}}" /></view>
+      </view>
+      <view class="pass-city right">
+        <view class="pass-city-name {{cityClass}}">{{toCity || '-'}}</view>
+        <view class="pass-city-sub">到达</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="pass-perf"></view>
+
+  <view class="pass-grid">
+    <view class="pass-cell">
+      <view class="eyebrow">Date</view>
+      <view class="pass-value"><text class="num">{{day.short}}</text><text class="pass-unit">{{day.weekday}}</text></view>
+    </view>
+    <view class="pass-cell">
+      <view class="eyebrow">Flight</view>
+      <view class="pass-value"><text class="num">{{flightNo || '—'}}</text></view>
+    </view>
+    <view class="pass-cell">
+      <view class="eyebrow">{{metricLabel}}</view>
+      <view class="pass-value"><text class="num">{{metricValue}}</text><text class="pass-unit">{{metricUnit}}</text></view>
+    </view>
+  </view>
+
+  <view wx:if="{{chips.length}}" class="pass-chips">
+    <view wx:for="{{chips}}" wx:key="*this" class="tag">{{item}}</view>
+  </view>
+
+  <view wx:if="{{note}}" class="pass-note">{{note}}</view>
+</view>

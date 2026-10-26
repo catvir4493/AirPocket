@@ -16,13 +16,27 @@
     "pages/example/index"
   ],
   "window": {
-    "backgroundColor": "#F4F6F8",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F4F6F8",
+    "backgroundColor": "@bgColor",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "@navBgColor",
     "navigationBarTitleText": "AirPocket",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "@navTxtStyle",
+    "backgroundColorTop": "@bgColor",
+    "backgroundColorBottom": "@bgColor"
+  },
+  "usingComponents": {
+    "ap-tabbar": "/components/ap-tabbar/index",
+    "ap-navbar": "/components/ap-navbar/index",
+    "ap-icon": "/components/ap-icon/index",
+    "ap-toast": "/components/ap-toast/index",
+    "ap-stamp": "/components/ap-stamp/index",
+    "ap-pass": "/components/ap-pass/index",
+    "ap-art": "/components/ap-art/index",
+    "ap-capacity": "/components/ap-capacity/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "themeLocation": "theme.json"
 }

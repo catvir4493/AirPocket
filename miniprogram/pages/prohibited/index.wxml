@@ -1,25 +1,44 @@
+<ap-navbar title="物品合规" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page no-bottom-nav prohibited-page">
-  <view class="page-title">物品合规与责任声明</view>
-
-  <view class="section-title">责任声明</view>
-  <view class="rule-card statement-card">
-    <view class="rule-copy statement-copy">{{statementText}}</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Compliance</view>
+      <view class="page-title fade-up">物品合规与责任声明</view>
+    </view>
   </view>
+  <view class="page-subtitle fade-up delay-1">带东西前请先看完。不确定能不能带的，直接拒绝最安全。</view>
 
-  <view class="section-title">高风险物品</view>
-  <view wx:for="{{riskItems}}" wx:key="title" class="rule-card warning-card">
-    <view class="rule-title">{{item.title}}</view>
-    <view class="rule-copy">{{item.detail}}</view>
-  </view>
-
-  <view class="section-title">官方链接</view>
-  <view class="rule-card source-card">
-    <view wx:for="{{sourceItems}}" wx:key="title" class="source-item" data-url="{{item.url}}" bindtap="copySourceLink">
-      <view class="source-title">{{item.title}}</view>
-      <view class="source-url">{{item.url}}</view>
-      <view class="source-action">点击复制链接</view>
+  <view class="rl-sec fade-up delay-1"><text class="rl-sec-no">1</text><text>高风险物品</text><text class="rl-sec-note">{{riskItems.length}} 类</text></view>
+  <view class="rl-group">
+    <view wx:for="{{riskItems}}" wx:key="title" class="risk-row list-enter" style="animation-delay: {{100 + index * 40}}ms">
+      <view class="risk-icon {{index === 0 ? 'hot' : ''}}"><ap-icon name="{{item.icon}}" size="{{32}}" stroke="{{2}}" color="{{index === 0 ? '#1c1c1a' : 'ink'}}" /></view>
+      <view class="risk-body">
+        <view class="risk-title">{{item.title}}</view>
+        <view class="risk-copy">{{item.detail}}</view>
+      </view>
     </view>
   </view>
 
-  <button class="primary-button" bindtap="goHome">Back</button>
+  <view class="rl-sec"><text class="rl-sec-no">2</text><text>责任声明</text><text class="rl-sec-note">请完整阅读</text></view>
+  <view class="statement {{statementOpen ? 'open' : ''}}" bindtap="toggleStatement">
+    <view class="statement-copy" style="{{statementHeight ? 'height: ' + statementHeight + 'px;' : ''}}">
+      <view class="statement-inner">{{statementText}}</view>
+    </view>
+    <view class="statement-fade"></view>
+    <view class="statement-toggle">{{statementOpen ? '收起' : '展开全文'}}<text class="statement-caret">▾</text></view>
+  </view>
+
+  <view class="rl-sec"><text class="rl-sec-no">3</text><text>官方链接</text><text class="rl-sec-note">点一下复制</text></view>
+  <view class="rl-group">
+    <view wx:for="{{sourceItems}}" wx:key="title" class="source-row" hover-class="source-row-press" hover-start-time="20" hover-stay-time="90" data-url="{{item.url}}" data-index="{{index}}" bindtap="copySourceLink">
+      <view class="source-body">
+        <view class="source-title">{{item.title}}</view>
+        <view class="source-url">{{item.url}}</view>
+      </view>
+      <view wx:for="{{[copiedIndex === index ? 1 : 0]}}" wx:for-item="copied" wx:key="*this" class="source-copy {{copied ? 'copied' : ''}}">{{copied ? '已复制 ✓' : '复制'}}</view>
+    </view>
+  </view>
+
+  <button class="primary-button prohibited-done" bindtap="goHome">我已了解</button>
 </view>
+<ap-toast id="ap-toast" custom-nav />

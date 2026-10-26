@@ -1,0 +1,10 @@
+<view wx:if="{{show}}" class="ap-stamp-layer">
+  <view class="ap-stamp-ring"></view>
+  <view class="ap-stamp">
+    <view class="ap-stamp-inner">
+      <view class="ap-stamp-brand">AIRPOCKET</view>
+      <view class="ap-stamp-text">{{text}}</view>
+      <view wx:if="{{sub}}" class="ap-stamp-sub">{{sub}}</view>
+    </view>
+  </view>
+</view>

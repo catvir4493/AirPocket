@@ -1,5 +1,8 @@
 const { formatDateTime, formatWeight, toDate } = require("../../utils/format");
 const { formatSpecialItems } = require("../../utils/specialItems");
+const { countUp } = require("../../utils/countUp");
+const { showToast } = require("../../utils/toast");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("../../utils/navTitle");
 
 const bagStatusLabels = {
   active: "可绑定",
@@ -126,7 +129,9 @@ const getStatusLabel = (targetType, status) => {
 
 Page({
   data: {
-    loading: false,
+    navCollapsed: false,
+    refreshing: false,
+    loading: true,
     errorMessage: "",
     searchKeyword: "",
     bindingFilterIndex: 0,
@@ -144,11 +149,23 @@ Page({
       todayNewCount: 0,
       auditLogCount: 0,
     },
+    summaryView: {
+      bagCount: 0,
+      bindingCount: 0,
+      pendingCount: 0,
+      todayNewCount: 0,
+    },
     allBags: [],
     allBindings: [],
     bags: [],
     visibleBindings: [],
     auditLogs: [],
+    // Card whose status was just changed; its status pill flips in when the new status arrives.
+    flipId: "",
+  },
+
+  onReady() {
+    watchNavTitle(this, ".large-title");
   },
 
   onShow() {
@@ -156,14 +173,34 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.fetchDashboard().finally(() => wx.stopPullDownRefresh());
+    refreshWithPlane(this, () => this.fetchDashboard());
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+    clearTimeout(this._countUpTimer);
+    clearTimeout(this.flipTimer);
+  },
+
+  retryLoad() {
+    this.setData({ errorMessage: "", loading: true });
+    this.fetchDashboard();
+  },
+
+  markFlipped(id) {
+    clearTimeout(this.flipTimer);
+    this.setData({ flipId: id });
+    this.flipTimer = setTimeout(() => this.setData({ flipId: "" }), 1600);
   },
 
   async fetchDashboard() {
-    this.setData({
-      loading: true,
-      errorMessage: "",
-    });
+    // After the first load (and after status updates), refresh silently instead of blanking the page.
+    if (!this.hasLoaded) {
+      this.setData({
+        loading: true,
+        errorMessage: "",
+      });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "adminGetDashboard",
@@ -174,12 +211,22 @@ Page({
       }
 
       const mapped = this.mapDashboard(result);
-      this.setData(mapped, () => this.applyFilters());
+      this.setData({ ...mapped, errorMessage: "" }, () => this.applyFilters());
+      const { bagCount, bindingCount, pendingCount, todayNewCount } = mapped.summary;
+      const summaryView = { bagCount, bindingCount, pendingCount, todayNewCount };
+      countUp(
+        this,
+        Object.keys(summaryView).reduce((acc, key) => {
+          acc[`summaryView.${key}`] = summaryView[key];
+          return acc;
+        }, {})
+      );
+      this.hasLoaded = true;
     } catch (error) {
       this.setData({
         errorMessage: error.message || "加载失败",
       });
-      wx.showToast({
+      showToast({
         title: error.message || "加载失败",
         icon: "none",
       });
@@ -361,7 +408,7 @@ Page({
 
   confirmStatusChange({ targetType, targetCode, currentStatus, nextStatus }) {
     if (currentStatus === nextStatus) {
-      wx.showToast({
+      showToast({
         title: "状态没有变化",
         icon: "none",
       });
@@ -423,13 +470,14 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
+      showToast({
         title: "已更新",
         icon: "success",
       });
+      this.markFlipped(id);
       this.fetchDashboard();
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });
@@ -465,13 +513,14 @@ Page({
       if (!result.success) {
         throw new Error(result.errMsg || "更新失败");
       }
-      wx.showToast({
+      showToast({
         title: "已更新",
         icon: "success",
       });
+      this.markFlipped(id);
       this.fetchDashboard();
     } catch (error) {
-      wx.showToast({
+      showToast({
         title: error.message || "更新失败",
         icon: "none",
       });

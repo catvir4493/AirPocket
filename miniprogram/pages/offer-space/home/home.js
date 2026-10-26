@@ -1,19 +1,15 @@
+const { createTabShell } = require("../../../utils/tabShell");
+
+const shell = createTabShell({
+  titles: ["", "发布行李额", "我的发布"],
+  eyebrows: ["", "Offer Space", "My Bags"],
+  initialTab: 1,
+});
+
 Page({
-  goAppHome() {
-    wx.reLaunch({
-      url: "/pages/index/index",
-    });
-  },
+  ...shell,
 
-  goReleaseBag() {
-    wx.navigateTo({
-      url: "/pages/offer-space/release/release",
-    });
-  },
-
-  goMyBags() {
-    wx.navigateTo({
-      url: "/pages/offer-space/my/my",
-    });
+  onPanelSwitch(event) {
+    this.switchTab(event.detail.index);
   },
 });

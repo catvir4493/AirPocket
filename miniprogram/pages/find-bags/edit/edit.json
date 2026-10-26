@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "Edit Binding"
+  "navigationBarTitleText": "编辑绑定",
+  "navigationStyle": "custom"
 }

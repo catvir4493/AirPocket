@@ -1,0 +1,39 @@
+<view class="offer-panel">
+  <view class="offer-hero fade-up delay-1">
+    <view class="offer-hero-watermark">OFFER</view>
+    <view class="eyebrow offer-hero-eyebrow">我有空余行李额</view>
+    <view class="offer-hero-title">顺路帮人带一点</view>
+    <view class="offer-hero-desc">填好航班和可用重量，需要的人就能在「找行李额」里看到你。</view>
+    <button class="offer-hero-cta" hover-class="button-hover" bindtap="goReleaseBag">
+      <text>发布行李额</text>
+      <ap-icon name="arrow" size="{{28}}" stroke="{{2.4}}" color="#1c1c1a" />
+    </button>
+  </view>
+
+  <view class="icon-list offer-links fade-up delay-2">
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goReleaseBag">
+      <view class="icon-box"><ap-icon name="plus" size="{{32}}" color="ink-2" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">发布新行李额</view>
+        <view class="icon-row-desc">散件按重量，整箱每箱 23kg</view>
+      </view>
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
+    </view>
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goMyBags">
+      <view class="icon-box"><ap-icon name="list" size="{{32}}" color="ink-2" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">我的发布</view>
+        <view class="icon-row-desc">查看绑定情况和剩余重量</view>
+      </view>
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
+    </view>
+    <view class="icon-row" hover-class="icon-row-press" hover-start-time="20" hover-stay-time="90" bindtap="goCompliance">
+      <view class="icon-box"><ap-icon name="shield" size="{{32}}" color="ink-2" /></view>
+      <view class="icon-row-copy">
+        <view class="icon-row-title">物品合规</view>
+        <view class="icon-row-desc">带之前先看看哪些不能带</view>
+      </view>
+      <ap-icon name="chevron" size="{{28}}" color="faint" stroke="{{2}}" />
+    </view>
+  </view>
+</view>

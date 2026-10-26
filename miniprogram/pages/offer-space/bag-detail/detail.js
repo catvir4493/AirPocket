@@ -1,23 +1,8 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
-
-const statusLabels = {
-  active: "可绑定",
-  locked: "已锁定",
-  closed: "已关闭",
-  expired: "已过期",
-};
-
-const bindingStatusLabels = {
-  pending: "等待确认",
-  locked: "已锁单",
-  contacted: "已联系",
-  picked_up: "已取货",
-  packed: "已打包",
-  delivered_to_carrier: "已送至带货者",
-  completed: "已完成",
-  cancelled: "已取消",
-};
+const { showToast } = require("../../../utils/toast");
+const { bagStatus, bindingStatus } = require("../../../utils/status");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("../../../utils/navTitle");
 
 const toSafeNumber = (value, fallback = 0) => {
   const number = Number(value);
@@ -34,10 +19,30 @@ const buildBagView = (bag) => {
     ? Number(bag.caseCount)
     : remainingCases || (isFullCase ? 1 : 0);
 
+  const status = bagStatus(bag.status);
+  const specialItemOptionsText = formatSpecialItems(bag.specialItemOptions);
+  // Capacity bar: one dark block per live binding over the bag's total space.
+  const capacity = {
+    total: isFullCase ? caseCount * 23 : toSafeNumber(bag.totalWeight),
+    segments: (bag.bindings || [])
+      .filter((binding) => binding.status !== "cancelled")
+      .map((binding) => ({
+        value:
+          binding.spaceType === "fullCase"
+            ? Number(binding.requestedCases || 1) * 23
+            : toSafeNumber(binding.requestedWeight),
+        tone: "bound",
+        label: "已绑定",
+      })),
+  };
+
   return {
     ...bag,
+    remainingWeight,
+    remainingCases,
     isFullCase,
     isLoose: !isFullCase,
+    capacity,
     canEdit: !bag.bindingCount,
     spaceTypeText: isFullCase ? "整箱" : "散件",
     caseCountText: `${caseCount} 件`,
@@ -45,7 +50,10 @@ const buildBagView = (bag) => {
     totalWeightText: formatWeight(bag.totalWeight),
     remainingWeightText: formatWeight(bag.remainingWeight),
     boundWeightText: formatWeight(bag.boundWeight || 0),
-    specialItemOptionsText: formatSpecialItems(bag.specialItemOptions),
+    specialItemOptionsText,
+    passChips: [isFullCase ? "整箱 · 每箱 23kg" : "散件"].concat(
+      specialItemOptionsText === "无" ? [] : specialItemOptionsText.split(", ").map((label) => `可带${label}`)
+    ),
     allowedItemsText: Array.isArray(bag.allowedItems) && bag.allowedItems.length
       ? bag.allowedItems.join(", ")
       : "-",
@@ -54,17 +62,21 @@ const buildBagView = (bag) => {
       : "-",
     createdAtText: formatDateTime(bag.createdAt),
     updatedAtText: formatDateTime(bag.updatedAt),
-    statusText: statusLabels[bag.status] || bag.status,
+    statusText: status.text,
+    statusTone: status.tone,
     bindings: (bag.bindings || []).map((binding) => {
       const bindingIsFullCase = binding.spaceType === "fullCase";
+      const bindingState = bindingStatus(binding.status);
       return {
         ...binding,
         spaceTypeText: bindingIsFullCase ? "整箱" : "散件",
+        requestedCases: Number(binding.requestedCases || (bindingIsFullCase ? 1 : 0)),
         requestedCasesText: `${Number(binding.requestedCases || (bindingIsFullCase ? 1 : 0))} 件`,
         requestedWeightText: formatWeight(binding.requestedWeight),
         requestedSpecialItemsText: formatSpecialItems(binding.requestedSpecialItems),
         createdAtText: formatDateTime(binding.createdAt),
-        statusText: bindingStatusLabels[binding.status] || binding.status,
+        statusText: bindingState.text,
+        statusTone: bindingState.tone,
       };
     }),
   };
@@ -72,17 +84,29 @@ const buildBagView = (bag) => {
 
 Page({
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    loadError: "",
     bagId: "",
     bag: null,
-    loading: false,
+    loading: true,
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+  },
+
+  onReady() {
+    watchNavTitle(this, ".nav-sentinel");
   },
 
   onLoad(options) {
     if (!options.id) {
-      wx.showToast({
+      showToast({
         title: "缺少 bag 信息",
         icon: "none",
       });
+      this.setData({ loading: false });
       return;
     }
 
@@ -91,7 +115,7 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.fetchBag(this.data.bagId).finally(() => wx.stopPullDownRefresh());
+    refreshWithPlane(this, () => this.fetchBag(this.data.bagId));
   },
 
   async fetchBag(bagId) {
@@ -99,7 +123,10 @@ Page({
       return;
     }
 
-    this.setData({ loading: true });
+    // Refreshes keep the current pass on screen instead of going back to the skeleton.
+    if (!this.data.bag) {
+      this.setData({ loading: true });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "getMyCarrierBags",
@@ -111,18 +138,30 @@ Page({
 
       const source = (result.data || []).find((item) => item._id === bagId);
       if (!source) {
-        throw new Error("没有找到这条 bag");
+        // Not found is not a load failure: fall through to the "没有找到" state.
+        this.setData({ bag: null });
+        return;
       }
 
       this.setData({ bag: buildBagView(source) });
     } catch (error) {
-      wx.showToast({
-        title: error.message || "加载失败",
-        icon: "none",
-      });
+      // Nothing on screen yet: show the retry state. Otherwise keep the page and just say so.
+      if (!this.data.bag) {
+        this.setData({ loadError: error.message || "加载失败" });
+      } else {
+        showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      }
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    this.setData({ loadError: "", loading: true });
+    this.fetchBag(this.data.bagId);
   },
 
   editBag() {
