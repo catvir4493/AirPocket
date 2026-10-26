@@ -15,6 +15,12 @@ Component({
       type: Boolean,
       value: false,
     },
+    // When set, the back button fires a "back" event for the page to handle
+    // (the tab shells use it to go from "My ..." back to their main tab).
+    interceptBack: {
+      type: Boolean,
+      value: false,
+    },
   },
 
   data: {
@@ -36,6 +42,10 @@ Component({
 
   methods: {
     onBack() {
+      if (this.data.interceptBack) {
+        this.triggerEvent("back");
+        return;
+      }
       if (getCurrentPages().length > 1) {
         wx.navigateBack();
         return;

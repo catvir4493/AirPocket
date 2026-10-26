@@ -64,6 +64,11 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
     return this.selectComponent(`#panel-${index}`);
   },
 
+  // Back from the "My ..." tab returns to the area's main tab instead of leaving the page.
+  onNavBack() {
+    this.switchTab(1);
+  },
+
   onTabChange(event) {
     this.switchTab(event.detail.index);
   },

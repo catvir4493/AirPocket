@@ -1,4 +1,4 @@
-<ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
+<ap-navbar title="{{titles[activeTab]}}" collapsed="{{navCollapsed}}" loading="{{refreshing}}" intercept-back="{{activeTab === 2}}" bind:back="onNavBack" />
 
 <view class="page tab-shell">
   <view class="large-title">
