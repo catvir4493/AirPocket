@@ -4,6 +4,7 @@ const {
 } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
 const { bagFormMethods, createBagFormData, validateBagForm } = require("../../../utils/bagForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
 
 const listToText = (value) => (Array.isArray(value) ? value.join(", ") : "");
 
@@ -34,6 +35,7 @@ Page({
 
   onUnload() {
     clearTimeout(this.redirectTimer);
+    clearFieldError(this);
   },
 
   async fetchBag(bagId) {
@@ -108,12 +110,9 @@ Page({
 
     this.commitTagDrafts();
 
-    const errorMessage = validateBagForm(this.data.form, this.data.minDate);
-    if (errorMessage) {
-      showToast({
-        title: errorMessage,
-        icon: "none",
-      });
+    const invalid = validateBagForm(this.data.form, this.data.minDate);
+    if (invalid) {
+      showFieldError(this, invalid);
       return;
     }
 

@@ -365,3 +365,13 @@
   margin-top: 14rpx;
   padding: 28rpx;
 }
+
+/* Status pill after a status change: flips in once the new status arrives. */
+.pill-flip {
+  animation: ap-flip-in 480ms var(--ease-out) backwards, ap-pop 360ms var(--ease-spring) 380ms;
+}
+
+/* The dashboard body is wrapped for its fade-in; keep the first section's normal top gap. */
+.content-in > .rl-sec:first-child {
+  margin-top: 40rpx;
+}

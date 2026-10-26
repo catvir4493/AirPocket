@@ -43,14 +43,14 @@
   </view>
   <view wx:elif="{{errorMessage}}" class="empty-state">{{errorMessage}}</view>
 
-  <block wx:else>
+  <view wx:else class="content-in">
     <view class="rl-sec"><text class="rl-sec-no">1</text><text>绑定工作台</text><text class="desk-count num">{{visibleBindings.length}}</text></view>
     <view wx:if="{{visibleBindings.length}}">
-      <view wx:for="{{visibleBindings}}" wx:key="_id" class="desk-card list-enter" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms">
+      <view wx:for="{{visibleBindings}}" wx:key="_id" class="desk-card list-enter" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms">
         <view class="desk-card-top">
           <text class="desk-code num">#{{item.bagNo}}</text>
           <text class="desk-amount">{{item.amountText}}</text>
-          <view class="pill status-{{item.status}}">{{item.statusText}}</view>
+          <view wx:for="{{[item.status]}}" wx:for-item="pillStatus" wx:key="*this" class="pill status-{{pillStatus}} {{flipId === item._id ? 'pill-flip' : ''}}">{{item.statusText}}</view>
         </view>
         <view class="desk-route">
           <text class="desk-city">{{item.fromCity}}</text>
@@ -96,11 +96,11 @@
 
     <view class="rl-sec"><text class="rl-sec-no">2</text><text>行李额</text><text class="desk-count num">{{bags.length}}</text></view>
     <view wx:if="{{bags.length}}">
-      <view wx:for="{{bags}}" wx:key="_id" class="desk-card list-enter" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms">
+      <view wx:for="{{bags}}" wx:key="_id" class="desk-card list-enter" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms">
         <view class="desk-card-top">
           <text class="desk-code num">#{{item.bagNo}}</text>
           <text class="desk-amount">{{item.spaceTypeText}}</text>
-          <view class="pill status-{{item.status}}">{{item.statusText}}</view>
+          <view wx:for="{{[item.status]}}" wx:for-item="pillStatus" wx:key="*this" class="pill status-{{pillStatus}} {{flipId === item._id ? 'pill-flip' : ''}}">{{item.statusText}}</view>
         </view>
         <view class="desk-route">
           <text class="desk-city">{{item.fromCity}}</text>
@@ -142,6 +142,6 @@
       </view>
     </view>
     <view wx:else class="empty-state compact">暂无后台操作日志。</view>
-  </block>
+  </view>
 </view>
 <ap-toast id="ap-toast" />

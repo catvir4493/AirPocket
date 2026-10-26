@@ -61,6 +61,7 @@ Component({
     segments: SEGMENTS,
     segment: "all",
     segmentIndex: 0,
+    listKey: 0,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -143,11 +144,7 @@ Component({
           statBindings: bags.reduce((sum, bag) => sum + bag.bindingCount, 0),
           statWeight: bags.reduce((sum, bag) => sum + toNumber(bag.totalWeight), 0),
         };
-        if (this.hasLoaded) {
-          this.setData(stats);
-        } else {
-          countUp(this, stats);
-        }
+        countUp(this, stats);
         this.hasLoaded = true;
       } catch (error) {
         showToast({
@@ -205,7 +202,10 @@ Component({
       if (value === this.data.segment) {
         return;
       }
-      this.setData({ segment: value, segmentIndex: Number(index) || 0 }, () => this.applySearchFilters());
+      this.setData(
+        { segment: value, segmentIndex: Number(index) || 0, listKey: this.data.listKey + 1 },
+        () => this.applySearchFilters()
+      );
     },
 
     openSearchPanel() {

@@ -62,7 +62,7 @@
   margin-bottom: 20rpx;
   padding: 32rpx 32rpx 34rpx;
   border-radius: 40rpx;
-  transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform 240ms var(--ease-spring);
 }
 
 .entry-enter {
@@ -75,6 +75,8 @@
 
 .entry-press {
   transform: scale(0.98);
+  transition-duration: var(--dur-press);
+  transition-timing-function: var(--ease-out);
 }
 
 .entry-dark {

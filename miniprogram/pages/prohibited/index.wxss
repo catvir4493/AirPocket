@@ -58,17 +58,13 @@
 }
 
 .statement-copy {
-  max-height: 198rpx;
+  height: 198rpx;
   overflow: hidden;
   color: var(--ink-2);
   font-size: 24rpx;
   line-height: 1.65;
   text-align: justify;
-  transition: max-height 480ms var(--ease-out);
-}
-
-.statement.open .statement-copy {
-  max-height: 2400rpx;
+  transition: height 420ms var(--ease-swift);
 }
 
 .statement-fade {
@@ -122,6 +118,7 @@
 
 .source-row-press {
   background: var(--fill);
+  transition-duration: 60ms;
 }
 
 .source-body {
@@ -153,6 +150,13 @@
   color: var(--ink);
   font-size: 22rpx;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.source-copy.copied {
+  background: var(--yellow);
+  color: #1c1c1a;
+  animation: ap-pop 320ms var(--ease-spring);
 }
 
 .prohibited-done {

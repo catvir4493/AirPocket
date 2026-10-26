@@ -6,7 +6,7 @@
   <view class="page-subtitle fade-up delay-1">发布后，需要的人会在「找行李额」里看到这条记录。</view>
 
   <view class="form fade-up delay-2">
-    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll}}" />
+    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick}}" />
   </view>
 
   <view class="sticky-action action-bar">
@@ -14,7 +14,13 @@
       <view class="action-route">{{summary.route}}</view>
       <view class="action-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
     </view>
-    <button class="primary-button action-button {{releasedNo ? 'success' : ''}} {{summary.ready ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">{{releasedNo ? '✓ 已发布' : '发布'}}</button>
+    <button class="primary-button action-button {{releasedNo ? 'success' : ''}} {{summary.ready ? '' : 'dim'}}" disabled="{{submitting || releasedNo}}" bindtap="submitBag">
+      <view wx:if="{{submitting}}" class="btn-flight">
+        <view class="btn-flight-dash"></view>
+        <view class="btn-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink-3" /></view>
+      </view>
+      <block wx:else>{{releasedNo ? '✓ 已发布' : '发布'}}</block>
+    </button>
   </view>
 </view>
 <ap-stamp show="{{releasedNo ? true : false}}" text="已发布" sub="{{releasedNo ? '#' + releasedNo : ''}}" />

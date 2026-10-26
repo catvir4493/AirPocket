@@ -118,7 +118,13 @@
 
     <view wx:if="{{binding.canEdit}}" class="detail-actions">
       <button class="primary-button" bindtap="goEditBinding">编辑绑定信息</button>
-      <button class="danger-button" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="cancelBinding">取消绑定</button>
+      <button class="danger-button" disabled="{{cancelling}}" bindtap="cancelBinding">
+        <view wx:if="{{cancelling}}" class="btn-flight">
+          <view class="btn-flight-dash"></view>
+          <view class="btn-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink-3" /></view>
+        </view>
+        <block wx:else>取消绑定</block>
+      </button>
     </view>
   </block>
 

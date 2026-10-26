@@ -88,6 +88,7 @@ Component({
     segments: SEGMENTS,
     segment: "all",
     segmentIndex: 0,
+    listKey: 0,
     hasSearchFilters: false,
     bagOptions: [defaultBagOption],
     bagIndex: 0,
@@ -171,11 +172,7 @@ Component({
         });
         this.applySearchFilters(bindings);
         const stats = this.buildStats(bindings);
-        if (this.hasLoaded) {
-          this.setData({ statOngoing: stats.ongoing, statDone: stats.done, statWeight: stats.weight });
-        } else {
-          countUp(this, { statOngoing: stats.ongoing, statDone: stats.done, statWeight: stats.weight });
-        }
+        countUp(this, { statOngoing: stats.ongoing, statDone: stats.done, statWeight: stats.weight });
         this.hasLoaded = true;
       } catch (error) {
         showToast({
@@ -210,7 +207,10 @@ Component({
       if (value === this.data.segment) {
         return;
       }
-      this.setData({ segment: value, segmentIndex: Number(index) || 0 }, () => this.applySearchFilters());
+      this.setData(
+        { segment: value, segmentIndex: Number(index) || 0, listKey: this.data.listKey + 1 },
+        () => this.applySearchFilters()
+      );
     },
 
     getVisibleBindings(allBindings, filters) {

@@ -4,19 +4,19 @@
   <view class="rl-sec"><text class="rl-sec-no">1</text><text>航程</text><text class="rl-sec-note">必填</text></view>
   <view class="trip-ticket">
     <view class="trip-top">
-      <view class="trip-city {{focusedField === 'fromCity' ? 'focused' : ''}}">
+      <view id="ff-fromCity" class="trip-city {{focusedField === 'fromCity' ? 'focused' : ''}} {{errorField === 'fromCity' ? 'field-error shake-' + errorTick % 2 : ''}}">
         <view class="trip-key">FROM</view>
         <input class="trip-input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="出发城市" placeholder-class="trip-ph" data-focus="fromCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
       </view>
-      <view class="trip-swap" hover-class="trip-swap-hover" bindtap="swapCities"><ap-icon name="swap" size="{{30}}" stroke="{{2}}" color="ink" /></view>
-      <view class="trip-city right {{focusedField === 'toCity' ? 'focused' : ''}}">
+      <view class="trip-swap" hover-class="trip-swap-hover" hover-start-time="20" hover-stay-time="90" bindtap="swapCities"><ap-icon name="swap" size="{{30}}" stroke="{{2}}" color="ink" /></view>
+      <view id="ff-toCity" class="trip-city right {{focusedField === 'toCity' ? 'focused' : ''}} {{errorField === 'toCity' ? 'field-error shake-' + errorTick % 2 : ''}}">
         <view class="trip-key">TO</view>
         <input class="trip-input right" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="到达城市" placeholder-class="trip-ph" data-focus="toCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
       </view>
     </view>
     <view class="trip-perf"></view>
     <view class="trip-bottom">
-      <picker class="trip-cell" mode="date" value="{{form.departureDate}}" start="{{minDate}}" bindchange="onDateChange">
+      <picker id="ff-departureDate" class="trip-cell {{errorField === 'departureDate' ? 'field-error shake-' + errorTick % 2 : ''}}" mode="date" value="{{form.departureDate}}" start="{{minDate}}" bindchange="onDateChange">
         <view class="trip-key">DATE</view>
         <view class="trip-value {{dateText ? '' : 'trip-ph'}}">{{dateText || '选择日期'}}</view>
       </picker>
@@ -40,19 +40,19 @@
     </view>
   </view>
 
-  <view class="amount-card {{focusedField === 'amount' ? 'focused' : ''}}">
+  <view id="ff-amount" class="amount-card {{focusedField === 'amount' ? 'focused' : ''}} {{errorField === 'amount' ? 'field-error shake-' + errorTick % 2 : ''}}">
     <view class="amount-label">
       <view>{{form.spaceType === 'loose' ? '可用重量' : '整箱数量'}}</view>
       <view class="amount-hint">{{form.spaceType === 'loose' ? '需要的人按 kg 预订' : caseWeightText}}</view>
     </view>
     <view class="stepper">
-      <view class="stepper-btn" hover-class="stepper-btn-hover" data-delta="-1" bindtap="stepAmount">−</view>
+      <view class="stepper-btn" hover-class="stepper-btn-hover" hover-start-time="20" hover-stay-time="90" data-delta="-1" bindtap="stepAmount">−</view>
       <view wx:for="{{[roll.key]}}" wx:key="*this" class="stepper-value {{roll.key ? 'roll-' + roll.dir : ''}}">
         <input wx:if="{{form.spaceType === 'loose'}}" class="stepper-input" type="digit" value="{{form.totalWeight}}" data-field="totalWeight" bindinput="onFieldInput" placeholder="0" placeholder-class="trip-ph" data-focus="amount" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
         <input wx:else class="stepper-input" type="number" value="{{form.caseCount}}" data-field="caseCount" bindinput="onFieldInput" placeholder="1" placeholder-class="trip-ph" data-focus="amount" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
         <text class="stepper-unit">{{form.spaceType === 'loose' ? 'kg' : '箱'}}</text>
       </view>
-      <view class="stepper-btn" hover-class="stepper-btn-hover" data-delta="1" bindtap="stepAmount">+</view>
+      <view class="stepper-btn" hover-class="stepper-btn-hover" hover-start-time="20" hover-stay-time="90" data-delta="1" bindtap="stepAmount">+</view>
     </view>
   </view>
   <view wx:if="{{form.spaceType === 'loose'}}" class="quick-row">
@@ -94,11 +94,11 @@
   <!-- 4 Contact and delivery -->
   <view class="rl-sec"><text class="rl-sec-no">4</text><text>联系与收货</text><text class="rl-sec-note">仅平台可见</text></view>
   <view class="rl-group">
-    <view class="rl-row {{focusedField === 'carrierWechat' ? 'focused' : ''}}">
+    <view id="ff-carrierWechat" class="rl-row {{focusedField === 'carrierWechat' ? 'focused' : ''}} {{errorField === 'carrierWechat' ? 'field-error shake-' + errorTick % 2 : ''}}">
       <text class="rl-label">微信号</text>
       <input class="rl-input" value="{{form.carrierWechat}}" data-field="carrierWechat" bindinput="onFieldInput" placeholder="平台客服通过微信联系你" placeholder-class="trip-ph" data-focus="carrierWechat" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>
-    <view class="rl-row top {{focusedField === 'carrierReceiveAddress' ? 'focused' : ''}}">
+    <view id="ff-carrierReceiveAddress" class="rl-row top {{focusedField === 'carrierReceiveAddress' ? 'focused' : ''}} {{errorField === 'carrierReceiveAddress' ? 'field-error shake-' + errorTick % 2 : ''}}">
       <view class="rl-label">收货地址<view class="lock-tag"><ap-icon name="lock" size="{{20}}" stroke="{{2.2}}" color="ink-3" /><text>仅后台</text></view></view>
       <textarea class="rl-textarea" auto-height value="{{form.carrierReceiveAddress}}" data-field="carrierReceiveAddress" bindinput="onFieldInput" placeholder="平台统一打包后送达给你的地址" placeholder-class="trip-ph" data-focus="carrierReceiveAddress" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
     </view>

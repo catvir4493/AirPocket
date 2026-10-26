@@ -157,6 +157,8 @@ Page({
     bags: [],
     visibleBindings: [],
     auditLogs: [],
+    // Card whose status was just changed; its status pill flips in when the new status arrives.
+    flipId: "",
   },
 
   onShow() {
@@ -169,6 +171,13 @@ Page({
 
   onUnload() {
     clearTimeout(this._countUpTimer);
+    clearTimeout(this.flipTimer);
+  },
+
+  markFlipped(id) {
+    clearTimeout(this.flipTimer);
+    this.setData({ flipId: id });
+    this.flipTimer = setTimeout(() => this.setData({ flipId: "" }), 1600);
   },
 
   async fetchDashboard() {
@@ -192,17 +201,13 @@ Page({
       this.setData({ ...mapped, errorMessage: "" }, () => this.applyFilters());
       const { bagCount, bindingCount, pendingCount, todayNewCount } = mapped.summary;
       const summaryView = { bagCount, bindingCount, pendingCount, todayNewCount };
-      if (this.hasLoaded) {
-        this.setData({ summaryView });
-      } else {
-        countUp(
-          this,
-          Object.keys(summaryView).reduce((acc, key) => {
-            acc[`summaryView.${key}`] = summaryView[key];
-            return acc;
-          }, {})
-        );
-      }
+      countUp(
+        this,
+        Object.keys(summaryView).reduce((acc, key) => {
+          acc[`summaryView.${key}`] = summaryView[key];
+          return acc;
+        }, {})
+      );
       this.hasLoaded = true;
     } catch (error) {
       this.setData({
@@ -456,6 +461,7 @@ Page({
         title: "已更新",
         icon: "success",
       });
+      this.markFlipped(id);
       this.fetchDashboard();
     } catch (error) {
       showToast({
@@ -498,6 +504,7 @@ Page({
         title: "已更新",
         icon: "success",
       });
+      this.markFlipped(id);
       this.fetchDashboard();
     } catch (error) {
       showToast({

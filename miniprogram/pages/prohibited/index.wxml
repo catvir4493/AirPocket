@@ -5,7 +5,7 @@
 
   <view class="rl-sec fade-up delay-1"><text class="rl-sec-no">1</text><text>高风险物品</text><text class="rl-sec-note">{{riskItems.length}} 类</text></view>
   <view class="rl-group">
-    <view wx:for="{{riskItems}}" wx:key="title" class="risk-row list-enter" style="animation-delay: {{120 + index * 60}}ms">
+    <view wx:for="{{riskItems}}" wx:key="title" class="risk-row list-enter" style="animation-delay: {{100 + index * 40}}ms">
       <view class="risk-icon {{index === 0 ? 'hot' : ''}}"><ap-icon name="{{item.icon}}" size="{{32}}" stroke="{{2}}" color="{{index === 0 ? '#1c1c1a' : 'ink'}}" /></view>
       <view class="risk-body">
         <view class="risk-title">{{item.title}}</view>
@@ -16,19 +16,21 @@
 
   <view class="rl-sec"><text class="rl-sec-no">2</text><text>责任声明</text><text class="rl-sec-note">请完整阅读</text></view>
   <view class="statement {{statementOpen ? 'open' : ''}}" bindtap="toggleStatement">
-    <view class="statement-copy">{{statementText}}</view>
+    <view class="statement-copy" style="{{statementHeight ? 'height: ' + statementHeight + 'px;' : ''}}">
+      <view class="statement-inner">{{statementText}}</view>
+    </view>
     <view class="statement-fade"></view>
     <view class="statement-toggle">{{statementOpen ? '收起' : '展开全文'}}<text class="statement-caret">▾</text></view>
   </view>
 
   <view class="rl-sec"><text class="rl-sec-no">3</text><text>官方链接</text><text class="rl-sec-note">点一下复制</text></view>
   <view class="rl-group">
-    <view wx:for="{{sourceItems}}" wx:key="title" class="source-row" hover-class="source-row-press" hover-stay-time="90" data-url="{{item.url}}" bindtap="copySourceLink">
+    <view wx:for="{{sourceItems}}" wx:key="title" class="source-row" hover-class="source-row-press" hover-start-time="20" hover-stay-time="90" data-url="{{item.url}}" data-index="{{index}}" bindtap="copySourceLink">
       <view class="source-body">
         <view class="source-title">{{item.title}}</view>
         <view class="source-url">{{item.url}}</view>
       </view>
-      <view class="source-copy">复制</view>
+      <view wx:for="{{[copiedIndex === index ? 1 : 0]}}" wx:for-item="copied" wx:key="*this" class="source-copy {{copied ? 'copied' : ''}}">{{copied ? '已复制 ✓' : '复制'}}</view>
     </view>
   </view>
 

@@ -91,7 +91,7 @@
     <view class="binding-section">
       <view class="section-title">绑定记录<text class="eyebrow">Bindings · {{bag.bindings.length}}</text></view>
       <view wx:if="{{bag.bindings.length}}">
-        <view wx:for="{{bag.bindings}}" wx:key="_id" class="binding-item list-enter" style="animation-delay: {{index < 6 ? 120 + index * 50 : 0}}ms">
+        <view wx:for="{{bag.bindings}}" wx:key="_id" class="binding-item list-enter" style="animation-delay: {{index < 6 ? 120 + index * 35 : 0}}ms">
           <view class="binding-top">
             <view class="binding-title"><text class="num">{{item.spaceType === 'fullCase' ? item.requestedCases : item.requestedWeight}}</text><text class="binding-unit">{{item.spaceType === 'fullCase' ? '件' : 'kg'}}</text></view>
             <view class="tag tag-{{item.statusTone}}">{{item.statusText}}</view>

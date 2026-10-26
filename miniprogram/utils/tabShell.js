@@ -7,6 +7,8 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
     titles,
     eyebrows,
     activeTab: initialTab,
+    // "fwd" or "back": which way the last tab switch went, for the slide-in direction.
+    tabDir: "",
     visited: titles.map((title, index) => index === initialTab),
     navCollapsed: false,
     refreshing: false,
@@ -88,7 +90,8 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
           previousPanel.onPanelHide();
         }
 
-        this.setData({ activeTab: index, [`visited[${index}]`]: true }, () => {
+        const tabDir = index > previous ? "fwd" : "back";
+        this.setData({ activeTab: index, tabDir, [`visited[${index}]`]: true }, () => {
           wx.pageScrollTo({ scrollTop: this.scrollTops[index] || 0, duration: 0 });
           const panel = this.getPanel(index);
           if (panel) {

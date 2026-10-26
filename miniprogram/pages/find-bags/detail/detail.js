@@ -13,6 +13,7 @@ const {
   createBindFormData,
   validateBindForm,
 } = require("../../../utils/bindForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
 
 const specialLabel = (value) =>
   (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
@@ -46,6 +47,7 @@ Page({
 
   onUnload() {
     clearTimeout(this.redirectTimer);
+    clearFieldError(this);
   },
 
   async fetchBag(bagId) {
@@ -129,12 +131,9 @@ Page({
       form.requestedSpecialItems,
       bag.availableSpecialItems
     );
-    const errorMessage = validateBindForm(this.data.formInfo, form);
-    if (errorMessage) {
-      showToast({
-        title: errorMessage,
-        icon: "none",
-      });
+    const invalid = validateBindForm(this.data.formInfo, form);
+    if (invalid) {
+      showFieldError(this, invalid);
       return;
     }
 

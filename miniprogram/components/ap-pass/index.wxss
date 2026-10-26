@@ -4,7 +4,7 @@
   border-radius: 40rpx;
   background: var(--card);
   box-shadow: var(--shadow);
-  animation: pass-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation: pass-in 460ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1)) backwards;
 }
 
 .pass-top {
@@ -116,7 +116,7 @@
   left: 0;
   border-top: 3rpx dashed var(--line-strong);
   transform-origin: left;
-  animation: pass-line 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms backwards;
+  animation: pass-line 600ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1)) 200ms backwards;
 }
 
 .pass-plane {
@@ -127,7 +127,7 @@
   padding: 0 8rpx;
   background: var(--card);
   transform: translate(-50%, -50%) rotate(90deg);
-  animation: pass-plane 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms backwards;
+  animation: pass-plane 700ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1)) 200ms backwards;
 }
 
 .pass-perf {

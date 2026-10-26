@@ -93,42 +93,48 @@ const nextRoll = (roll, change) => ({
   roll: { key: ((roll && roll.key) || 0) + 1, dir: change < 0 ? "down" : "up" },
 });
 
+// Returns null when the form is valid, otherwise { field, message } for the first problem
+// (field matches the "ff-<field>" ids in bag-form.wxml).
 const validateBagForm = (form, minDate) => {
+  // Checked in the order the fields appear on the page.
   const required = [
     ["fromCity", "请填写出发城市"],
     ["toCity", "请填写到达城市"],
-    ["carrierWechat", "请填写微信号"],
-    ["carrierReceiveAddress", "请填写收货地址"],
     ["departureDate", "请选择出发日期"],
   ];
   for (let i = 0; i < required.length; i += 1) {
     const [field, message] = required[i];
     if (!`${form[field]}`.trim()) {
-      return message;
+      return { field, message };
     }
   }
 
   if (isPastDate(form.departureDate, minDate)) {
-    return "出发日期不能早于今天";
+    return { field: "departureDate", message: "出发日期不能早于今天" };
   }
 
   if (form.spaceType === "fullCase") {
     const caseCount = Number(form.caseCount);
     if (!Number.isInteger(caseCount) || caseCount <= 0) {
-      return "整箱数量必须是大于 0 的整数";
+      return { field: "amount", message: "整箱数量必须是大于 0 的整数" };
     }
-    return "";
+  } else {
+    if (!`${form.totalWeight}`.trim()) {
+      return { field: "amount", message: "请填写可用重量" };
+    }
+    const totalWeight = Number(form.totalWeight);
+    if (!Number.isFinite(totalWeight) || totalWeight <= 0) {
+      return { field: "amount", message: "可用重量必须大于 0" };
+    }
   }
 
-  if (!`${form.totalWeight}`.trim()) {
-    return "请填写可用重量";
+  if (!`${form.carrierWechat}`.trim()) {
+    return { field: "carrierWechat", message: "请填写微信号" };
   }
-
-  const totalWeight = Number(form.totalWeight);
-  if (!Number.isFinite(totalWeight) || totalWeight <= 0) {
-    return "可用重量必须大于 0";
+  if (!`${form.carrierReceiveAddress}`.trim()) {
+    return { field: "carrierReceiveAddress", message: "请填写收货地址" };
   }
-  return "";
+  return null;
 };
 
 const createBagFormData = (readyText) => ({
@@ -138,6 +144,8 @@ const createBagFormData = (readyText) => ({
   roll: { key: 0, dir: "up" },
   focusedField: "",
   minDate: today(),
+  errorField: "",
+  errorTick: 0,
   specialItemOptions: buildSpecialItemOptions([]),
   form: { ...INITIAL_FORM },
 });

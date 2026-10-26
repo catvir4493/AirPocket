@@ -113,12 +113,13 @@
   border: 1rpx solid var(--line);
   border-radius: var(--r-l);
   background: var(--card);
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease;
+  transition: transform 240ms var(--ease-spring), box-shadow 240ms ease;
 }
 
 .ticket-press {
-  transform: scale(0.985);
+  transform: scale(0.98);
   box-shadow: var(--shadow);
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) ease;
 }
 
 .ticket-stub {

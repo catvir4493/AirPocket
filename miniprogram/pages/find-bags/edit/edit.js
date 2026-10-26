@@ -11,6 +11,7 @@ const {
   createBindFormData,
   validateBindForm,
 } = require("../../../utils/bindForm");
+const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
 
 const isEditable = (binding) => {
   const lockDeadlineAt = toDate(binding.lockDeadlineAt);
@@ -50,6 +51,7 @@ Page({
 
   onUnload() {
     clearTimeout(this.redirectTimer);
+    clearFieldError(this);
   },
 
   async fetchBinding(bindingId) {
@@ -143,12 +145,9 @@ Page({
       return;
     }
 
-    const errorMessage = validateBindForm(this.data.formInfo, form);
-    if (errorMessage) {
-      showToast({
-        title: errorMessage,
-        icon: "none",
-      });
+    const invalid = validateBindForm(this.data.formInfo, form);
+    if (invalid) {
+      showFieldError(this, invalid);
       return;
     }
 

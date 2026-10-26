@@ -30,23 +30,26 @@
   </view>
 
   <view wx:elif="{{bags.length}}" class="my-tickets">
-    <view wx:for="{{bags}}" wx:key="_id" class="ticket list-enter" style="animation-delay: {{index < 8 ? 120 + index * 40 : 0}}ms" hover-class="ticket-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
-      <view class="ticket-stub">
-        <view class="ticket-day num">{{item.day.day}}</view>
-        <view class="ticket-month">{{item.day.month}}</view>
-      </view>
-      <view class="ticket-main">
-        <view class="ticket-route">{{item.routeText}}</view>
-        <view class="ticket-meta">
-          <view class="tag tag-{{item.statusTone}}">{{item.statusText}}</view>
-          <text class="tag-code">#{{item.bagNo}}</text>
+    <!-- listKey changes on a segment switch: the list is rebuilt so it fades in again. -->
+    <block wx:for="{{[listKey]}}" wx:for-item="listRun" wx:key="*this">
+      <view wx:for="{{bags}}" wx:key="_id" class="ticket list-enter" style="animation-delay: {{index < 6 ? (listKey ? 0 : 100) + index * 35 : 0}}ms" hover-class="ticket-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
+        <view class="ticket-stub">
+          <view class="ticket-day num">{{item.day.day}}</view>
+          <view class="ticket-month">{{item.day.month}}</view>
+        </view>
+        <view class="ticket-main">
+          <view class="ticket-route">{{item.routeText}}</view>
+          <view class="ticket-meta">
+            <view class="tag tag-{{item.statusTone}}">{{item.statusText}}</view>
+            <text class="tag-code">#{{item.bagNo}}</text>
+          </view>
+        </view>
+        <view class="ticket-metric stacked">
+          <view><text class="num">{{item.metricValue}}</text><text class="ticket-unit">{{item.metricUnit}}</text></view>
+          <text class="ticket-sub">{{item.bindingCount}} 单</text>
         </view>
       </view>
-      <view class="ticket-metric stacked">
-        <view><text class="num">{{item.metricValue}}</text><text class="ticket-unit">{{item.metricUnit}}</text></view>
-        <text class="ticket-sub">{{item.bindingCount}} 单</text>
-      </view>
-    </view>
+    </block>
   </view>
 
   <view wx:else class="empty-state">

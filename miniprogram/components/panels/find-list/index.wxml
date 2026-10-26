@@ -41,7 +41,7 @@
   </view>
 
   <block wx:elif="{{bags.length}}">
-    <view wx:for="{{bags}}" wx:key="_id" class="bag-card list-enter" style="animation-delay: {{index < 8 ? index * 45 : 0}}ms" hover-class="bag-card-hover" hover-stay-time="80" data-id="{{item._id}}" bindtap="openDetail">
+    <view wx:for="{{bags}}" wx:key="_id" class="bag-card list-enter" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms" hover-class="bag-card-hover" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openDetail">
       <view class="bag-stub">
         <text class="bag-stub-day">{{item.stubDay}}</text>
         <text class="bag-stub-month">{{item.stubMonth}}</text>

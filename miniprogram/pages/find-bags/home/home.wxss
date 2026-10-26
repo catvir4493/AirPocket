@@ -1,5 +1,6 @@
 /* Shared by the Find Bags / Offer Space tab pages (custom navigation bar). */
 .tab-shell {
+  position: relative;
   padding-top: 8rpx;
 }
 
@@ -15,6 +16,26 @@
   animation: ap-fade-up var(--dur-base) var(--ease-out) backwards;
 }
 
+/* A switched-to panel slides in from the side of the tab it comes from.
+   "backwards" fill only, so no transform is left behind once it lands
+   (a leftover transform would break the panels' fixed-position sheets). */
+.tab-in-fwd {
+  animation: ap-tab-in-fwd 320ms var(--ease-out) backwards;
+}
+
+.tab-in-back {
+  animation: ap-tab-in-back 320ms var(--ease-out) backwards;
+}
+
+/* Hidden panels stay rendered but take no space. Unlike display: none,
+   this does not restart their entry animations every time they come back. */
 .tab-panel-hidden {
-  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
 }

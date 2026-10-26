@@ -44,19 +44,21 @@ const buildBindSummary = (info, form, readyText) => {
   };
 };
 
+// Returns null when the form is valid, otherwise { field, message } for the first problem
+// (field matches the "ff-<field>" ids in bind-form.wxml).
 const validateBindForm = (info, form) => {
   const requestedWeight = info && info.isFullCase ? FULL_CASE_WEIGHT : Number(form.requestedWeight);
   const required = [
-    [Number.isFinite(requestedWeight) && requestedWeight > 0, "请输入大于 0 的重量"],
-    [form.itemDescription.trim(), "请填写物品描述"],
-    [form.senderWechat.trim(), "请填写微信号"],
-    [form.pickupAddress.trim(), "请填写取货地址"],
-    [form.receiverName.trim(), "请填写收件人姓名"],
-    [form.receiverPhone.trim(), "请填写收件人电话"],
-    [form.deliveryAddress.trim(), "请填写目的地快递地址"],
+    [Number.isFinite(requestedWeight) && requestedWeight > 0, "requestedWeight", "请输入大于 0 的重量"],
+    [form.itemDescription.trim(), "itemDescription", "请填写物品描述"],
+    [form.senderWechat.trim(), "senderWechat", "请填写微信号"],
+    [form.pickupAddress.trim(), "pickupAddress", "请填写取货地址"],
+    [form.receiverName.trim(), "receiverName", "请填写收件人姓名"],
+    [form.receiverPhone.trim(), "receiverPhone", "请填写收件人电话"],
+    [form.deliveryAddress.trim(), "deliveryAddress", "请填写目的地快递地址"],
   ];
   const failed = required.find(([ok]) => !ok);
-  return failed ? failed[1] : "";
+  return failed ? { field: failed[1], message: failed[2] } : null;
 };
 
 const EMPTY_BIND_FORM = {
@@ -74,6 +76,8 @@ const EMPTY_BIND_FORM = {
 const createBindFormData = () => ({
   formInfo: null,
   focusedField: "",
+  errorField: "",
+  errorTick: 0,
   specialItemOptions: [],
   quickWeights: [],
   roll: { key: 0, dir: "up" },

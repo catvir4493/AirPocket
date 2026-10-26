@@ -2,6 +2,7 @@ const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
 const { dayParts } = require("../../../utils/date");
+const { countUp } = require("../../../utils/countUp");
 
 const sortOptions = [
   { value: "departureAsc", label: "出发日期最近" },
@@ -91,6 +92,7 @@ Component({
 
     cleanup() {
       clearTimeout(this.closeFiltersTimer);
+      clearTimeout(this._countUpTimer);
     },
 
     async fetchBags() {
@@ -153,10 +155,13 @@ Component({
             createdAtText: formatDateTime(bag.createdAt),
           };
         });
+        // Count and largest space roll from their previous values to the new ones.
+        const overview = this.buildOverview(bags);
         this.setData({
           allBags: bags,
-          overview: this.buildOverview(bags),
+          overview: { ...overview, count: this.data.overview.count, max: this.data.overview.max },
         });
+        countUp(this, { "overview.count": overview.count, "overview.max": overview.max });
         this.applyFiltersAndSort(bags);
         this.hasLoaded = true;
       } catch (error) {

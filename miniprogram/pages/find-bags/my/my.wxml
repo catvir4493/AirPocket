@@ -3,17 +3,17 @@
 <view class="page tab-shell">
   <view class="large-title">
     <block wx:for="{{[activeTab]}}" wx:key="*this">
-      <view class="title-swap">
+      <view class="title-swap {{tabDir ? 'tab-in-' + tabDir : ''}}">
         <view class="eyebrow">{{eyebrows[item]}}</view>
         <view class="page-title">{{titles[item]}}</view>
       </view>
     </block>
   </view>
 
-  <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? '' : 'tab-panel-hidden'}}">
+  <view wx:if="{{visited[1]}}" class="tab-panel {{activeTab === 1 ? 'tab-in-' + tabDir : 'tab-panel-hidden'}}">
     <find-list-panel id="panel-1" />
   </view>
-  <view wx:if="{{visited[2]}}" class="tab-panel {{activeTab === 2 ? '' : 'tab-panel-hidden'}}">
+  <view wx:if="{{visited[2]}}" class="tab-panel {{activeTab === 2 ? 'tab-in-' + tabDir : 'tab-panel-hidden'}}">
     <sender-bindings-panel id="panel-2" />
   </view>
 

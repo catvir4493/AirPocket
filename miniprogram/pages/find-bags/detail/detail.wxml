@@ -24,7 +24,7 @@
     />
 
     <view class="form detail-form">
-      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll}}" />
+      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll, errorField, errorTick}}" />
     </view>
 
     <view class="sticky-action action-bar">
@@ -32,7 +32,13 @@
         <view class="action-route">{{summary.route}}</view>
         <view class="action-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
       </view>
-      <button class="primary-button action-button {{bindDone ? 'success' : ''}} {{summary.ready || bindDone ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || bindDone}}" bindtap="submitBinding">{{bindDone ? '✓ 已绑定' : '绑定'}}</button>
+      <button class="primary-button action-button {{bindDone ? 'success' : ''}} {{summary.ready || bindDone ? '' : 'dim'}}" disabled="{{submitting || bindDone}}" bindtap="submitBinding">
+        <view wx:if="{{submitting}}" class="btn-flight">
+          <view class="btn-flight-dash"></view>
+          <view class="btn-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink-3" /></view>
+        </view>
+        <block wx:else>{{bindDone ? '✓ 已绑定' : '绑定'}}</block>
+      </button>
     </view>
   </block>
 

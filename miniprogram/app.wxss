@@ -2,7 +2,10 @@ page {
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Spring: a light overshoot, enough to feel alive without wobbling */
+  --ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
+  --ease-swift: cubic-bezier(0.3, 0, 0.2, 1);
+  --dur-press: 90ms;
   --dur-fast: 160ms;
   --dur-base: 260ms;
   --dur-slow: 380ms;
@@ -89,12 +92,16 @@ button::after {
 }
 
 button {
-  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  transition: transform 240ms var(--ease-spring), opacity var(--dur-fast) var(--ease-out);
 }
 
+/* Press states: the hover class sets a short transition for the press,
+   the base rule a springy one for the release. */
 .button-hover {
   opacity: 0.82;
   transform: scale(0.97);
+  transition-duration: var(--dur-press);
+  transition-timing-function: var(--ease-out);
 }
 
 .num {
@@ -423,6 +430,7 @@ button {
   font-size: 25rpx;
   line-height: 1.6;
   text-align: center;
+  animation: ap-fade-in var(--dur-slow) var(--ease-out) backwards;
 }
 
 .choice-grid {
@@ -536,6 +544,7 @@ button {
 
 .icon-row-press {
   background: var(--fill);
+  transition-duration: 60ms;
 }
 
 .icon-box {
@@ -574,7 +583,7 @@ button {
   display: flex;
   justify-content: center;
   margin: -8rpx auto 12rpx;
-  animation: ap-float 3.6s ease-in-out infinite;
+  animation: ap-drop-in 640ms var(--ease-spring) backwards, ap-float 3.6s ease-in-out 640ms infinite;
 }
 
 /* Fixed bottom action bar for long forms; the page adds .has-sticky-action. */
@@ -638,6 +647,156 @@ button {
   animation: ap-list-enter var(--dur-slow) var(--ease-out) backwards;
 }
 
+.content-in {
+  animation: ap-fade-in var(--dur-base) var(--ease-out) backwards;
+}
+
+/* A form field that failed validation: shake once, label turns red for a moment.
+   shake-0 / shake-1 alternate so a second failed submit replays the shake. */
+.field-error.shake-0 {
+  animation: ap-shake-a 420ms var(--ease-out);
+}
+
+.field-error.shake-1 {
+  animation: ap-shake-b 420ms var(--ease-out);
+}
+
+.field-error .rl-label,
+.field-error .trip-key,
+.field-error .amount-label {
+  color: var(--red);
+}
+
+/* Loading state inside a button: a small plane flying along a dashed route. */
+.btn-flight {
+  position: relative;
+  width: 168rpx;
+  height: 36rpx;
+  overflow: hidden;
+}
+
+.btn-flight-dash {
+  position: absolute;
+  top: 50%;
+  right: 8rpx;
+  left: 8rpx;
+  border-top: 2rpx dashed currentColor;
+  opacity: 0.45;
+}
+
+.btn-flight-plane {
+  position: absolute;
+  top: 3rpx;
+  left: 0;
+  display: flex;
+  animation: ap-btn-fly 1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes ap-btn-fly {
+  from {
+    transform: translateX(-30rpx) rotate(90deg);
+  }
+  to {
+    transform: translateX(168rpx) rotate(90deg);
+  }
+}
+
+@keyframes ap-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ap-drop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-36rpx) scale(0.92);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ap-shake-a {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-12rpx);
+  }
+  40% {
+    transform: translateX(10rpx);
+  }
+  60% {
+    transform: translateX(-6rpx);
+  }
+  80% {
+    transform: translateX(3rpx);
+  }
+}
+
+@keyframes ap-shake-b {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-12rpx);
+  }
+  40% {
+    transform: translateX(10rpx);
+  }
+  60% {
+    transform: translateX(-6rpx);
+  }
+  80% {
+    transform: translateX(3rpx);
+  }
+}
+
+/* Tab panels slide in from the side they come from. */
+@keyframes ap-tab-in-fwd {
+  from {
+    opacity: 0;
+    transform: translateX(48rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ap-tab-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-48rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ap-flip-in {
+  0% {
+    opacity: 0;
+    transform: perspective(400rpx) rotateX(-90deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(400rpx) rotateX(0);
+  }
+}
+
 .row-press {
   background: var(--line);
 }
@@ -645,6 +804,7 @@ button {
 .skeleton-shine {
   position: relative;
   overflow: hidden;
+  animation: ap-fade-in 240ms ease 140ms backwards;
 }
 
 .skeleton-shine::after {
@@ -816,11 +976,12 @@ button {
   border-radius: 32rpx;
   background: var(--card);
   box-shadow: 0 24rpx 44rpx -36rpx rgba(28, 28, 26, 0.5);
-  transition: transform 0.15s ease;
+  transition: transform 240ms var(--ease-spring);
 }
 
 .bag-card-hover {
   transform: scale(0.98);
+  transition: transform var(--dur-press) var(--ease-out);
 }
 
 .bag-stub {

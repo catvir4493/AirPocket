@@ -82,11 +82,12 @@
   color: var(--ink);
   font-size: 36rpx;
   line-height: 1;
-  transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform 260ms var(--ease-spring);
 }
 
 .stepper-btn-hover {
   transform: scale(0.88);
+  transition: transform var(--dur-press) var(--ease-out);
 }
 
 .stepper-value {

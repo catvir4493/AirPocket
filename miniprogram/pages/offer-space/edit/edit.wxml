@@ -11,7 +11,7 @@
   </view>
 
   <view wx:else class="form fade-up delay-2">
-    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll}}" />
+    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick}}" />
   </view>
 
   <view wx:if="{{!loading}}" class="sticky-action action-bar">
@@ -19,7 +19,13 @@
       <view class="action-route">{{summary.route}}</view>
       <view class="action-detail {{summary.ready ? 'ready' : ''}}">{{summary.detail}}</view>
     </view>
-    <button class="primary-button action-button {{saved ? 'success' : ''}} {{summary.ready || saved ? '' : 'dim'}}" loading="{{submitting}}" disabled="{{submitting || saved}}" bindtap="submitBag">{{saved ? '✓ 已保存' : '保存'}}</button>
+    <button class="primary-button action-button {{saved ? 'success' : ''}} {{summary.ready || saved ? '' : 'dim'}}" disabled="{{submitting || saved}}" bindtap="submitBag">
+      <view wx:if="{{submitting}}" class="btn-flight">
+        <view class="btn-flight-dash"></view>
+        <view class="btn-flight-plane"><ap-icon name="plane" size="{{30}}" color="ink-3" /></view>
+      </view>
+      <block wx:else>{{saved ? '✓ 已保存' : '保存'}}</block>
+    </button>
   </view>
 </view>
 <ap-stamp show="{{saved ? true : false}}" text="已保存" />
