@@ -4,6 +4,8 @@ const { countUp } = require("../../../utils/countUp");
 const { bindingStatus, isBindingOngoing } = require("../../../utils/status");
 const { dayParts } = require("../../../utils/date");
 const { showToast } = require("../../../utils/toast");
+const { tap } = require("../../../utils/haptic");
+const { liftAndOpen } = require("../../../utils/liftOpen");
 
 const defaultEmptyMessage = "还没有绑定记录。去「找行李额」选一个顺路的行李箱，绑定后会出现在这里。";
 const noSearchResultMessage = "没有符合条件的绑定记录。";
@@ -78,6 +80,7 @@ Component({
 
   data: {
     loading: true,
+    loadError: "",
     allBindings: [],
     bindings: [],
     searchPanelOpen: false,
@@ -99,6 +102,7 @@ Component({
       bagNo: "",
     },
     emptyMessage: defaultEmptyMessage,
+    liftId: "",
   },
 
   lifetimes: {
@@ -175,13 +179,23 @@ Component({
         countUp(this, { statOngoing: stats.ongoing, statDone: stats.done, statWeight: stats.weight });
         this.hasLoaded = true;
       } catch (error) {
-        showToast({
-          title: error.message || "加载失败",
-          icon: "none",
-        });
+        // Nothing on screen yet: show the retry state. Otherwise keep the list and just say so.
+        if (!this.hasLoaded) {
+          this.setData({ loadError: error.message || "加载失败" });
+        } else {
+          showToast({
+            title: error.message || "加载失败",
+            icon: "none",
+          });
+        }
       } finally {
         this.setData({ loading: false });
       }
+    },
+
+    retryLoad() {
+      this.setData({ loadError: "", loading: true });
+      this.fetchBindings();
     },
 
     buildStats(bindings) {
@@ -207,6 +221,7 @@ Component({
       if (value === this.data.segment) {
         return;
       }
+      tap();
       this.setData(
         { segment: value, segmentIndex: Number(index) || 0, listKey: this.data.listKey + 1 },
         () => this.applySearchFilters()
@@ -317,9 +332,7 @@ Component({
 
     openBindingDetail(event) {
       const { id } = event.currentTarget.dataset;
-      wx.navigateTo({
-        url: `/pages/find-bags/binding-detail/detail?id=${id}`,
-      });
+      liftAndOpen(this, id, `/pages/find-bags/binding-detail/detail?id=${id}`);
     },
   },
 });

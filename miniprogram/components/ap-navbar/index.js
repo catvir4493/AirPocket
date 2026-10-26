@@ -15,6 +15,12 @@ Component({
       type: Boolean,
       value: false,
     },
+    // Detail pages without a large title: the small title is always shown,
+    // "collapsed" then only adds the hairline.
+    compact: {
+      type: Boolean,
+      value: false,
+    },
     // When set, the back button fires a "back" event for the page to handle
     // (the tab shells use it to go from "My ..." back to their main tab).
     interceptBack: {

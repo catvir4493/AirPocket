@@ -1,6 +1,11 @@
+<ap-navbar title="物品合规" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page no-bottom-nav prohibited-page">
-  <view class="eyebrow page-eyebrow fade-up">Compliance</view>
-  <view class="page-title fade-up">物品合规与责任声明</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Compliance</view>
+      <view class="page-title fade-up">物品合规与责任声明</view>
+    </view>
+  </view>
   <view class="page-subtitle fade-up delay-1">带东西前请先看完。不确定能不能带的，直接拒绝最安全。</view>
 
   <view class="rl-sec fade-up delay-1"><text class="rl-sec-no">1</text><text>高风险物品</text><text class="rl-sec-note">{{riskItems.length}} 类</text></view>
@@ -36,4 +41,4 @@
 
   <button class="primary-button prohibited-done" bindtap="goHome">我已了解</button>
 </view>
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

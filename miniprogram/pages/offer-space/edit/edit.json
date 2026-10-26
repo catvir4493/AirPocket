@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "编辑行李额"
+  "navigationBarTitleText": "编辑行李额",
+  "navigationStyle": "custom"
 }

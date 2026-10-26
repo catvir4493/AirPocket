@@ -1,6 +1,7 @@
 // Shared page logic for the two-tab areas (Find Bags / My Bags, Offer Space / My Bags).
 // Both tabs live in one page as panels, so switching never reloads a page.
-const { getNavMetrics } = require("./navMetrics");
+const { tap } = require("./haptic");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("./navTitle");
 
 const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
   data: {
@@ -19,14 +20,7 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
   },
 
   onReady() {
-    const { navTotal } = getNavMetrics();
-    this.titleObserver = this.createIntersectionObserver();
-    this.titleObserver.relativeToViewport({ top: -navTotal }).observe(".large-title", (res) => {
-      const navCollapsed = res.intersectionRatio <= 0;
-      if (navCollapsed !== this.data.navCollapsed) {
-        this.setData({ navCollapsed });
-      }
-    });
+    watchNavTitle(this, ".large-title");
   },
 
   onShow() {
@@ -44,22 +38,12 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
   },
 
   onUnload() {
-    if (this.titleObserver) {
-      this.titleObserver.disconnect();
-    }
+    unwatchNavTitle(this);
   },
 
   onPullDownRefresh() {
     const panel = this.getPanel(this.data.activeTab);
-    this.setData({ refreshing: true });
-    // Keep the plane in the air for at least one pass, even on a fast refresh.
-    const minFlight = new Promise((resolve) => setTimeout(resolve, 1100));
-    const work = Promise.resolve(panel && panel.refresh ? panel.refresh() : null)
-      .catch(() => {})
-      .then(() => wx.stopPullDownRefresh());
-    Promise.all([work, minFlight]).then(() => {
-      this.setData({ refreshing: false });
-    });
+    refreshWithPlane(this, () => (panel && panel.refresh ? panel.refresh() : null));
   },
 
   getPanel(index) {
@@ -80,6 +64,7 @@ const createTabShell = ({ titles, eyebrows = [], initialTab }) => ({
     if (index === previous || !this.data.titles[index]) {
       return;
     }
+    tap();
 
     wx.createSelectorQuery()
       .selectViewport()

@@ -304,3 +304,7 @@
 .action-button.dim {
   opacity: 0.4;
 }
+
+.bind-cap {
+  margin: 20rpx 4rpx 4rpx;
+}

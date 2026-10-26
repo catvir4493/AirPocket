@@ -1,12 +1,17 @@
 <import src="bag-form.wxml" />
 
+<ap-navbar title="发布行李额" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page no-bottom-nav release-page has-sticky-action">
-  <view class="eyebrow page-eyebrow fade-up">Offer Space</view>
-  <view class="page-title fade-up">发布行李额</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Offer Space</view>
+      <view class="page-title fade-up">发布行李额</view>
+    </view>
+  </view>
   <view class="page-subtitle fade-up delay-1">发布后，需要的人会在「找行李额」里看到这条记录。</view>
 
   <view class="form fade-up delay-2">
-    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick}}" />
+    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick, pulse, swapKey}}" />
   </view>
 
   <view class="sticky-action action-bar">
@@ -23,5 +28,30 @@
     </button>
   </view>
 </view>
-<ap-stamp show="{{releasedNo ? true : false}}" text="已发布" sub="{{releasedNo ? '#' + releasedNo : ''}}" />
-<ap-toast id="ap-toast" />
+<ap-stamp show="{{stampShow}}" text="已发布" sub="{{releasedNo ? '#' + releasedNo : ''}}" />
+
+<!-- After publishing: share the new bag or go to my releases. -->
+<view wx:if="{{doneSheet}}" class="done-drawer">
+  <view class="done-mask sheet-mask-anim" bindtap="goMyReleases"></view>
+  <view class="done-sheet sheet-panel-anim">
+    <view class="sheet-grab"></view>
+    <view class="done-head">
+      <view class="done-check">✓</view>
+      <view>
+        <view class="done-title">已发布 <text class="num">#{{releasedNo}}</text></view>
+        <view class="done-copy">需要的人现在能在「找行李额」里看到它。</view>
+      </view>
+    </view>
+    <view class="done-ticket">
+      <view class="done-stub"><text class="done-day">{{preview.day}}</text><text class="done-month">{{preview.month}}</text></view>
+      <view class="done-route">{{preview.from}} → {{preview.to}}</view>
+      <view class="done-weight"><text class="num">{{preview.weight}}</text><text class="done-unit">kg</text></view>
+    </view>
+    <button class="primary-button done-share" open-type="share">分享给朋友</button>
+    <button class="secondary-button done-mine" bindtap="goMyReleases">查看我的发布</button>
+  </view>
+</view>
+
+<!-- Off screen: the share image is drawn here. -->
+<canvas type="2d" id="share-canvas" class="share-canvas"></canvas>
+<ap-toast id="ap-toast" custom-nav />

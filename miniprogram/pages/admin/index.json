@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "后台",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom"
 }

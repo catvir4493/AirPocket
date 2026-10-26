@@ -72,13 +72,15 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   opacity: 0;
-  transform: translateY(12rpx);
-  transition: opacity 240ms ease, transform 280ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  /* Arrives slightly large and low, as if the page's large title moved up into the bar. */
+  transform: translateY(16rpx) scale(1.12);
+  transition: opacity 220ms ease, transform 320ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
 }
 
-.collapsed .ap-navbar-title-text {
+.collapsed .ap-navbar-title-text,
+.compact .ap-navbar-title-text {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 .ap-navbar-flight {

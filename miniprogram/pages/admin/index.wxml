@@ -1,6 +1,11 @@
+<ap-navbar title="后台运营" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page admin-page">
-  <view class="eyebrow page-eyebrow fade-up">Admin Desk</view>
-  <view class="page-title fade-up">后台运营</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Admin Desk</view>
+      <view class="page-title fade-up">后台运营</view>
+    </view>
+  </view>
   <view class="page-subtitle fade-up delay-1">处理绑定、查看地址与联系方式、推进订单状态。</view>
 
   <view class="desk-stats fade-up delay-1">
@@ -41,7 +46,12 @@
   <view wx:if="{{loading}}" class="desk-section">
     <view wx:for="{{[0, 1]}}" wx:key="*this" class="admin-skeleton-card skeleton-shine"></view>
   </view>
-  <view wx:elif="{{errorMessage}}" class="empty-state">{{errorMessage}}</view>
+  <view wx:elif="{{errorMessage}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
 
   <view wx:else class="content-in">
     <view class="rl-sec"><text class="rl-sec-no">1</text><text>绑定工作台</text><text class="desk-count num">{{visibleBindings.length}}</text></view>
@@ -144,4 +154,4 @@
     <view wx:else class="empty-state compact">暂无后台操作日志。</view>
   </view>
 </view>
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

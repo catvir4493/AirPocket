@@ -2,6 +2,8 @@ const { countUp } = require("../../../utils/countUp");
 const { bagStatus } = require("../../../utils/status");
 const { dayParts } = require("../../../utils/date");
 const { showToast } = require("../../../utils/toast");
+const { tap } = require("../../../utils/haptic");
+const { liftAndOpen } = require("../../../utils/liftOpen");
 
 const defaultEmptyMessage = "还没有发布记录。回到「发布」页，把你空着的行李额发出来。";
 const noSearchResultMessage = "没有符合条件的发布记录。";
@@ -51,6 +53,7 @@ Component({
 
   data: {
     loading: true,
+    loadError: "",
     allBags: [],
     bags: [],
     searchPanelOpen: false,
@@ -72,6 +75,7 @@ Component({
       bagNo: "",
     },
     emptyMessage: defaultEmptyMessage,
+    liftId: "",
   },
 
   lifetimes: {
@@ -147,13 +151,23 @@ Component({
         countUp(this, stats);
         this.hasLoaded = true;
       } catch (error) {
-        showToast({
-          title: error.message || "加载失败",
-          icon: "none",
-        });
+        // Nothing on screen yet: show the retry state. Otherwise keep the list and just say so.
+        if (!this.hasLoaded) {
+          this.setData({ loadError: error.message || "加载失败" });
+        } else {
+          showToast({
+            title: error.message || "加载失败",
+            icon: "none",
+          });
+        }
       } finally {
         this.setData({ loading: false });
       }
+    },
+
+    retryLoad() {
+      this.setData({ loadError: "", loading: true });
+      this.fetchBags();
     },
 
     getVisibleBags(allBags, filters) {
@@ -202,6 +216,7 @@ Component({
       if (value === this.data.segment) {
         return;
       }
+      tap();
       this.setData(
         { segment: value, segmentIndex: Number(index) || 0, listKey: this.data.listKey + 1 },
         () => this.applySearchFilters()
@@ -275,9 +290,7 @@ Component({
         return;
       }
 
-      wx.navigateTo({
-        url: `/pages/offer-space/bag-detail/detail?id=${id}`,
-      });
+      liftAndOpen(this, id, `/pages/offer-space/bag-detail/detail?id=${id}`);
     },
   },
 });

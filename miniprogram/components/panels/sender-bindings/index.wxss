@@ -116,6 +116,12 @@
   transition: transform 240ms var(--ease-spring), box-shadow 240ms ease;
 }
 
+.ticket.lifting {
+  transform: translateY(-8rpx) scale(1.015);
+  box-shadow: var(--shadow);
+  transition: transform 110ms var(--ease-out), box-shadow 110ms ease;
+}
+
 .ticket-press {
   transform: scale(0.98);
   box-shadow: var(--shadow);

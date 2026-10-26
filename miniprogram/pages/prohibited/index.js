@@ -1,7 +1,10 @@
 const { showToast } = require("../../utils/toast");
+const { watchNavTitle, unwatchNavTitle } = require("../../utils/navTitle");
 
 Page({
   data: {
+    navCollapsed: false,
+    refreshing: false,
     statementOpen: false,
     // Exact pixel heights, measured once, so expand and collapse animate the same distance.
     statementHeight: 0,
@@ -65,6 +68,7 @@ Page({
   },
 
   onReady() {
+    watchNavTitle(this, ".large-title");
     wx.createSelectorQuery()
       .select(".statement-copy")
       .boundingClientRect()
@@ -79,6 +83,7 @@ Page({
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this.copiedTimer);
   },
 

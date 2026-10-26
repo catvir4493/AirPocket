@@ -1,0 +1,74 @@
+.cap-bar {
+  position: relative;
+  height: 18rpx;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: var(--fill);
+}
+
+/* Segments move with left/width: small absolutely placed boxes, so nothing else reflows. */
+.cap-seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform-origin: left center;
+  transition: left 320ms var(--ease-out), width 320ms var(--ease-out);
+  animation: cap-grow 620ms var(--ease-out) backwards;
+}
+
+.cap-taken,
+.cap-bound {
+  background: var(--ink);
+}
+
+/* Thin gaps between bindings so each one reads as its own block. */
+.cap-seg.cap-bound {
+  box-shadow: inset -3rpx 0 0 var(--card);
+}
+
+.cap-mine {
+  background: var(--yellow);
+}
+
+.cap-free {
+  background: var(--fill);
+  box-shadow: inset 0 0 0 1rpx var(--line-strong);
+}
+
+.cap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx 28rpx;
+  margin-top: 16rpx;
+  color: var(--ink-3);
+  font-size: 22rpx;
+}
+
+.cap-key {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.cap-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+}
+
+.cap-num {
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.cap-unit {
+  margin-left: -4rpx;
+}
+
+@keyframes cap-grow {
+  from {
+    transform: scaleX(0);
+  }
+}

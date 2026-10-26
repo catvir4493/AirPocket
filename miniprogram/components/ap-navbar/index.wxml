@@ -1,5 +1,5 @@
 <view class="ap-navbar-placeholder" style="height: {{navTotal}}px;"></view>
-<view class="ap-navbar {{collapsed ? 'collapsed' : ''}}" style="height: {{navTotal}}px; padding-top: {{statusBarHeight}}px;">
+<view class="ap-navbar {{collapsed ? 'collapsed' : ''}} {{compact ? 'compact' : ''}}" style="height: {{navTotal}}px; padding-top: {{statusBarHeight}}px;">
   <view class="ap-navbar-bar" style="height: {{navHeight}}px;">
     <view class="ap-navbar-back" hover-class="ap-navbar-back-press" hover-start-time="20" hover-stay-time="90" bindtap="onBack">
       <view wx:if="{{canGoBack || interceptBack}}" class="ap-navbar-chevron"></view>

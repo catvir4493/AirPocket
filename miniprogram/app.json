@@ -31,7 +31,8 @@
     "ap-toast": "/components/ap-toast/index",
     "ap-stamp": "/components/ap-stamp/index",
     "ap-pass": "/components/ap-pass/index",
-    "ap-art": "/components/ap-art/index"
+    "ap-art": "/components/ap-art/index",
+    "ap-capacity": "/components/ap-capacity/index"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

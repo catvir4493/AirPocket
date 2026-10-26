@@ -5,6 +5,7 @@ const {
 const { showToast } = require("../../../utils/toast");
 const { bagFormMethods, createBagFormData, validateBagForm } = require("../../../utils/bagForm");
 const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
 
 const listToText = (value) => (Array.isArray(value) ? value.join(", ") : "");
 
@@ -14,11 +15,17 @@ Page({
   readyText: "可以保存了",
 
   data: {
+    navCollapsed: false,
+    refreshing: false,
     ...createBagFormData("可以保存了"),
     bagId: "",
     loading: false,
     submitting: false,
     saved: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".large-title");
   },
 
   onLoad(options) {
@@ -34,6 +41,7 @@ Page({
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this.redirectTimer);
     clearFieldError(this);
   },
@@ -72,6 +80,8 @@ Page({
         },
         { specialItemOptions: buildSpecialItemOptions(specialItemOptions) }
       );
+      // Loading the saved values is not an edit: no preview flashes.
+      this.setData({ pulse: { date: 0, route: 0, chips: 0, weight: 0 } });
     } catch (error) {
       showToast({
         title: error.message || "加载失败",

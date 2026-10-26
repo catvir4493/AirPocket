@@ -28,6 +28,10 @@
     </view>
     <view class="stepper-value case-fixed"><text class="stepper-input">1</text><text class="stepper-unit">箱 · 23kg</text></view>
   </view>
+  <!-- How full the bag is, with this request in yellow; moves as the weight changes. -->
+  <view wx:if="{{summary.capacity}}" class="bind-cap">
+    <ap-capacity total="{{summary.capacity.total}}" segments="{{summary.capacity.segments}}" />
+  </view>
 
   <view class="rl-group">
     <view id="ff-itemDescription" class="rl-row top {{focusedField === 'itemDescription' ? 'focused' : ''}} {{errorField === 'itemDescription' ? 'field-error shake-' + errorTick % 2 : ''}}">

@@ -339,3 +339,17 @@
   width: 30%;
   margin-top: 40rpx;
 }
+
+/* Week / month section titles; each sticks under the navbar until the next one takes over. */
+.bag-group-head {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 3;
+  margin: 8rpx -32rpx 12rpx;
+  padding: 14rpx 36rpx 12rpx;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}

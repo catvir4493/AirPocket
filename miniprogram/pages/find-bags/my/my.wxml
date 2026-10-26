@@ -3,7 +3,7 @@
 <view class="page tab-shell">
   <view class="large-title">
     <block wx:for="{{[activeTab]}}" wx:key="*this">
-      <view class="title-swap {{tabDir ? 'tab-in-' + tabDir : ''}}">
+      <view class="title-swap large-title-inner {{tabDir ? 'tab-in-' + tabDir : ''}} {{navCollapsed ? 'shrunk' : ''}}">
         <view class="eyebrow">{{eyebrows[item]}}</view>
         <view class="page-title">{{titles[item]}}</view>
       </view>

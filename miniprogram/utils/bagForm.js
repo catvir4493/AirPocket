@@ -2,6 +2,7 @@
 // (pages/offer-space/release/bag-form.wxml).
 const { buildSpecialItemOptions, toggleSpecialItem, SPECIAL_ITEM_OPTIONS } = require("./specialItems");
 const { dayParts } = require("./date");
+const { tap } = require("./haptic");
 
 const CASE_WEIGHT = 23;
 const QUICK_WEIGHTS = [5, 10, 15, 20];
@@ -88,6 +89,25 @@ const INITIAL_FORM = {
   note: "",
 };
 
+// Which parts of the live preview card changed, so only those flash.
+const PREVIEW_PARTS = {
+  date: (p) => `${p.day}|${p.month}`,
+  route: (p) => `${p.from}|${p.to}`,
+  chips: (p) => p.chips.join("|"),
+  weight: (p) => `${p.weight}`,
+};
+
+const nextPulse = (pulse, before, after) => {
+  const next = {};
+  Object.keys(PREVIEW_PARTS).forEach((part) => {
+    const read = PREVIEW_PARTS[part];
+    if (before && read(before) !== read(after)) {
+      next[`pulse.${part}`] = ((pulse && pulse[part]) || 0) + 1;
+    }
+  });
+  return next;
+};
+
 // Direction for the stepper number roll; the key change re-renders the number.
 const nextRoll = (roll, change) => ({
   roll: { key: ((roll && roll.key) || 0) + 1, dir: change < 0 ? "down" : "up" },
@@ -146,6 +166,9 @@ const createBagFormData = (readyText) => ({
   minDate: today(),
   errorField: "",
   errorTick: 0,
+  // Counters that re-render (and so re-flash) one part of the preview card each.
+  pulse: { date: 0, route: 0, chips: 0, weight: 0 },
+  swapKey: 0,
   specialItemOptions: buildSpecialItemOptions([]),
   form: { ...INITIAL_FORM },
 });
@@ -154,7 +177,8 @@ const bagFormMethods = {
   // Sets form fields and refreshes everything derived from them in one setData.
   updateForm(changes, extra) {
     const form = { ...this.data.form, ...changes };
-    const data = { ...deriveView(form, this.readyText), ...(extra || {}) };
+    const view = deriveView(form, this.readyText);
+    const data = { ...view, ...nextPulse(this.data.pulse, this.data.preview, view.preview), ...(extra || {}) };
     Object.keys(changes).forEach((key) => {
       data[`form.${key}`] = changes[key];
     });
@@ -171,6 +195,7 @@ const bagFormMethods = {
     if (type === this.data.form.spaceType) {
       return;
     }
+    tap();
     this.updateForm({
       spaceType: type,
       totalWeight: type === "fullCase" ? "" : this.data.form.totalWeight,
@@ -183,7 +208,9 @@ const bagFormMethods = {
     if (!fromCity && !toCity) {
       return;
     }
-    this.updateForm({ fromCity: toCity, toCity: fromCity });
+    tap();
+    // swapKey re-renders both city inputs so they slide in from the other side.
+    this.updateForm({ fromCity: toCity, toCity: fromCity }, { swapKey: this.data.swapKey + 1 });
   },
 
   onDateChange(event) {
@@ -191,6 +218,7 @@ const bagFormMethods = {
   },
 
   stepAmount(event) {
+    tap();
     const delta = Number(event.currentTarget.dataset.delta);
     if (this.data.form.spaceType === "fullCase") {
       const current = Number(this.data.form.caseCount) || 0;
@@ -204,12 +232,14 @@ const bagFormMethods = {
   },
 
   pickQuickWeight(event) {
+    tap();
     const value = Number(event.currentTarget.dataset.value);
     const current = Number(this.data.form.totalWeight) || 0;
     this.updateForm({ totalWeight: `${value}` }, nextRoll(this.data.roll, value - current));
   },
 
   toggleSpecialItem(event) {
+    tap();
     const { value } = event.currentTarget.dataset;
     const specialItemOptions = toggleSpecialItem(this.data.form.specialItemOptions, value);
     this.updateForm({ specialItemOptions }, { specialItemOptions: buildSpecialItemOptions(specialItemOptions) });

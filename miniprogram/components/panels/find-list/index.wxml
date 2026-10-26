@@ -40,29 +40,39 @@
     </view>
   </view>
 
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
+
   <block wx:elif="{{bags.length}}">
-    <view wx:for="{{bags}}" wx:key="_id" class="bag-card list-enter" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms" hover-class="bag-card-hover" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openDetail">
-      <view class="bag-stub">
-        <text class="bag-stub-day">{{item.stubDay}}</text>
-        <text class="bag-stub-month">{{item.stubMonth}}</text>
-      </view>
-      <view class="bag-main">
-        <view class="bag-route">
-          <text class="bag-city">{{item.fromCity || '-'}}</text>
-          <view class="bag-line">
-            <view class="bag-line-dash"></view>
-            <view class="bag-plane"><ap-icon name="plane" size="{{26}}" color="ink" stroke="{{1.8}}" /></view>
-          </view>
-          <text class="bag-city right">{{item.toCity || '-'}}</text>
+    <block wx:for="{{bags}}" wx:key="_id">
+      <view wx:if="{{item.groupHead}}" class="bag-group-head" style="top: {{navTotal}}px;">{{item.groupHead}}</view>
+      <view class="bag-card list-enter {{fresh[item._id] ? 'fresh' : ''}} {{liftId === item._id ? 'lifting' : ''}}" style="animation-delay: {{index < 6 ? index * 35 : 0}}ms" hover-class="bag-card-hover" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openDetail">
+        <view class="bag-stub">
+          <text class="bag-stub-day">{{item.stubDay}}</text>
+          <text class="bag-stub-month">{{item.stubMonth}}</text>
         </view>
-        <view class="bag-foot">
-          <view class="bag-chips">
-            <text wx:for="{{item.listChips}}" wx:for-item="chip" wx:key="*this" class="bag-chip">{{chip}}</text>
+        <view class="bag-main">
+          <view class="bag-route">
+            <text class="bag-city">{{item.fromCity || '-'}}</text>
+            <view class="bag-line">
+              <view class="bag-line-dash"></view>
+              <view class="bag-plane"><ap-icon name="plane" size="{{26}}" color="ink" stroke="{{1.8}}" /></view>
+            </view>
+            <text class="bag-city right">{{item.toCity || '-'}}</text>
           </view>
-          <view class="bag-weight"><text class="bag-weight-num">{{item.listWeightValue}}</text><text class="bag-weight-unit">kg</text></view>
+          <view class="bag-foot">
+            <view class="bag-chips">
+              <text wx:for="{{item.listChips}}" wx:for-item="chip" wx:key="*this" class="bag-chip">{{chip}}</text>
+            </view>
+            <view class="bag-weight"><text class="bag-weight-num">{{item.listWeightValue}}</text><text class="bag-weight-unit">kg</text></view>
+          </view>
         </view>
       </view>
-    </view>
+    </block>
   </block>
 
   <view wx:else class="empty-state">

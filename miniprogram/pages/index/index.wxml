@@ -23,6 +23,26 @@
     <view class="entry-go"><ap-icon name="arrow" size="{{30}}" stroke="{{2.4}}" color="#1c1c1a" /></view>
   </view>
 
+  <view wx:if="{{upcoming.length}}" class="soon fade-up delay-2">
+    <view class="soon-head">
+      <text>最近出发</text>
+      <text class="soon-more" bindtap="goFindBags">全部</text>
+    </view>
+    <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="soon-scroll">
+      <view class="soon-track">
+        <view wx:for="{{upcoming}}" wx:key="id" class="soon-ticket list-enter {{liftId === item.id ? 'lifting' : ''}}" style="animation-delay: {{260 + index * 60}}ms" hover-class="soon-press" hover-start-time="20" hover-stay-time="90" data-id="{{item.id}}" bindtap="openUpcoming">
+          <view class="soon-date"><text class="num">{{item.date}}</text><text class="soon-week">{{item.weekday}}</text></view>
+          <view class="soon-route">
+            <text class="soon-city">{{item.from}}</text>
+            <view class="soon-plane"><ap-icon name="plane" size="{{22}}" color="ink-3" /></view>
+            <text class="soon-city">{{item.to}}</text>
+          </view>
+          <view class="soon-weight"><text class="num">{{item.weight}}</text><text class="soon-unit">kg</text></view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <view class="entry entry-light entry-enter delay" hover-class="entry-press" hover-start-time="20" hover-stay-time="90" bindtap="goOfferSpace">
     <view class="entry-watermark">OFFER</view>
     <view class="eyebrow entry-eyebrow">我有空余行李额</view>

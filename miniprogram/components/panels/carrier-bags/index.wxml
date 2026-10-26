@@ -29,10 +29,17 @@
     <view wx:for="{{[0, 1, 2, 3]}}" wx:key="*this" class="my-skeleton-ticket skeleton-shine"></view>
   </view>
 
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
+
   <view wx:elif="{{bags.length}}" class="my-tickets">
     <!-- listKey changes on a segment switch: the list is rebuilt so it fades in again. -->
     <block wx:for="{{[listKey]}}" wx:for-item="listRun" wx:key="*this">
-      <view wx:for="{{bags}}" wx:key="_id" class="ticket list-enter" style="animation-delay: {{index < 6 ? (listKey ? 0 : 100) + index * 35 : 0}}ms" hover-class="ticket-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
+      <view wx:for="{{bags}}" wx:key="_id" class="ticket list-enter {{liftId === item._id ? 'lifting' : ''}}" style="animation-delay: {{index < 6 ? (listKey ? 0 : 100) + index * 35 : 0}}ms" hover-class="ticket-press" hover-start-time="20" hover-stay-time="90" data-id="{{item._id}}" bindtap="openBagDetail">
         <view class="ticket-stub">
           <view class="ticket-day num">{{item.day.day}}</view>
           <view class="ticket-month">{{item.day.month}}</view>

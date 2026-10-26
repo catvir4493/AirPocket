@@ -5,6 +5,7 @@ const { buildSpecialItemOptions, toggleSpecialItem } = require("./specialItems")
 const { formatWeight } = require("./format");
 const { trimNumber } = require("./bagForm");
 const { showToast } = require("./toast");
+const { tap } = require("./haptic");
 
 const FULL_CASE_WEIGHT = 23;
 
@@ -22,7 +23,7 @@ const buildQuickWeights = (max) => {
 // Route line and missing-field count shown next to the action button.
 const buildBindSummary = (info, form, readyText) => {
   if (!info) {
-    return { route: "", detail: "", ready: false };
+    return { capacity: null, route: "", detail: "", ready: false };
   }
   const weight = info.isFullCase ? FULL_CASE_WEIGHT : Number(form.requestedWeight) || 0;
   const missing = [
@@ -34,7 +35,18 @@ const buildBindSummary = (info, form, readyText) => {
     form.receiverPhone,
     form.deliveryAddress,
   ].filter((value) => value === false || !`${value || ""}`.trim()).length;
+  // Capacity bar on the bind page (formInfo.capTotal is only set there).
+  const capacity = info.capTotal
+    ? {
+        total: info.capTotal,
+        segments: [
+          { value: info.capTaken || 0, tone: "taken", label: "已被订" },
+          { value: weight, tone: "mine", label: "你这单" },
+        ],
+      }
+    : null;
   return {
+    capacity,
     route: `${info.fromCity || "-"} → ${info.toCity || "-"}`,
     detail: [
       info.isFullCase ? "整箱 1 箱 · 23kg" : `占用 ${weight ? trimNumber(weight) : 0}kg`,
@@ -133,16 +145,19 @@ const bindFormMethods = {
   },
 
   stepWeight(event) {
+    tap();
     const max = Number((this.data.formInfo && this.data.formInfo.maxWeight) || 0);
     const next = Math.max(0, (Number(this.data.form.requestedWeight) || 0) + Number(event.currentTarget.dataset.delta));
     this.setRequestedWeight(max > 0 ? Math.min(max, next) : next);
   },
 
   pickQuickWeight(event) {
+    tap();
     this.setRequestedWeight(Number(event.currentTarget.dataset.value));
   },
 
   toggleSpecialItem(event) {
+    tap();
     const available = (this.data.formInfo && this.data.formInfo.availableSpecialItems) || [];
     const requestedSpecialItems = toggleSpecialItem(
       this.data.form.requestedSpecialItems,

@@ -157,3 +157,135 @@
 .home-links {
   margin-top: 28rpx;
 }
+
+/* ---------- Upcoming departures strip ---------- */
+
+.soon {
+  margin: -4rpx 0 24rpx;
+}
+
+.soon-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 4rpx 14rpx;
+  color: var(--ink);
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.soon-more {
+  color: var(--ink-3);
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+/* Bleeds to the screen edges so tickets scroll out from under the page margin. */
+.soon-scroll {
+  width: auto;
+  margin: 0 -32rpx;
+  white-space: nowrap;
+}
+
+.soon-track {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 4rpx 32rpx 20rpx;
+}
+
+.soon-ticket {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10rpx;
+  box-sizing: border-box;
+  width: 300rpx;
+  padding: 22rpx 24rpx 20rpx 32rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--line);
+  border-radius: 28rpx;
+  background: var(--card);
+  box-shadow: 0 20rpx 36rpx -30rpx rgba(28, 28, 26, 0.5);
+  transition: transform 240ms var(--ease-spring);
+}
+
+/* Yellow stub edge, like the boarding-pass cards. */
+.soon-ticket::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10rpx;
+  background: var(--yellow);
+}
+
+.soon-press {
+  transform: scale(0.97);
+  transition-duration: var(--dur-press);
+}
+
+.soon-ticket.lifting {
+  transform: translateY(-6rpx) scale(1.02);
+  transition: transform 110ms var(--ease-out);
+}
+
+.soon-date {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+  color: var(--ink);
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.soon-date .num {
+  color: var(--ink);
+  font-family: var(--font-num);
+}
+
+.soon-week {
+  color: var(--ink-3);
+  font-size: 21rpx;
+  font-weight: 600;
+}
+
+.soon-route {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.soon-city {
+  overflow: hidden;
+  max-width: 100rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.soon-plane {
+  display: flex;
+  transform: rotate(90deg);
+}
+
+.soon-weight {
+  color: var(--ink);
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.soon-weight .num {
+  color: var(--ink);
+  font-family: var(--font-num);
+}
+
+.soon-unit {
+  margin-left: 4rpx;
+  color: var(--ink-3);
+  font-size: 21rpx;
+  font-weight: 600;
+}

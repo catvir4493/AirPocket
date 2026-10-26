@@ -2,6 +2,7 @@ const { formatDateTime, formatWeight, toDate } = require("../../../utils/format"
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
 const { BINDING_FLOW, bindingStatus } = require("../../../utils/status");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("../../../utils/navTitle");
 
 // Progress timeline: steps before the current status are done, the current one pulses.
 // Only submit, lock and the latest update carry real times.
@@ -67,11 +68,18 @@ const getEditState = (binding) => {
 
 Page({
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    loadError: "",
     bindingId: "",
     binding: null,
     loading: true,
     cancelling: false,
     tearing: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".nav-sentinel");
   },
 
   onLoad(options) {
@@ -89,11 +97,12 @@ Page({
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this.tearTimer);
   },
 
   onPullDownRefresh() {
-    this.fetchBinding(this.data.bindingId).finally(() => wx.stopPullDownRefresh());
+    refreshWithPlane(this, () => this.fetchBinding(this.data.bindingId));
   },
 
   async fetchBinding(bindingId) {
@@ -101,7 +110,10 @@ Page({
       return;
     }
 
-    this.setData({ loading: true });
+    // Refreshes keep the current pass on screen instead of going back to the skeleton.
+    if (!this.data.binding) {
+      this.setData({ loading: true });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "getMySenderBindings",
@@ -113,7 +125,9 @@ Page({
 
       const source = (result.data || []).find((item) => item._id === bindingId);
       if (!source) {
-        throw new Error("没有找到这条绑定");
+        // Not found is not a load failure: fall through to the "没有找到" state.
+        this.setData({ binding: null });
+        return;
       }
 
       const isFullCase = source.spaceType === "fullCase";
@@ -141,13 +155,23 @@ Page({
 
       this.setData({ binding });
     } catch (error) {
-      showToast({
-        title: error.message || "加载失败",
-        icon: "none",
-      });
+      // Nothing on screen yet: show the retry state. Otherwise keep the page and just say so.
+      if (!this.data.binding) {
+        this.setData({ loadError: error.message || "加载失败" });
+      } else {
+        showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      }
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    this.setData({ loadError: "", loading: true });
+    this.fetchBinding(this.data.bindingId);
   },
 
   goEditBinding() {

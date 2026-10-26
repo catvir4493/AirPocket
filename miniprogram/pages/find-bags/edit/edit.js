@@ -12,6 +12,7 @@ const {
   validateBindForm,
 } = require("../../../utils/bindForm");
 const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
 
 const isEditable = (binding) => {
   const lockDeadlineAt = toDate(binding.lockDeadlineAt);
@@ -28,12 +29,18 @@ Page({
   readyText: "可以保存了",
 
   data: {
+    navCollapsed: false,
+    refreshing: false,
     ...createBindFormData(),
     bindingId: "",
     binding: null,
     loading: false,
     submitting: false,
     saved: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".large-title");
   },
 
   onLoad(options) {
@@ -50,6 +57,7 @@ Page({
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this.redirectTimer);
     clearFieldError(this);
   },

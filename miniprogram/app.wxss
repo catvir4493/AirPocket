@@ -433,6 +433,31 @@ button {
   animation: ap-fade-in var(--dur-slow) var(--ease-out) backwards;
 }
 
+/* Load failed with nothing to show: illustration, a short line and a retry button. */
+.error-state {
+  border-style: solid;
+  border-color: var(--line);
+  background: var(--card);
+}
+
+.error-title {
+  color: var(--ink);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.error-copy {
+  margin-top: 6rpx;
+}
+
+.error-retry {
+  width: auto;
+  min-height: 76rpx;
+  margin: 28rpx auto 4rpx;
+  padding: 0 48rpx;
+  font-size: 26rpx;
+}
+
 .choice-grid {
   display: flex;
   flex-wrap: wrap;
@@ -575,6 +600,26 @@ button {
   color: var(--ink-3);
   font-size: 22rpx;
   line-height: 1.4;
+}
+
+/* ---------- Large title (pages with the custom navbar) ---------- */
+
+/* Shrinks up and away while the navbar's small title takes over. The observed
+   .large-title box itself never moves, so the observer does not flicker. */
+.large-title-inner {
+  transform-origin: left bottom;
+  transition: transform 320ms var(--ease-out), opacity 220ms ease;
+}
+
+.large-title-inner.shrunk {
+  opacity: 0;
+  transform: translateY(-18rpx) scale(0.8);
+}
+
+/* Top-of-page marker for detail pages: the navbar's hairline appears once it scrolls under. */
+.nav-sentinel {
+  height: 2rpx;
+  margin-bottom: -2rpx;
 }
 
 /* ---------- Shared blocks ---------- */
@@ -982,6 +1027,28 @@ button {
 .bag-card-hover {
   transform: scale(0.98);
   transition: transform var(--dur-press) var(--ease-out);
+}
+
+/* Tapped: lifts toward the viewer just before the detail page opens. */
+.bag-card.lifting {
+  transform: translateY(-8rpx) scale(1.015);
+  box-shadow: 0 34rpx 56rpx -30rpx rgba(28, 28, 26, 0.45);
+  transition: transform 110ms var(--ease-out), box-shadow 110ms ease;
+}
+
+/* New since the last refresh: a yellow ring that fades. */
+.bag-card.fresh {
+  animation: ap-list-enter var(--dur-slow) var(--ease-out) backwards, ap-fresh 1600ms ease-out 200ms;
+}
+
+@keyframes ap-fresh {
+  0%,
+  30% {
+    box-shadow: 0 0 0 6rpx var(--yellow), 0 24rpx 44rpx -36rpx rgba(28, 28, 26, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 6rpx rgba(255, 245, 31, 0), 0 24rpx 44rpx -36rpx rgba(28, 28, 26, 0.5);
+  }
 }
 
 .bag-stub {

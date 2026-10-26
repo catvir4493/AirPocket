@@ -1,8 +1,10 @@
 const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
-const { dayParts } = require("../../../utils/date");
+const { dayParts, departureGroup } = require("../../../utils/date");
+const { getNavMetrics } = require("../../../utils/navMetrics");
 const { countUp } = require("../../../utils/countUp");
+const { liftAndOpen } = require("../../../utils/liftOpen");
 
 const sortOptions = [
   { value: "departureAsc", label: "出发日期最近" },
@@ -55,6 +57,7 @@ Component({
 
   data: {
     loading: true,
+    loadError: "",
     allBags: [],
     bags: [],
     filterPanelOpen: false,
@@ -73,9 +76,18 @@ Component({
     spaceTypeOptions,
     currentSortLabel: sortOptions[0].label,
     emptyMessage: "暂无可用 bag。等带货者发布后，这里会展示 active 且剩余重量大于 0 的记录。",
+    liftId: "",
+    navTotal: 64,
+    // Bags that appeared on the last refresh; their cards flash once.
+    fresh: {},
   },
 
   lifetimes: {
+    attached() {
+      // Group headers stick just under the custom navbar.
+      this.setData({ navTotal: getNavMetrics().navTotal });
+    },
+
     detached() {
       this.cleanup();
     },
@@ -90,7 +102,44 @@ Component({
       return this.fetchBags();
     },
 
+    // Sorted by departure, the first card of each week/month carries the section title.
+    groupByDeparture(bags, sortKey) {
+      let lastKey = "";
+      return bags.map((bag) => {
+        if (sortKey !== "departureAsc") {
+          return bag.groupHead ? { ...bag, groupHead: "" } : bag;
+        }
+        const group = departureGroup(bag.departureDate);
+        const groupHead = group.key === lastKey ? "" : group.label;
+        lastKey = group.key;
+        return { ...bag, groupHead };
+      });
+    },
+
+    // After a refresh: flash the cards that were not there before and say how many arrived.
+    markFresh(bags) {
+      const known = {};
+      this.data.allBags.forEach((bag) => {
+        known[bag._id] = true;
+      });
+      const fresh = {};
+      bags.forEach((bag) => {
+        if (!known[bag._id]) {
+          fresh[bag._id] = true;
+        }
+      });
+      const count = Object.keys(fresh).length;
+      if (!count) {
+        return;
+      }
+      clearTimeout(this.freshTimer);
+      this.setData({ fresh });
+      this.freshTimer = setTimeout(() => this.setData({ fresh: {} }), 2400);
+      showToast({ title: `新增 ${count} 个行李额`, icon: "none" });
+    },
+
     cleanup() {
+      clearTimeout(this.freshTimer);
       clearTimeout(this.closeFiltersTimer);
       clearTimeout(this._countUpTimer);
     },
@@ -155,6 +204,9 @@ Component({
             createdAtText: formatDateTime(bag.createdAt),
           };
         });
+        if (this.hasLoaded) {
+          this.markFresh(bags);
+        }
         // Count and largest space roll from their previous values to the new ones.
         const overview = this.buildOverview(bags);
         this.setData({
@@ -165,13 +217,23 @@ Component({
         this.applyFiltersAndSort(bags);
         this.hasLoaded = true;
       } catch (error) {
-        showToast({
-          title: error.message || "加载失败",
-          icon: "none",
-        });
+        // Nothing on screen yet: show the retry state. Otherwise keep the list and just say so.
+        if (!this.hasLoaded) {
+          this.setData({ loadError: error.message || "加载失败" });
+        } else {
+          showToast({
+            title: error.message || "加载失败",
+            icon: "none",
+          });
+        }
       } finally {
         this.setData({ loading: false });
       }
+    },
+
+    retryLoad() {
+      this.setData({ loadError: "", loading: true });
+      this.fetchBags();
     },
 
     // Route summary card above the list: busiest route, count, next departure, largest space.
@@ -240,7 +302,10 @@ Component({
       const allBags = nextAllBags || this.data.allBags;
       const currentSortOption =
         this.data.sortOptions[this.data.sortIndex] || this.data.sortOptions[0];
-      const visibleBags = this.getVisibleBags(allBags, this.data.filters, this.data.sortKey);
+      const visibleBags = this.groupByDeparture(
+        this.getVisibleBags(allBags, this.data.filters, this.data.sortKey),
+        this.data.sortKey
+      );
       this.setData({
         bags: visibleBags,
         currentSortLabel: currentSortOption.label,
@@ -333,9 +398,7 @@ Component({
 
     openDetail(event) {
       const { id } = event.currentTarget.dataset;
-      wx.navigateTo({
-        url: `/pages/find-bags/detail/detail?id=${id}`,
-      });
+      liftAndOpen(this, id, `/pages/find-bags/detail/detail?id=${id}`);
     },
   },
 });

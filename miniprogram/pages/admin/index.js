@@ -2,6 +2,7 @@ const { formatDateTime, formatWeight, toDate } = require("../../utils/format");
 const { formatSpecialItems } = require("../../utils/specialItems");
 const { countUp } = require("../../utils/countUp");
 const { showToast } = require("../../utils/toast");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("../../utils/navTitle");
 
 const bagStatusLabels = {
   active: "可绑定",
@@ -128,6 +129,8 @@ const getStatusLabel = (targetType, status) => {
 
 Page({
   data: {
+    navCollapsed: false,
+    refreshing: false,
     loading: true,
     errorMessage: "",
     searchKeyword: "",
@@ -161,17 +164,27 @@ Page({
     flipId: "",
   },
 
+  onReady() {
+    watchNavTitle(this, ".large-title");
+  },
+
   onShow() {
     this.fetchDashboard();
   },
 
   onPullDownRefresh() {
-    this.fetchDashboard().finally(() => wx.stopPullDownRefresh());
+    refreshWithPlane(this, () => this.fetchDashboard());
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this._countUpTimer);
     clearTimeout(this.flipTimer);
+  },
+
+  retryLoad() {
+    this.setData({ errorMessage: "", loading: true });
+    this.fetchDashboard();
   },
 
   markFlipped(id) {

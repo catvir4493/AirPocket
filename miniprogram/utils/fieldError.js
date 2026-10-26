@@ -2,6 +2,7 @@
 // then a short shake with a red label. The field's view carries id "ff-<field>" and the
 // class from the template ("field-error shake-0|1", alternating so a repeat replays).
 const { showToast } = require("./toast");
+const { getNavMetrics } = require("./navMetrics");
 
 const SCROLL_MS = 280;
 const HOLD_MS = 1600;
@@ -25,9 +26,10 @@ const showFieldError = (page, error) => {
         return;
       }
       const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
-      // Leave room for the fixed action bar at the bottom of the form pages.
+      // Leave room for the custom navbar on top and the fixed action bar at the bottom.
+      const topBar = getNavMetrics().navTotal + 12;
       const bottomBar = (info.windowWidth / 750) * 220;
-      const visible = rect.top >= 24 && rect.bottom <= info.windowHeight - bottomBar;
+      const visible = rect.top >= topBar && rect.bottom <= info.windowHeight - bottomBar;
       if (visible) {
         flagField(page, error.field);
         return;

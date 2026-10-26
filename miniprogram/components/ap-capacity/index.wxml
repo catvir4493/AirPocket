@@ -1,0 +1,13 @@
+<view class="cap">
+  <view class="cap-bar">
+    <view wx:for="{{bars}}" wx:key="key" class="cap-seg cap-{{item.tone}}" style="left: {{item.left}}%; width: {{item.width}}%; animation-delay: {{120 + index * 70}}ms;"></view>
+  </view>
+  <view class="cap-legend">
+    <view wx:for="{{legend}}" wx:key="label" class="cap-key">
+      <view class="cap-dot cap-{{item.tone}}"></view>
+      <text>{{item.label}}</text>
+      <text class="cap-num">{{item.value}}</text>
+      <text class="cap-unit">{{unit}}</text>
+    </view>
+  </view>
+</view>

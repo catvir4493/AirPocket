@@ -1,5 +1,6 @@
 const { showToast } = require("../../utils/toast");
 const { dayParts } = require("../../utils/date");
+const { liftAndOpen } = require("../../utils/liftOpen");
 
 Page({
   data: {
@@ -7,6 +8,9 @@ Page({
     summaryReady: false,
     availableCount: 0,
     nearestDate: "",
+    // The next few departures, shown as small tickets under the Find Bags entry.
+    upcoming: [],
+    liftId: "",
   },
 
   onShow() {
@@ -29,14 +33,29 @@ Page({
         const today = new Date();
         const todayKey = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}-${`${today.getDate()}`.padStart(2, "0")}`;
         const bags = result.data || [];
-        const nearest = bags
-          .map((bag) => `${bag.departureDate || ""}`)
-          .filter((date) => date && date >= todayKey)
-          .sort()[0];
+        const soon = bags
+          .filter((bag) => bag.departureDate && `${bag.departureDate}` >= todayKey)
+          .sort((a, b) => `${a.departureDate}`.localeCompare(`${b.departureDate}`));
+        const upcoming = soon.slice(0, 3).map((bag) => {
+          const day = dayParts(bag.departureDate);
+          const isFullCase = bag.spaceType === "fullCase";
+          const weight = isFullCase
+            ? Number(bag.remainingCases || 0) * 23
+            : Number(bag.remainingWeight || 0);
+          return {
+            id: bag._id,
+            from: bag.fromCity || "-",
+            to: bag.toCity || "-",
+            date: day.short,
+            weekday: day.weekday,
+            weight: Number.isFinite(weight) ? Math.round(weight * 10) / 10 : "-",
+          };
+        });
         this.setData({
           summaryReady: true,
           availableCount: bags.length,
-          nearestDate: nearest ? dayParts(nearest).short : "",
+          nearestDate: soon.length ? dayParts(soon[0].departureDate).short : "",
+          upcoming,
         });
       },
     });
@@ -46,6 +65,11 @@ Page({
     wx.navigateTo({
       url: "/pages/find-bags/home/home",
     });
+  },
+
+  openUpcoming(event) {
+    const { id } = event.currentTarget.dataset;
+    liftAndOpen(this, id, `/pages/find-bags/detail/detail?id=${id}`);
   },
 
   goOfferSpace() {

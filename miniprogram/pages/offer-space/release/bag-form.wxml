@@ -6,12 +6,17 @@
     <view class="trip-top">
       <view id="ff-fromCity" class="trip-city {{focusedField === 'fromCity' ? 'focused' : ''}} {{errorField === 'fromCity' ? 'field-error shake-' + errorTick % 2 : ''}}">
         <view class="trip-key">FROM</view>
-        <input class="trip-input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="出发城市" placeholder-class="trip-ph" data-focus="fromCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
+        <!-- swapKey re-creates the inputs so the cities slide across after a swap. -->
+        <view wx:for="{{[swapKey]}}" wx:for-item="swapRun" wx:key="*this" class="{{swapKey ? 'swap-in-from' : ''}}">
+          <input class="trip-input" value="{{form.fromCity}}" data-field="fromCity" bindinput="onFieldInput" placeholder="出发城市" placeholder-class="trip-ph" data-focus="fromCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
+        </view>
       </view>
-      <view class="trip-swap" hover-class="trip-swap-hover" hover-start-time="20" hover-stay-time="90" bindtap="swapCities"><ap-icon name="swap" size="{{30}}" stroke="{{2}}" color="ink" /></view>
+      <view class="trip-swap" hover-class="trip-swap-hover" hover-start-time="20" hover-stay-time="90" bindtap="swapCities"><view class="trip-swap-icon" style="transform: rotate({{swapKey * 180}}deg);"><ap-icon name="swap" size="{{30}}" stroke="{{2}}" color="ink" /></view></view>
       <view id="ff-toCity" class="trip-city right {{focusedField === 'toCity' ? 'focused' : ''}} {{errorField === 'toCity' ? 'field-error shake-' + errorTick % 2 : ''}}">
         <view class="trip-key">TO</view>
-        <input class="trip-input right" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="到达城市" placeholder-class="trip-ph" data-focus="toCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
+        <view wx:for="{{[swapKey]}}" wx:for-item="swapRun" wx:key="*this" class="{{swapKey ? 'swap-in-to' : ''}}">
+          <input class="trip-input right" value="{{form.toCity}}" data-field="toCity" bindinput="onFieldInput" placeholder="到达城市" placeholder-class="trip-ph" data-focus="toCity" bindfocus="onFieldFocus" bindblur="onFieldBlur" />
+        </view>
       </view>
     </view>
     <view class="trip-perf"></view>
@@ -111,12 +116,13 @@
   <!-- Live preview: the card senders will see in Find Bags -->
   <view class="eyebrow preview-title">需要的人看到的样子</view>
   <view class="bag-card preview-card">
-    <view class="bag-stub">
+    <!-- Each part re-renders when its pulse counter moves, flashing what just changed. -->
+    <view wx:for="{{[pulse.date]}}" wx:for-item="pv" wx:key="*this" class="bag-stub {{pulse.date ? 'pv-pop' : ''}}">
       <text class="bag-stub-day">{{preview.day}}</text>
       <text class="bag-stub-month">{{preview.month}}</text>
     </view>
     <view class="bag-main">
-      <view class="bag-route">
+      <view wx:for="{{[pulse.route]}}" wx:for-item="pv" wx:key="*this" class="bag-route {{pulse.route ? 'pv-glow' : ''}}">
         <text class="bag-city">{{preview.from}}</text>
         <view class="bag-line">
           <view class="bag-line-dash"></view>
@@ -125,10 +131,10 @@
         <text class="bag-city right">{{preview.to}}</text>
       </view>
       <view class="bag-foot">
-        <view class="bag-chips">
+        <view wx:for="{{[pulse.chips]}}" wx:for-item="pv" wx:key="*this" class="bag-chips {{pulse.chips ? 'pv-glow' : ''}}">
           <text wx:for="{{preview.chips}}" wx:key="*this" class="bag-chip">{{item}}</text>
         </view>
-        <view class="bag-weight"><text class="bag-weight-num">{{preview.weight}}</text><text class="bag-weight-unit">kg</text></view>
+        <view wx:for="{{[pulse.weight]}}" wx:for-item="pv" wx:key="*this" class="bag-weight {{pulse.weight ? 'pv-glow' : ''}}"><text class="bag-weight-num">{{preview.weight}}</text><text class="bag-weight-unit">kg</text></view>
       </view>
     </view>
   </view>

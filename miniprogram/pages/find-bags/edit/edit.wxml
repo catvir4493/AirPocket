@@ -1,8 +1,13 @@
 <import src="../detail/bind-form.wxml" />
 
+<ap-navbar title="编辑绑定" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page no-bottom-nav edit-binding-page {{binding ? 'has-sticky-action' : ''}}">
-  <view class="eyebrow page-eyebrow fade-up">Edit</view>
-  <view class="page-title fade-up">编辑绑定</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Edit</view>
+      <view class="page-title fade-up">编辑绑定</view>
+    </view>
+  </view>
   <view class="page-subtitle fade-up delay-1">锁单前可以修改重量、物品和联系信息，锁单后需要联系客服。</view>
 
   <view wx:if="{{loading}}" class="edit-skeleton">
@@ -28,7 +33,7 @@
     </view>
 
     <view class="form detail-form">
-      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll, errorField, errorTick}}" />
+      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll, errorField, errorTick, summary}}" />
     </view>
 
     <view class="sticky-action action-bar">
@@ -49,4 +54,4 @@
   <view wx:else class="empty-state">没有找到这条绑定。</view>
 </view>
 <ap-stamp show="{{saved ? true : false}}" text="已保存" sub="{{binding ? '#' + binding.bagNo : ''}}" />
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

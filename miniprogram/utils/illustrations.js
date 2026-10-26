@@ -25,6 +25,21 @@ const DRAWINGS = {
       <path d="M134 22v8M130 26h8" stroke="${c["ink-3"]}" stroke-width="2" stroke-linecap="round"/>
       <circle cx="28" cy="84" r="2.5" fill="${c["ink-3"]}"/>`,
   },
+  // Load failed: a cloud cutting the dashed flight path, plane waiting at the end.
+  offline: {
+    viewBox: "0 0 160 120",
+    draw: (c) => `
+      <ellipse cx="80" cy="108" rx="48" ry="5" fill="${c.fill}"/>
+      <path d="M12 96 Q34 80 56 86" fill="none" stroke="${c["ink-3"]}" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>
+      <path d="M104 86 Q124 80 140 88" fill="none" stroke="${c["ink-3"]}" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>
+      <g transform="translate(130 76) rotate(100 12 12) scale(0.8)"><path d="${PLANE}" fill="${c.ink}"/></g>
+      <path d="M50 80a17 17 0 0 1 2-34 24 24 0 0 1 45-8 18 18 0 0 1 22 20 15 15 0 0 1-4 22z" fill="${c.card}" stroke="${c.ink}" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M66 60l8 8M74 60l-8 8M88 60l8 8M96 60l-8 8" stroke="${c["ink-3"]}" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="116" cy="34" r="12" fill="${c.yellow}" stroke="${c.ink}" stroke-width="2.2"/>
+      <path d="M116 27v8" stroke="#1c1c1a" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="116" cy="40.5" r="1.8" fill="#1c1c1a"/>
+      <path d="M30 26v8M26 30h8" stroke="${c["ink-3"]}" stroke-width="2" stroke-linecap="round"/>`,
+  },
   // Home greeting: two pins joined by a dashed arc, plane on the way.
   route: {
     viewBox: "0 0 200 120",

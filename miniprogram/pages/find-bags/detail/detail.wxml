@@ -1,6 +1,8 @@
 <import src="bind-form.wxml" />
 
+<ap-navbar title="行李额详情" collapsed="{{navCollapsed}}" loading="{{refreshing}}" compact />
 <view class="page no-bottom-nav detail-page {{bag ? 'has-sticky-action' : ''}}">
+  <view class="nav-sentinel"></view>
   <view wx:if="{{loading}}" class="pass-skeleton">
     <view class="pass-skeleton-card skeleton-shine"></view>
     <view class="pass-skeleton-line skeleton-shine"></view>
@@ -24,7 +26,7 @@
     />
 
     <view class="form detail-form">
-      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll, errorField, errorTick}}" />
+      <template is="bind-form" data="{{form, formInfo, focusedField, specialItemOptions, quickWeights, roll, errorField, errorTick, summary}}" />
     </view>
 
     <view class="sticky-action action-bar">
@@ -42,7 +44,13 @@
     </view>
   </block>
 
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
   <view wx:else class="empty-state">没有找到这个行李额。</view>
 </view>
 <ap-stamp show="{{bindDone ? true : false}}" text="已绑定" sub="{{bag ? '#' + bag.bagNo : ''}}" />
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

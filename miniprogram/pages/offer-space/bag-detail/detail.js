@@ -2,6 +2,7 @@ const { formatDateTime, formatWeight } = require("../../../utils/format");
 const { formatSpecialItems } = require("../../../utils/specialItems");
 const { showToast } = require("../../../utils/toast");
 const { bagStatus, bindingStatus } = require("../../../utils/status");
+const { watchNavTitle, unwatchNavTitle, refreshWithPlane } = require("../../../utils/navTitle");
 
 const toSafeNumber = (value, fallback = 0) => {
   const number = Number(value);
@@ -20,6 +21,20 @@ const buildBagView = (bag) => {
 
   const status = bagStatus(bag.status);
   const specialItemOptionsText = formatSpecialItems(bag.specialItemOptions);
+  // Capacity bar: one dark block per live binding over the bag's total space.
+  const capacity = {
+    total: isFullCase ? caseCount * 23 : toSafeNumber(bag.totalWeight),
+    segments: (bag.bindings || [])
+      .filter((binding) => binding.status !== "cancelled")
+      .map((binding) => ({
+        value:
+          binding.spaceType === "fullCase"
+            ? Number(binding.requestedCases || 1) * 23
+            : toSafeNumber(binding.requestedWeight),
+        tone: "bound",
+        label: "已绑定",
+      })),
+  };
 
   return {
     ...bag,
@@ -27,6 +42,7 @@ const buildBagView = (bag) => {
     remainingCases,
     isFullCase,
     isLoose: !isFullCase,
+    capacity,
     canEdit: !bag.bindingCount,
     spaceTypeText: isFullCase ? "整箱" : "散件",
     caseCountText: `${caseCount} 件`,
@@ -68,9 +84,20 @@ const buildBagView = (bag) => {
 
 Page({
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    loadError: "",
     bagId: "",
     bag: null,
     loading: true,
+  },
+
+  onUnload() {
+    unwatchNavTitle(this);
+  },
+
+  onReady() {
+    watchNavTitle(this, ".nav-sentinel");
   },
 
   onLoad(options) {
@@ -88,7 +115,7 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.fetchBag(this.data.bagId).finally(() => wx.stopPullDownRefresh());
+    refreshWithPlane(this, () => this.fetchBag(this.data.bagId));
   },
 
   async fetchBag(bagId) {
@@ -96,7 +123,10 @@ Page({
       return;
     }
 
-    this.setData({ loading: true });
+    // Refreshes keep the current pass on screen instead of going back to the skeleton.
+    if (!this.data.bag) {
+      this.setData({ loading: true });
+    }
     try {
       const resp = await wx.cloud.callFunction({
         name: "getMyCarrierBags",
@@ -108,18 +138,30 @@ Page({
 
       const source = (result.data || []).find((item) => item._id === bagId);
       if (!source) {
-        throw new Error("没有找到这条 bag");
+        // Not found is not a load failure: fall through to the "没有找到" state.
+        this.setData({ bag: null });
+        return;
       }
 
       this.setData({ bag: buildBagView(source) });
     } catch (error) {
-      showToast({
-        title: error.message || "加载失败",
-        icon: "none",
-      });
+      // Nothing on screen yet: show the retry state. Otherwise keep the page and just say so.
+      if (!this.data.bag) {
+        this.setData({ loadError: error.message || "加载失败" });
+      } else {
+        showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      }
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    this.setData({ loadError: "", loading: true });
+    this.fetchBag(this.data.bagId);
   },
 
   editBag() {

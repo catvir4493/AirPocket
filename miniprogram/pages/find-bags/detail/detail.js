@@ -14,6 +14,7 @@ const {
   validateBindForm,
 } = require("../../../utils/bindForm");
 const { showFieldError, clearFieldError } = require("../../../utils/fieldError");
+const { watchNavTitle, unwatchNavTitle } = require("../../../utils/navTitle");
 
 const specialLabel = (value) =>
   (SPECIAL_ITEM_OPTIONS.find((item) => item.value === value) || { label: value }).label;
@@ -24,12 +25,19 @@ Page({
   readyText: "可以绑定了",
 
   data: {
+    navCollapsed: false,
+    refreshing: false,
+    loadError: "",
     ...createBindFormData(),
     bagId: "",
     bag: null,
     loading: true,
     submitting: false,
     bindDone: false,
+  },
+
+  onReady() {
+    watchNavTitle(this, ".nav-sentinel");
   },
 
   onLoad(options) {
@@ -46,6 +54,7 @@ Page({
   },
 
   onUnload() {
+    unwatchNavTitle(this);
     clearTimeout(this.redirectTimer);
     clearFieldError(this);
   },
@@ -106,18 +115,33 @@ Page({
           maxText: formatWeight(remainingWeight),
           casesText: `当前剩余 ${remainingCases} 件`,
           availableSpecialItems,
+          // Capacity bar: everything on the bag, and what others have already booked.
+          capTotal: isFullCase ? caseCount * 23 : Number(bag.totalWeight) || 0,
+          capTaken: isFullCase
+            ? Math.max(0, caseCount - remainingCases) * 23
+            : Math.max(0, (Number(bag.totalWeight) || 0) - remainingWeight),
         },
         quickWeights: isFullCase ? [] : buildQuickWeights(remainingWeight),
       });
       this.refreshSummary();
     } catch (error) {
-      showToast({
-        title: error.message || "加载失败",
-        icon: "none",
-      });
+      // Nothing on screen yet: show the retry state. Otherwise keep the page and just say so.
+      if (!this.data.bag) {
+        this.setData({ loadError: error.message || "加载失败" });
+      } else {
+        showToast({
+          title: error.message || "加载失败",
+          icon: "none",
+        });
+      }
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    this.setData({ loadError: "", loading: true });
+    this.fetchBag(this.data.bagId);
   },
 
   async submitBinding() {

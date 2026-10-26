@@ -1,4 +1,6 @@
+<ap-navbar title="我的发布" collapsed="{{navCollapsed}}" loading="{{refreshing}}" compact />
 <view class="page no-bottom-nav detail-page">
+  <view class="nav-sentinel"></view>
   <view wx:if="{{loading}}" class="pass-skeleton">
     <view class="pass-skeleton-card skeleton-shine"></view>
     <view class="pass-skeleton-line skeleton-shine"></view>
@@ -20,6 +22,14 @@
       chips="{{bag.passChips}}"
       note="{{bag.note}}"
     />
+
+    <view wx:if="{{bag.capacity.total}}" class="cap-card fade-up delay-1">
+      <view class="cap-card-head">
+        <text>装载情况</text>
+        <text class="eyebrow">Load · {{bag.capacity.segments.length}} 单</text>
+      </view>
+      <ap-capacity total="{{bag.capacity.total}}" segments="{{bag.capacity.segments}}" />
+    </view>
 
     <view class="detail-section fade-up delay-1">
       <view class="section-title">行李额<text class="eyebrow">Space</text></view>
@@ -108,6 +118,12 @@
     </view>
   </block>
 
+  <view wx:elif="{{loadError}}" class="empty-state error-state">
+    <view class="empty-art"><ap-art name="offline" width="{{240}}" height="{{180}}" /></view>
+    <view class="error-title">没有加载出来</view>
+    <view class="error-copy">检查一下网络，再试一次。</view>
+    <button class="secondary-button error-retry" bindtap="retryLoad">重新加载</button>
+  </view>
   <view wx:else class="empty-state">没有找到这条行李额。</view>
 </view>
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

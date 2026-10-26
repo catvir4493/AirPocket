@@ -1,8 +1,13 @@
 <import src="../release/bag-form.wxml" />
 
+<ap-navbar title="编辑行李额" collapsed="{{navCollapsed}}" loading="{{refreshing}}" />
 <view class="page no-bottom-nav edit-page has-sticky-action">
-  <view class="eyebrow page-eyebrow fade-up">Edit</view>
-  <view class="page-title fade-up">编辑行李额</view>
+  <view class="large-title">
+    <view class="large-title-inner {{navCollapsed ? 'shrunk' : ''}}">
+      <view class="eyebrow page-eyebrow fade-up">Edit</view>
+      <view class="page-title fade-up">编辑行李额</view>
+    </view>
+  </view>
   <view class="page-subtitle fade-up delay-1">只有还没被绑定过的行李额可以修改。</view>
 
   <view wx:if="{{loading}}" class="edit-skeleton">
@@ -11,7 +16,7 @@
   </view>
 
   <view wx:else class="form fade-up delay-2">
-    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick}}" />
+    <template is="bag-form" data="{{form, focusedField, minDate, dateText, caseWeightText, quickWeights, specialItemOptions, allowedTags, restrictedTags, tagDraft, preview, roll, errorField, errorTick, pulse, swapKey}}" />
   </view>
 
   <view wx:if="{{!loading}}" class="sticky-action action-bar">
@@ -29,4 +34,4 @@
   </view>
 </view>
 <ap-stamp show="{{saved ? true : false}}" text="已保存" />
-<ap-toast id="ap-toast" />
+<ap-toast id="ap-toast" custom-nav />

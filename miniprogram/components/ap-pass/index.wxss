@@ -222,10 +222,11 @@
   line-height: 1.6;
 }
 
+/* Drops in from above, continuing the lift of the card tapped on the list. */
 @keyframes pass-in {
   from {
     opacity: 0;
-    transform: translateY(24rpx) scale(0.98);
+    transform: translateY(-36rpx) scale(1.03);
   }
   to {
     opacity: 1;
